@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import Register from './pages/Authentication/Register';
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import Login from './pages/Authentication/Login';
+import Dashboard from './pages/Dashboard/Dashboard';
+
+import Profile from './pages/Profile';
+import Register from './pages/Authentication/Register';
+import JobPosting from './pages/JobPosting/JobPosting';
+import Candidates from './pages/Candidate/Candidates';
+import Jobs from './pages/Jobs/Jobs';
 import RegisterSwitch from './pages/Authentication/RegisterSwitch';
 
 
@@ -28,7 +34,25 @@ function App() {
     ) : (
         <>
             <Routes>
-            <Route
+                <Route
+                    index
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='RecruitEase' />
+                            <Dashboard />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path='/profile'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Profile - RecruitEase' />
+                            <Profile />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
                     path='/login'
                     element={
                         <RedirectAuthRoute>
@@ -46,7 +70,34 @@ function App() {
                         </RedirectAuthRoute>
                     }
                 />
-                 <Route
+                <Route
+                    path='/create-job'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Create Job Posting- RecruitEase' />
+                            <JobPosting />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path='/candidates'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Candidates- RecruitEase' />
+                            <Candidates />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path='/jobs'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Job Postings- RecruitEase' />
+                            <Jobs />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
                     path='/register-type'
                     element={
                         <RedirectAuthRoute>
@@ -56,7 +107,6 @@ function App() {
                     }
                 />
             </Routes>
-           
         </>
     );
 }
