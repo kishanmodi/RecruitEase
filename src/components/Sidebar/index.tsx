@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import SidebarLinkGroup from './SidebarLinkGroup';
 import Logo from '../../images/logo/Logo-2.png';
-import DarkModeSwitcher from '../Header/DarkModeSwitcher';
+import { useAuth } from '../../context/AppContext';
 
 interface SidebarProps {
     sidebarOpen: boolean;
@@ -12,6 +11,7 @@ interface SidebarProps {
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     const location = useLocation();
+    const { isAuthenticated } = useAuth();
     const { pathname } = location;
 
     const trigger = useRef<any>(null);
@@ -100,18 +100,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
             <div className='no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear'>
                 {/* <!-- Sidebar Menu --> */}
-                <div className='flex flex-row justify-evenly	'>
-                    <Link
-                        to='/login'
-                        className='inline-flex items-center justify-center rounded-md bg-primary py-2 px-6 text-center font-medium text-white hover:bg-opacity-90 lg:px-5 xl:px-5 lg:hidden'>
-                        Login
-                    </Link>
-                    <Link
-                        to='/register'
-                        className='inline-flex items-center justify-center rounded-md bg-teal-600	 py-2 px-6 text-center font-medium text-white hover:bg-opacity-90 lg:px-4 xl:px-4 lg:hidden'>
-                        Signup
-                    </Link>
-                </div>
+                {!isAuthenticated && (
+                    <div className='flex flex-row justify-evenly	'>
+                        <Link
+                            to='/login'
+                            className='inline-flex items-center justify-center rounded-md bg-primary py-2 px-6 text-center font-medium text-white hover:bg-opacity-90 lg:px-5 xl:px-5 lg:hidden'>
+                            Login
+                        </Link>
+                        <Link
+                            to='/register'
+                            className='inline-flex items-center justify-center rounded-md bg-teal-600	 py-2 px-6 text-center font-medium text-white hover:bg-opacity-90 lg:px-4 xl:px-4 lg:hidden'>
+                            Signup
+                        </Link>
+                    </div>
+                )}
                 <nav className='mt-5 py-4 px-4 lg:mt-9 lg:px-6'>
                     {/* <!-- Dashboard Group --> */}
                     <div>
@@ -301,8 +303,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                     Company Profile
                                 </NavLink>
                             </li>
-                            {/* <!-- Menu Item Profile --> */}
-                            {/* <!-- Menu Item Settings --> */}
+                            {/*            
                             <li>
                                 <NavLink
                                     to='/settings'
@@ -340,8 +341,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                     </svg>
                                     Settings
                                 </NavLink>
-                            </li>
-                            {/* <!-- Menu Item Settings --> */}
+                            </li> */}
                         </ul>
                     </div>
                 </nav>

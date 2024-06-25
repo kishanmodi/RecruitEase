@@ -1,8 +1,6 @@
 import React from 'react';
 import CardDataStats from '../../components/CardDataStats';
-import TableOne from '../../components/Tables/TableOne';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { Link } from 'react-router-dom';
 
 interface CardDataStatsProps {
     jobTitle: string;
@@ -11,7 +9,6 @@ interface CardDataStatsProps {
     daysLeft: number;
     appliedToday: number;
 }
-
 const cardData: CardDataStatsProps[] = [
     {
         jobTitle: 'Frontend Developer',
@@ -40,21 +37,58 @@ const cardData: CardDataStatsProps[] = [
         applicants: 200,
         daysLeft: 7,
         appliedToday: 20
+    },
+    {
+        jobTitle: 'Software Architect',
+        location: 'Boston, MA',
+        applicants: 90,
+        daysLeft: 4,
+        appliedToday: 12
+    },
+    {
+        jobTitle: 'UX Designer',
+        location: 'Austin, TX',
+        applicants: 110,
+        daysLeft: 6,
+        appliedToday: 8
+    },
+    {
+        jobTitle: 'DevOps Engineer',
+        location: 'Seattle, WA',
+        applicants: 75,
+        daysLeft: 8,
+        appliedToday: 7
+    },
+    {
+        jobTitle: 'Marketing Specialist',
+        location: 'Miami, FL',
+        applicants: 60,
+        daysLeft: 2,
+        appliedToday: 3
+    },
+    {
+        jobTitle: 'Business Analyst',
+        location: 'Denver, CO',
+        applicants: 130,
+        daysLeft: 9,
+        appliedToday: 14
+    },
+    {
+        jobTitle: 'Product Owner',
+        location: 'Dallas, TX',
+        applicants: 85,
+        daysLeft: 1,
+        appliedToday: 2
     }
 ];
 
-const Dashboard: React.FC = () => {
+const Jobs: React.FC = () => {
     return (
         <DefaultLayout>
             <div className='flex flex-row mb-5 justify-between items-center'>
                 <h2 className='text-2xl font-semibold dark:text-white '>
-                    Current Openings (15)
+                    Current Openings
                 </h2>
-                <div className='text-primary font-bold'>
-                    <Link to='/jobs'>
-                        <a className=''>See All</a>
-                    </Link>
-                </div>
             </div>
 
             <div className='grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5'>
@@ -89,14 +123,8 @@ const Dashboard: React.FC = () => {
                     </CardDataStats>
                 ))}
             </div>
-
-            <div className='mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5'>
-                <div className='col-span-12 xl:col-span-16'>
-                    <TableOne />
-                </div>
-            </div>
         </DefaultLayout>
     );
 };
 
-export default Dashboard;
+export default Jobs;
