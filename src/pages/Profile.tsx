@@ -1,6 +1,6 @@
 import DefaultLayout from '../layout/DefaultLayout';
-import CoverOne from '../images/logo/Logo-1.jpg';
-import userSix from '../images/logo/Logo-4.png';
+import CoverOne from '../images/logo/test.png';
+import userSix from '../images/logo/meta.png';
 
 const Profile = () => {
     return (
@@ -10,7 +10,7 @@ const Profile = () => {
                     <img
                         src={CoverOne}
                         alt='profile cover'
-                        className='h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center'
+                        className='h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center max-xsm:object-bottom max-xsm:backdrop-blur'
                     />
                     <div className='absolute bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4'>
                         <label
@@ -51,7 +51,7 @@ const Profile = () => {
                 <div className='px-4 pb-6 text-center lg:pb-8 xl:pb-11.5'>
                     <div className='relative z-30 mx-auto -mt-22 h-30 w-full max-w-30 rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:max-w-44 sm:p-3'>
                         <div className='relative drop-shadow-2'>
-                            <div className='px-14 py-12 border rounded-full'>
+                            <div className='border rounded-full'>
                                 <img
                                     src={userSix}
                                     alt='profile'
@@ -92,21 +92,22 @@ const Profile = () => {
                     </div>
                     <div className='mt-4'>
                         <h3 className='mb-1.5 text-2xl font-semibold text-black dark:text-white'>
-                            RecruitEase
+                            Meta Inc.
                         </h3>
-                        <p className='font-medium mb-4'>Recruitment Platform</p>
+                        <p className='font-medium mb-4'>
+                            "Move Fast and Break Things"
+                        </p>
 
                         <div className='mx-auto max-w-180'>
                             <h4 className='font-semibold text-black dark:text-white'>
                                 About us
                             </h4>
                             <p className='mt-4.5'>
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Pellentesque posuere fermentum
-                                urna, eu condimentum mauris tempus ut. Donec
-                                fermentum blandit aliquet. Etiam dictum dapibus
-                                ultricies. Sed vel aliquet libero. Nunc a augue
-                                fermentum, pharetra ligula sed, aliquam lacus.
+                                Meta Inc. is a social media company that
+                                specializes in connecting people all over the
+                                world. We believe in the power of community and
+                                strive to create a platform that is safe and
+                                inclusive for all.
                             </p>
                         </div>
                     </div>
