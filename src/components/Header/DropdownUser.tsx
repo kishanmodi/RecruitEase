@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import UserOne from '../../images/user/user-01.png';
+import UserOne from '../../images/logo/meta.png';
 import { useAuth } from '../../context/AppContext';
 
 const DropdownUser = () => {
@@ -46,15 +46,18 @@ const DropdownUser = () => {
                 to='#'>
                 <span className='hidden text-right lg:block'>
                     <span className='block text-sm font-medium text-black dark:text-white'>
-                        Kishan Modi
+                        Meta Inc.
                     </span>
-                    <span className='block text-xs'>Full Stack Developer</span>
+                    <span className='block text-xs'>
+                        Talent Acquisition Manager
+                    </span>
                 </span>
 
-                <span className='h-12 w-12 rounded-full'>
+                <span className='h-12 w-12 rounded-full border'>
                     <img
                         src={UserOne}
                         alt='User'
+                        className='object-cover w-full h-full rounded-full'
                     />
                 </span>
 

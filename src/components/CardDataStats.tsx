@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import useColorMode from '../hooks/useColorMode';
 
 interface CardDataStatsProps {
     jobTitle: string;
@@ -14,14 +13,13 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
     jobTitle,
     location,
     applicants,
-    daysLeft,
+
     appliedToday,
     children
 }) => {
-    const [colorMode, setColorMode] = useColorMode();
     return (
         <div className='rounded-sm border border-stroke bg-white py-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark'>
-            <div className='flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4'>
+            <div className='flex h-11.5 items-center rounded-full justify-between w-full'>
                 {children}
             </div>
 
