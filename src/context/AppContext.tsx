@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-
+import { Job } from '../types/job';
 // Regex pattern for password validation (example)
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
 
@@ -21,6 +21,7 @@ interface AuthContextState {
     ) => Promise<boolean>;
     signin: (email: string, password: string) => Promise<boolean>;
     logout: () => void;
+    createJobPosting: (job: Job) => Promise<boolean>;
 }
 
 // Create the context with default values
@@ -39,6 +40,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
         sessionStorage.getItem('csrf_token') !== null
     );
+    const [jobs, setJobs] = useState<Job[]>([]);
 
     useEffect(() => {
         if (!csrf_token) {
@@ -123,7 +125,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const response = await fetch(`${API_URL}/api/logout/`, {
             method: 'POST',
             headers: {
-                'x-csrftoken': csrf_token || '',
+                'X-CSRFToken': csrf_token || '',
                 'Content-Type': 'application/json'
             }
         });
@@ -139,6 +141,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
     };
 
+    const createJobPosting = async (job: Job) => {
+        const response = await fetch(`${API_URL}/api/new_posting/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrf_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(job)
+        });
+
+        if (response.status === 201) {
+            toast.success('Job created successfully!');
+            return true;
+        } else {
+            toast.error('Job creation failed!');
+            return false;
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -147,7 +168,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 isRecruiter,
                 signup,
                 signin,
-                logout
+                logout,
+                createJobPosting
             }}>
             {children}
         </AuthContext.Provider>

@@ -28,8 +28,7 @@ const RegisterSwitch: React.FC = () => {
                             </Link>
 
                             <p className='2xl:px-20'>
-                                Innovative AI-Driven Hiring Solution for Small
-                                Enterprises
+                                Innovative Hiring Solution for Small Enterprises
                             </p>
 
                             <span className='mt-15 inline-block'>
@@ -67,7 +66,7 @@ const RegisterSwitch: React.FC = () => {
                             <div>
                                 <div className='mb-4'>
                                     <Link
-                                        to='/register-type'
+                                        to='/signup'
                                         className='flex items-center justify-center rounded-md bg-primary p-4  text-center font-medium text-white hover:bg-opacity-90'>
                                         Candidate Registration
                                     </Link>

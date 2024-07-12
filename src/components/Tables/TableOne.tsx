@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 const candidates: CANDIDATE[] = [
     {
         id: 1,
+        reqID: 'R-123456',
         role: 'Software Engineer',
         name: 'Alice Johnson',
         email: 'alice.johnson@example.com',
@@ -13,6 +14,7 @@ const candidates: CANDIDATE[] = [
     },
     {
         id: 2,
+        reqID: 'R-123457',
         role: 'Software Developer',
         name: 'Bob Smith',
         email: 'alice.johnson@example.com',
@@ -23,6 +25,7 @@ const candidates: CANDIDATE[] = [
     },
     {
         id: 3,
+        reqID: 'R-123458',
         role: 'Product Manager',
         name: 'Carol Lee',
         email: 'alice.johnson@example.com',
@@ -33,6 +36,7 @@ const candidates: CANDIDATE[] = [
     },
     {
         id: 4,
+        reqID: 'R-123459',
         role: 'UX Designer',
         name: 'David Brown',
         email: 'alice.johnson@example.com',
@@ -43,6 +47,7 @@ const candidates: CANDIDATE[] = [
     },
     {
         id: 5,
+        reqID: 'R-123460',
         role: 'QA Engineer',
         name: 'Eve Davis',
         email: 'alice.johnson@example.com',

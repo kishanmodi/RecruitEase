@@ -1,0 +1,88 @@
+[
+    { "value": "Communication", "text": "Communication", "selected": false },
+    { "value": "Teamwork", "text": "Teamwork", "selected": false },
+    {
+        "value": "Problem-solving",
+        "text": "Problem-solving",
+        "selected": false
+    },
+    {
+        "value": "Time Management",
+        "text": "Time Management",
+        "selected": false
+    },
+    { "value": "Adaptability", "text": "Adaptability", "selected": false },
+    { "value": "Creativity", "text": "Creativity", "selected": false },
+    { "value": "Leadership", "text": "Leadership", "selected": false },
+    { "value": "Work Ethic", "text": "Work Ethic", "selected": false },
+    {
+        "value": "Interpersonal Skills",
+        "text": "Interpersonal Skills",
+        "selected": false
+    },
+    {
+        "value": "Critical Thinking",
+        "text": "Critical Thinking",
+        "selected": false
+    },
+    {
+        "value": "Decision Making",
+        "text": "Decision Making",
+        "selected": false
+    },
+    {
+        "value": "Conflict Resolution",
+        "text": "Conflict Resolution",
+        "selected": false
+    },
+    {
+        "value": "Emotional Intelligence",
+        "text": "Emotional Intelligence",
+        "selected": false
+    },
+    { "value": "Negotiation", "text": "Negotiation", "selected": false },
+    {
+        "value": "Stress Management",
+        "text": "Stress Management",
+        "selected": false
+    },
+    {
+        "value": "Self-Motivation",
+        "text": "Self-Motivation",
+        "selected": false
+    },
+    { "value": "Flexibility", "text": "Flexibility", "selected": false },
+    { "value": "Dependability", "text": "Dependability", "selected": false },
+    { "value": "Organization", "text": "Organization", "selected": false },
+    {
+        "value": "Attention to Detail",
+        "text": "Attention to Detail",
+        "selected": false
+    },
+    { "value": "Collaboration", "text": "Collaboration", "selected": false },
+    { "value": "Patience", "text": "Patience", "selected": false },
+    {
+        "value": "Public Speaking",
+        "text": "Public Speaking",
+        "selected": false
+    },
+    {
+        "value": "Active Listening",
+        "text": "Active Listening",
+        "selected": false
+    },
+    { "value": "Adaptability", "text": "Adaptability", "selected": false },
+    { "value": "Innovation", "text": "Innovation", "selected": false },
+    { "value": "Initiative", "text": "Initiative", "selected": false },
+    {
+        "value": "Resourcefulness",
+        "text": "Resourcefulness",
+        "selected": false
+    },
+    { "value": "Networking", "text": "Networking", "selected": false },
+    {
+        "value": "Cultural Awareness",
+        "text": "Cultural Awareness",
+        "selected": false
+    }
+]

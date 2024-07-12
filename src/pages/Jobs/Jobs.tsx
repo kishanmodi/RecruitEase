@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import DefaultLayout from '../../layout/DefaultLayout';
+import { BsBoxArrowUpRight } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 
 interface CardDataStatsProps {
     jobTitle: string;
@@ -113,6 +115,7 @@ const cardData: CardDataStatsProps[] = [
 const Jobs: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [locationFilter, setLocationFilter] = useState<string>('');
+    const navigate = useNavigate();
 
     // Function to filter jobs based on search term
     const filteredJobs = cardData.filter(
@@ -202,6 +205,11 @@ const Jobs: React.FC = () => {
                                 strokeLinecap='round'
                             />
                         </svg>
+                        <div className='cursor-pointer'>
+                            <BsBoxArrowUpRight
+                                onClick={() => navigate('/create-job')}
+                            />
+                        </div>
                     </CardDataStats>
                 ))}
             </div>
