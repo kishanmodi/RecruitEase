@@ -16,6 +16,9 @@ import RegisterSwitch from './pages/Authentication/RegisterSwitch';
 
 import PrivateRoute from './route/PrivateRoute';
 import RedirectAuthRoute from './route/RedirectAuthRoute';
+import Applications from './pages/Applications/applications';
+import ApplyJob from './pages/ApplyJob/ApplyJob';
+import Questions from './pages/ApplyJob/questions';
 
 function App() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -106,7 +109,35 @@ function App() {
                         </RedirectAuthRoute>
                     }
                 />
+                <Route
+                    path='/candidate-applications'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Candidate - Applications' />
+                            <Applications />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path='/apply-job'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Candidate - Apply' />
+                            <ApplyJob />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path='/apply-job/questionnaire'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Candidate - Apply' />
+                            <Questions />
+                        </PrivateRoute>
+                    }
+                />
             </Routes>
+            
         </>
     );
 }
