@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 const candidates: CANDIDATE[] = [
     {
         id: 1,
+        reqID: 'R-123456',
         role: 'Software Engineer',
         name: 'Alice Johnson',
         email: 'alice.johnson@example.com',
@@ -13,6 +14,7 @@ const candidates: CANDIDATE[] = [
     },
     {
         id: 2,
+        reqID: 'R-123457',
         role: 'Software Developer',
         name: 'Bob Smith',
         email: 'alice.johnson@example.com',
@@ -23,6 +25,7 @@ const candidates: CANDIDATE[] = [
     },
     {
         id: 3,
+        reqID: 'R-123458',
         role: 'Product Manager',
         name: 'Carol Lee',
         email: 'alice.johnson@example.com',
@@ -33,6 +36,7 @@ const candidates: CANDIDATE[] = [
     },
     {
         id: 4,
+        reqID: 'R-123459',
         role: 'UX Designer',
         name: 'David Brown',
         email: 'alice.johnson@example.com',
@@ -43,6 +47,7 @@ const candidates: CANDIDATE[] = [
     },
     {
         id: 5,
+        reqID: 'R-123460',
         role: 'QA Engineer',
         name: 'Eve Davis',
         email: 'alice.johnson@example.com',
@@ -69,8 +74,8 @@ const TableOne = () => {
 
             <div className='overflow-x-auto'>
                 <div className='min-w-[850px]'>
-                    <div className='grid grid-cols-5 rounded-sm bg-gray-2 dark:bg-meta-4'>
-                        <div className='p-2.5 xl:p-5'>
+                    <div className='grid grid-cols-6 min-w-[850px] rounded-sm bg-gray-2 dark:bg-meta-4'>
+                        <div className='p-2.5 xl:p-5 text-center'>
                             <h5 className='text-sm font-medium uppercase xsm:text-base'>
                                 Applied Role
                             </h5>
@@ -87,7 +92,7 @@ const TableOne = () => {
                         </div>
                         <div className=' p-2.5 text-center xl:p-5'>
                             <h5 className='text-sm font-medium uppercase xsm:text-base'>
-                                Application Date
+                                Date
                             </h5>
                         </div>
                         <div className=' p-2.5 text-center xl:p-5'>
@@ -95,55 +100,82 @@ const TableOne = () => {
                                 Stage
                             </h5>
                         </div>
+                        <div className=' p-2.5 text-center xl:p-5'>
+                            <h5 className='text-sm font-medium uppercase xsm:text-base'>
+                                Status
+                            </h5>
+                        </div>
                     </div>
 
-                    {candidates.map((candidate, key) => (
-                        <div
-                            className={`grid grid-cols-5 min-w-[850px] ${
-                                key === candidates.length - 1
-                                    ? ''
-                                    : 'border-b border-stroke dark:border-strokedark'
-                            }`}
-                            key={key}>
-                            <div className='flex items-center gap-3 p-2.5 xl:p-5'>
-                                <div className='flex flex-row'>
-                                    <p className='text-primary dark:text-white'>
-                                        {candidate.role}
-                                    </p>
+                    {candidates.length > 0 ? candidates.map((candidate,key) => (
+                                <div
+                                    className={`grid grid-cols-6 min-w-[850px] ${key === candidates.length - 1
+                                            ? ''
+                                            : 'border-b border-stroke dark:border-strokedark'
+                                        }`}
+                                    key={key}>
+                                    <div className='flex items-center gap-3 p-2.5 xl:p-5'>
+                                        <div className='flex flex-row text-center'>
+                                            <p className='text-primary dark:text-white text-sm'>
+                                                {candidate.role}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className='flex items-center justify-center p-2.5 xl:p-5'>
+                                        <div className='flex flex-col text-center'>
+                                            <p className='text-black dark:text-white text-sm'>
+                                                {candidate.name}
+                                            </p>
+                                            <p className='text-primary dark:text-white text-xs'>
+                                                {candidate.email}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className='flex items-center justify-center p-2.5 xl:p-5'>
+                                        <p className='text-meta-3 text-sm'>
+                                            {candidate.contact}
+                                        </p>
+                                    </div>
+
+                                    <div className='flex items-center justify-center p-2.5 xl:p-5'>
+                                        <p className='text-black dark:text-white text-sm'>
+                                            {candidate.applicationDate}
+                                        </p>
+                                    </div>
+
+                                    <div className='flex items-center justify-center p-2.5 xl:p-5'>
+                                        <button
+                                            className={`inline-flex rounded-full py-1 px-3 text-sm font-medium ${candidate.color === '1'
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : candidate.color === '3'
+                                                        ? 'bg-yellow-100 text-yellow-800'
+                                                        : candidate.color === '5'
+                                                            ? 'bg-orange-100 text-orange-800'
+                                                            : 'bg-red-100 text-red-800'
+                                                }`}>
+                                            {candidate.stage}
+                                        </button>
+                                    </div>
+
+                                    <div className='flex items-center justify-center p-2.5 xl:p-5'>
+                                        <button
+                                            onClick={() => navigate(`/update-status`)}
+                                            className='py-1 px-3 text-sm font-medium bg-blue-100 text-blue-800 rounded-full'>
+                                            View
+                                        </button>
+                                    </div>
+
                                 </div>
-                            </div>
-
-                            <div className='flex items-center justify-center p-2.5 xl:p-5'>
-                                <div className='flex flex-col'>
-                                    <p className='text-black dark:text-white'>
-                                        {candidate.name}
-                                    </p>
-                                    <p className='text-primary dark:text-white'>
-                                        {candidate.email}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className='flex items-center justify-center p-2.5 xl:p-5'>
-                                <p className='text-meta-3'>
-                                    {candidate.contact}
-                                </p>
-                            </div>
-
-                            <div className='flex items-center justify-center p-2.5 xl:p-5'>
-                                <p className='text-black dark:text-white'>
-                                    {candidate.applicationDate}
-                                </p>
-                            </div>
-
-                            <div className='flex items-center justify-center p-2.5 xl:p-5'>
-                                <p
-                                    className={`text-meta-${candidate.color} border rounded px-1 py-1.5 text-sm`}>
-                                    {candidate.stage}
-                                </p>
-                            </div>
+                            )
+                    ) : (
+                        <div className='p-2.5 xl:p-5 text-center'>
+                            <p className='text-gray-500 dark:text-gray-400'>
+                                No candidates found.
+                            </p>
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
         </div>

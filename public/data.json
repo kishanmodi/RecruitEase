@@ -1,0 +1,130 @@
+[
+    {
+        "JobTitle": "Frontend Developer",
+        "JobDepartment": "Engineering",
+        "JobLocation": {
+            "City": "New York",
+            "Country": "USA"
+        },
+        "PostingDate": "Jun 25, 2024",
+        "Deadline": "Jul 25, 2024",
+        "SoftSkills": ["Communication", "Teamwork", "Problem-solving"],
+        "TechnicalSkills": ["JavaScript", "React", "HTML", "CSS"],
+        "SoftSkillAssessmentQuestions": [
+            {
+                "Question": "How do you approach solving complex frontend issues?"
+            },
+            {
+                "Question": "Describe a time when you collaborated effectively in a team."
+            }
+        ],
+        "RecruiterContact": {
+            "RecruiterName": "John Doe",
+            "RecruiterEmail": "john.doe@example.com"
+        },
+        "JobDescription": {
+            "CompanyDescription": "Our company is a leading tech firm specializing in innovative web solutions.",
+            "JobDescription": "We are seeking a talented Frontend Developer to join our dynamic team responsible for designing and implementing user-facing features for our web applications.",
+            "Qualifications": "Bachelor's degree in Computer Science or related field, experience with JavaScript frameworks (React preferred), understanding of responsive design principles.",
+            "KeyRequirements": "Proficiency in JavaScript, React, HTML, and CSS. Experience with RESTful APIs and version control systems.",
+            "NiceToHave": "Experience with TypeScript, GraphQL, and responsive design frameworks like Bootstrap.",
+            "OtherRemarks": "This is a full-time position based in our New York office. We offer competitive salaries and excellent benefits."
+        }
+    },
+    {
+        "JobTitle": "Backend Developer",
+        "JobDepartment": "Engineering",
+        "JobLocation": {
+            "City": "San Francisco",
+            "Country": "USA"
+        },
+        "PostingDate": "Jun 25, 2024",
+        "Deadline": "Jul 25, 2024",
+        "SoftSkills": ["Problem-solving", "Adaptability", "Collaboration"],
+        "TechnicalSkills": ["Node.js", "MongoDB", "Express.js"],
+        "SoftSkillAssessmentQuestions": [
+            {
+                "Question": "Describe a challenging backend issue you successfully resolved."
+            },
+            {
+                "Question": "How do you approach designing scalable backend architectures?"
+            }
+        ],
+        "RecruiterContact": {
+            "RecruiterName": "Jane Smith",
+            "RecruiterEmail": "jane.smith@example.com"
+        },
+        "JobDescription": {
+            "CompanyDescription": "We are a fast-growing startup revolutionizing backend solutions.",
+            "JobDescription": "Join our team as a Backend Developer and help build scalable and efficient backend systems.",
+            "Qualifications": "Bachelor's degree in Computer Science or equivalent experience, strong proficiency in Node.js and NoSQL databases (MongoDB preferred).",
+            "KeyRequirements": "Experience with building RESTful APIs, understanding of microservices architecture.",
+            "NiceToHave": "Familiarity with Docker, Kubernetes, and cloud platforms like AWS or GCP.",
+            "OtherRemarks": "Position located in our San Francisco headquarters. Competitive salary and stock options available."
+        }
+    },
+    {
+        "JobTitle": "Project Manager",
+        "JobDepartment": "Project Management",
+        "JobLocation": {
+            "City": "Los Angeles",
+            "Country": "USA"
+        },
+        "PostingDate": "Jun 25, 2024",
+        "Deadline": "Jul 25, 2024",
+        "SoftSkills": ["Leadership", "Communication", "Negotiation"],
+        "TechnicalSkills": [],
+        "SoftSkillAssessmentQuestions": [
+            {
+                "Question": "How do you handle conflicts within a project team?"
+            },
+            {
+                "Question": "Describe a successful project delivery experience."
+            }
+        ],
+        "RecruiterContact": {
+            "RecruiterName": "Michael Brown",
+            "RecruiterEmail": "michael.brown@example.com"
+        },
+        "JobDescription": {
+            "CompanyDescription": "Our company is a leading provider of project management solutions.",
+            "JobDescription": "We are looking for a skilled Project Manager to lead critical projects and drive successful outcomes.",
+            "Qualifications": "Bachelor's degree in Business Administration or related field, proven experience in project management.",
+            "KeyRequirements": "Experience managing cross-functional teams, strong organizational and analytical skills.",
+            "NiceToHave": "PMP certification or equivalent project management certification.",
+            "OtherRemarks": "Join our team in sunny Los Angeles and be part of our innovative project management initiatives."
+        }
+    },
+    {
+        "JobTitle": "Software Developer",
+        "JobDepartment": "Engineering",
+        "JobLocation": {
+            "City": "Chicago",
+            "Country": "USA"
+        },
+        "PostingDate": "Jun 25, 2024",
+        "Deadline": "Jul 25, 2024",
+        "SoftSkills": ["Problem-solving", "Teamwork", "Time management"],
+        "TechnicalSkills": ["Java", "Spring", "Hibernate"],
+        "SoftSkillAssessmentQuestions": [
+            {
+                "Question": "Describe a complex coding problem you solved recently."
+            },
+            {
+                "Question": "How do you prioritize tasks in a software development project?"
+            }
+        ],
+        "RecruiterContact": {
+            "RecruiterName": "Emily Davis",
+            "RecruiterEmail": "emily.davis@example.com"
+        },
+        "JobDescription": {
+            "CompanyDescription": "We are a leading software solutions provider in the Midwest.",
+            "JobDescription": "Join our team as a Software Developer and contribute to cutting-edge software solutions.",
+            "Qualifications": "Bachelor's degree in Computer Science or related field, proficiency in Java development, experience with Spring framework and Hibernate.",
+            "KeyRequirements": "Strong understanding of object-oriented design principles, experience with SQL and relational databases.",
+            "NiceToHave": "Familiarity with Agile methodologies and continuous integration tools.",
+            "OtherRemarks": "Position based in our Chicago office. Competitive salary and career growth opportunities available."
+        }
+    }
+]

@@ -44,7 +44,7 @@ const SelectGroupTwo: React.FC = () => {
 
                 <select
                     value={selectedOption}
-                    onChange={e => {
+                    onChange={(e) => {
                         setSelectedOption(e.target.value);
                         changeTextColor();
                     }}

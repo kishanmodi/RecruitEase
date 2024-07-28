@@ -199,7 +199,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                             fill='white'
                                         />
                                     </svg>
-                                    Create Job Posting
+                                    Job Posting
                                 </NavLink>
                             </li>
                             <li>
@@ -264,7 +264,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                             d='M13.0789 13.8093H4.97891C4.64141 13.8093 4.33203 14.0906 4.33203 14.4562C4.33203 14.8218 4.61328 15.1031 4.97891 15.1031H13.0789C13.4164 15.1031 13.7258 14.8218 13.7258 14.4562C13.7258 14.0906 13.4164 13.8093 13.0789 13.8093Z'
                                             fill=''></path>
                                     </svg>
-                                    Job Postings
+                                    Postings
                                 </NavLink>
                             </li>
                         </ul>
