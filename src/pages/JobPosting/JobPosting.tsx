@@ -2,13 +2,12 @@ import DefaultLayout from '../../layout/DefaultLayout';
 import DatePickerOne from '../../components/Forms/DatePicker/DatePickerOne';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BsFillTrashFill } from 'react-icons/bs';
+import { BsCopy, BsFillTrashFill } from 'react-icons/bs';
 import SingleOption from '../../components/Forms/SelectGroup/SingleOption';
 import MultiSelectJobPosting from '../../components/Forms/MultiSelectJobPosting';
 import SoftSkillOptions from './SoftSkillsOptions.json';
 import TechSkillOptions from './TechSkillsOptions.json';
 import { Job } from '../../types/job';
-import { toast } from 'react-hot-toast';
 import { useAuth } from '../../context/AppContext';
 import { Option } from '../../types/option';
 import Swtich from '../../components/Switchers/Switch';
@@ -36,6 +35,7 @@ const JobPosting = () => {
     const [niceToHave, setNiceToHave] = useState('');
     const [otherRemarks, setOtherRemarks] = useState('');
     const [isActive, setIsActive] = useState(true);
+    const [jobPostingLink, setJobPostingLink] = useState('');
 
     const [isEditOrNew, setIsEditOrNew] = useState(false);
 
@@ -61,18 +61,26 @@ const JobPosting = () => {
         });
         setQuestions([...newQuestions]);
     };
-    const { createJobPosting } = useAuth();
+    const { createJobPosting, refresh_token } = useAuth();
 
     const handleSubmit = async () => {
-        const jobData: Job = {
+        const job: Job = {
             title: jobTitle,
             department: jobDepartment,
             city,
             country,
             posting_date: new Date(postingDate), // Convert ISO string to Date
             expiration_date: new Date(deadline), // Convert ISO string to Date
-            soft_skills: softSkills.map((skill) => skill.value),
-            technical_skills: technicalSkills.map((skill) => skill.value),
+            soft_skills: softSkills.map((skill) => ({
+                value: skill.value,
+                selected: skill.selected,
+                text: skill.text
+            })),
+            technical_skills: technicalSkills.map((skill) => ({
+                value: skill.value,
+                selected: skill.selected,
+                text: skill.text
+            })),
             questions: questions.map((q) => q.question),
             recruiter_name: recruiterName,
             recruiter_email: recruiterEmail,
@@ -85,32 +93,37 @@ const JobPosting = () => {
             is_active: isActive
         };
 
-        // Verify if all required fields are filled
+        // // Verify if all required fields are filled
 
-        if (
-            !jobTitle ||
-            !jobDepartment ||
-            !city ||
-            !country ||
-            !postingDate ||
-            !deadline ||
-            !softSkills ||
-            !technicalSkills ||
-            !questions ||
-            !recruiterName ||
-            !recruiterEmail ||
-            !companyDescription ||
-            !jobDescription ||
-            !qualifications ||
-            !keyRequirements
-        ) {
-            toast.error('Please fill all required fields.');
-            return;
-        }
-        const success = await createJobPosting(jobData);
+        // if (
+        //     !jobTitle ||
+        //     !jobDepartment ||
+        //     !city ||
+        //     !country ||
+        //     !postingDate ||
+        //     !deadline ||
+        //     !softSkills ||
+        //     !technicalSkills ||
+        //     !questions ||
+        //     !recruiterName ||
+        //     !recruiterEmail ||
+        //     !companyDescription ||
+        //     !jobDescription ||
+        //     !qualifications ||
+        //     !keyRequirements
+        // ) {
+        //     toast.error('Please fill all required fields.');
+        //     return;
+        // }
 
-        if (success) {
+        console.log(refresh_token, 'sdfb ');
+        const data = await createJobPosting({ job: job, refresh_token });
+
+        if (data.success) {
             console.log('Job posted successfully!');
+            setIsEditOrNew(true);
+            const jobPostingLink = `${window.location.origin}/${data.posting_link}`;
+            setJobPostingLink(jobPostingLink);
         } else {
             console.error('Failed to post job.');
         }
@@ -497,6 +510,32 @@ const JobPosting = () => {
                                 setIsActive={setIsActive}
                                 disabled={isEditOrNew}
                             />
+                        </div>
+                    </div>
+
+                    <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark'>
+                        <div className='border-b border-stroke py-4 px-6.5 dark:border-strokedark'>
+                            <h3 className='font-medium text-black dark:text-white'>
+                                Job Posting Link
+                            </h3>
+                        </div>
+                        <div className='flex flex-col gap-5.5 p-6.5'>
+                            <div className='flex gap-2'>
+                                <Link
+                                    to='#'
+                                    className={
+                                        'rounded-lg border-[1.5px] border-stroke bg-transparent py-4 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
+                                    }>
+                                    <BsCopy className='delete-btn cursor-pointer ' />
+                                </Link>
+                                <input
+                                    type='text'
+                                    placeholder='https://www.example.com/job-posting'
+                                    value={jobPostingLink}
+                                    disabled={true}
+                                    className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-transparent dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
+                                />
+                            </div>
                         </div>
                     </div>
 

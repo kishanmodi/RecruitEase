@@ -64,8 +64,7 @@ const MultiSelectJobPosting: React.FC<DropdownProps> = ({
                 setSelected(selected.filter((i) => i !== index));
             }
         }
-
-        setOptions(newOptions);
+        setOptions([...newOptions]);
     };
 
     const remove = (index: number) => {
@@ -75,7 +74,7 @@ const MultiSelectJobPosting: React.FC<DropdownProps> = ({
         if (selectedIndex !== -1) {
             newOptions[index].selected = false;
             setSelected(selected.filter((i) => i !== index));
-            setOptions(newOptions);
+            setOptions([...newOptions]);
         }
     };
 

@@ -17,67 +17,10 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
     );
     const [errors, setErrors] = useState<string[]>([]);
 
-    const validateForm = () => {
-        if (formState.id && formState.value) {
-            setErrors([]);
-            return true;
-        } else {
-            let errorFields = [];
-            for (const [key, value] of Object.entries(formState)) {
-                console.log(key);
-                console.log(value);
-                if (!value) {
-                    errorFields.push(key == 'id' ? 'Bond ID' : key);
-                } else {
-                    if (key == 'id') {
-                        if (
-                            !(
-                                Object.keys(dataJSON).includes(value) ||
-                                value == 'ALL'
-                            )
-                        ) {
-                            errorFields.push('INVALID_ID_' + value);
-                        }
-                    }
-                }
-            }
-            console.log(errorFields);
-            setErrors(errorFields);
-            return false;
-        }
-    };
 
-    const handleChange = (e) => {
-        console.log(formState.criterion);
-        console.log(e.target.name);
-        console.log(e.target.name == 'para' && e.target.value == 'rating');
-        console.log(formState.criterion > 1 && formState.criterion < 4);
-        console.log(e.target.value);
-        console.log(
-            e.target.name == 'para' &&
-                e.target.value == 'rating' &&
-                formState.criterion > 1 &&
-                formState.criterion < 4
-        );
-        if (
-            e.target.name == 'para' &&
-            e.target.value == 'rating' &&
-            formState.criterion > 1 &&
-            formState.criterion < 4
-        ) {
-            setFormState({ ...formState, ['criterion']: 0 });
-        }
-
-        console.log(formState.criterion);
-        setFormState({ ...formState, [e.target.name]: e.target.value });
-    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        if (!validateForm()) return;
-
-        onSubmit(formState);
 
         closeModal();
     };
@@ -93,7 +36,8 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
                     <div className='w-full flex justify-end'>
                         <strong
                             className='text-xl align-center cursor-pointer '
-                            onClick={closeModal}>
+                            onClick={closeModal}
+                            >
                             &times;
                         </strong>
                     </div>
@@ -109,8 +53,8 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
                                 <input
                                     className='w-full rounded border border-stroke bg-gray py-3 pl-3 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary'
                                     name='id'
-                                    onChange={handleChange}
-                                    value={formState.id}
+                                    // onChange={handleChange}
+                                    // value={formState.id}
                                 />
                             </div>
 
@@ -128,7 +72,7 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
                                     <select
                                         className='absolute top-0 left-0 z-20 h-full w-full bg-transparent opacity-0'
                                         name='para'
-                                        onChange={handleChange}
+                                        // onChange={handleChange}
                                         value={formState.para}>
                                         {fields.map(
                                             (item: any, idx: number) => (

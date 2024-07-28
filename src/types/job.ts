@@ -5,8 +5,8 @@ export interface Job {
     country: string;
     posting_date: Date;
     expiration_date: Date;
-    soft_skills: string[];
-    technical_skills: string[];
+    soft_skills: any[];
+    technical_skills: any[];
     questions: string[];
     recruiter_name: string;
     recruiter_email: string;

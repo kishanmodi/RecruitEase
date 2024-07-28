@@ -3,6 +3,7 @@ import CardDataStats from '../../components/CardDataStats';
 import DefaultLayout from '../../layout/DefaultLayout';
 import { BsBoxArrowUpRight } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 
 interface CardDataStatsProps {
     jobTitle: string;
@@ -14,6 +15,7 @@ interface CardDataStatsProps {
 }
 
 const cardData: CardDataStatsProps[] = [
+    // Existing data
     {
         jobTitle: 'Frontend Developer',
         location: 'New York, NY',
@@ -94,27 +96,111 @@ const cardData: CardDataStatsProps[] = [
         appliedToday: 2,
         color: '#FF3D00'
     },
+    // Additional data
     {
-        jobTitle: 'Project Manager',
-        location: 'Los Angeles, CA',
-        applicants: 80,
-        daysLeft: 3,
-        appliedToday: 5,
+        jobTitle: 'Data Scientist',
+        location: 'San Francisco, CA',
+        applicants: 95,
+        daysLeft: 12,
+        appliedToday: 6,
+        color: '#CF6E40'
+    },
+    {
+        jobTitle: 'Cloud Engineer',
+        location: 'Austin, TX',
+        applicants: 85,
+        daysLeft: 14,
+        appliedToday: 9,
+        color: '#FFFE40'
+    },
+    {
+        jobTitle: 'Full Stack Developer',
+        location: 'New York, NY',
+        applicants: 175,
+        daysLeft: 8,
+        appliedToday: 13,
+        color: '#FF3D00'
+    },
+    {
+        jobTitle: 'System Administrator',
+        location: 'Chicago, IL',
+        applicants: 60,
+        daysLeft: 11,
+        appliedToday: 4,
         color: '#FF6E40'
     },
     {
-        jobTitle: 'Software Developer',
-        location: 'Chicago, IL',
-        applicants: 200,
+        jobTitle: 'Network Engineer',
+        location: 'Los Angeles, CA',
+        applicants: 70,
+        daysLeft: 6,
+        appliedToday: 7,
+        color: '#FFC400'
+    },
+    {
+        jobTitle: 'Database Administrator',
+        location: 'Boston, MA',
+        applicants: 55,
+        daysLeft: 9,
+        appliedToday: 5,
+        color: '#FFFE40'
+    },
+    {
+        jobTitle: 'AI Engineer',
+        location: 'Seattle, WA',
+        applicants: 90,
+        daysLeft: 13,
+        appliedToday: 10,
+        color: '#FAC684'
+    },
+    {
+        jobTitle: 'Cybersecurity Specialist',
+        location: 'Miami, FL',
+        applicants: 65,
         daysLeft: 7,
-        appliedToday: 20,
+        appliedToday: 8,
+        color: '#CF6E40'
+    },
+    {
+        jobTitle: 'Product Manager',
+        location: 'Denver, CO',
+        applicants: 110,
+        daysLeft: 4,
+        appliedToday: 11,
+        color: '#FF3D00'
+    },
+    {
+        jobTitle: 'Technical Writer',
+        location: 'Dallas, TX',
+        applicants: 45,
+        daysLeft: 15,
+        appliedToday: 3,
+        color: '#FF6E40'
+    },
+    {
+        jobTitle: 'Data Analyst',
+        location: 'San Francisco, CA',
+        applicants: 125,
+        daysLeft: 10,
+        appliedToday: 12,
+        color: '#FFFE40'
+    },
+    {
+        jobTitle: 'Software Engineer',
+        location: 'New York, NY',
+        applicants: 180,
+        daysLeft: 6,
+        appliedToday: 16,
         color: '#FF3D00'
     }
 ];
 
+const ITEMS_PER_PAGE = 20;
+
 const Jobs: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [locationFilter, setLocationFilter] = useState<string>('');
+    const [currentPage, setCurrentPage] = useState<number>(0);
     const navigate = useNavigate();
 
     // Function to filter jobs based on search term
@@ -136,6 +222,17 @@ const Jobs: React.FC = () => {
         ? filteredJobs.filter((job) => job.location === locationFilter)
         : filteredJobs;
 
+    // Pagination logic
+    const pageCount = Math.ceil(locationFilteredJobs.length / ITEMS_PER_PAGE);
+    const currentJobs = locationFilteredJobs.slice(
+        currentPage * ITEMS_PER_PAGE,
+        (currentPage + 1) * ITEMS_PER_PAGE
+    );
+
+    const handlePageChange = (selected: { selected: number }) => {
+        setCurrentPage(selected.selected);
+    };
+
     return (
         <DefaultLayout>
             <div className='flex flex-row mb-5 justify-between items-center'>
@@ -144,8 +241,8 @@ const Jobs: React.FC = () => {
                 </h2>
             </div>
 
-            <div className='mb-5 flex flex-row gap-10 items-center justify-between max-xsm:flex-col max-xms:gap-0'>
-                <div className='flex-grow'>
+            <div className='mb-5 flex flex-col md:flex-row gap-4 md:gap-10 items-center justify-between'>
+                <div className='flex-grow md:flex-grow-0 max-md:w-full w-3/4'>
                     <input
                         type='text'
                         placeholder='Search jobs...'
@@ -154,7 +251,7 @@ const Jobs: React.FC = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className=''>
+                <div className='max-md:w-full w-1/4'>
                     <select
                         id='locationFilter'
                         className='w-full rounded-lg border-[1.5px] border-stroke bg-white py-3.5 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
@@ -162,9 +259,7 @@ const Jobs: React.FC = () => {
                         onChange={handleLocationFilterChange}>
                         <option value=''>All Locations</option>
                         <option value='New York, NY'>New York, NY</option>
-                        <option value='San Francisco, CA'>
-                            San Francisco, CA
-                        </option>
+                        <option value='San Francisco, CA'>San Francisco, CA</option>
                         <option value='Los Angeles, CA'>Los Angeles, CA</option>
                         <option value='Chicago, IL'>Chicago, IL</option>
                         <option value='Boston, MA'>Boston, MA</option>
@@ -178,7 +273,7 @@ const Jobs: React.FC = () => {
             </div>
 
             <div className='grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5'>
-                {locationFilteredJobs.map((data, index) => (
+                {currentJobs.map((data, index) => (
                     <CardDataStats
                         key={index}
                         jobTitle={data.jobTitle}
@@ -213,6 +308,26 @@ const Jobs: React.FC = () => {
                     </CardDataStats>
                 ))}
             </div>
+
+            {/* Pagination Controls */}
+            {filteredJobs.length > 0 && (
+                <div className='flex justify-center items-center mt-10 mb-10'>
+                    <ReactPaginate
+                        previousLabel='Previous'
+                        nextLabel='Next'
+                        breakLabel='...'
+                        pageCount={pageCount}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={handlePageChange}
+                        containerClassName='pagination flex flex-row gap-10 items-center justify-center w-full'
+                        activeClassName='bg-primary text-white rounded-md px-3 py-1.5 text-sm'
+                        previousClassName='border border-stroke dark:border-strokedark rounded-md px-3 py-1.5 text-sm text-primary dark:text-white hover:bg-primary hover:text-white'
+                        nextClassName='border border-stroke dark:border-strokedark rounded-md px-3 py-1.5 text-sm text-primary dark:text-white hover:bg-primary hover:text-white'
+                        disabledClassName='text-gray-400 cursor-not-allowed'
+                    />
+                </div>
+            )}
         </DefaultLayout>
     );
 };

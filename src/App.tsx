@@ -18,6 +18,7 @@ import RegisterSwitch from './pages/Authentication/RegisterSwitch';
 
 import PrivateRoute from './route/PrivateRoute';
 import RedirectAuthRoute from './route/RedirectAuthRoute';
+import SendEmail from './pages/JobPosting/SendEmail';
 
 function App() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -133,6 +134,15 @@ function App() {
                             <PageTitle title='Type - RecruitEase' />
                             <RegisterSwitch />
                         </RedirectAuthRoute>
+                    }
+                />
+
+                <Route path='/update-status'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Update Status - RecruitEase' />
+                            <SendEmail />
+                        </PrivateRoute>
                     }
                 />
             </Routes>

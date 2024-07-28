@@ -7,9 +7,8 @@ const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
 
 const API_URL = 'http://localhost:8000';
 
-// Define the shape of the context state and actions
 interface AuthContextState {
-    csrf_token: string | null;
+    refresh_token: string | null;
     isAuthenticated: boolean;
     isRecruiter: boolean;
     signup: (
@@ -21,10 +20,9 @@ interface AuthContextState {
     ) => Promise<boolean>;
     signin: (email: string, password: string) => Promise<boolean>;
     logout: () => void;
-    createJobPosting: (job: Job) => Promise<boolean>;
+    createJobPosting: ({ job, refresh_token }: any) => Promise<{posting_link: string, success: boolean}>;
 }
 
-// Create the context with default values
 const AuthContext = createContext<AuthContextState | undefined>(undefined);
 
 interface AuthProviderProps {
@@ -32,23 +30,32 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [csrf_token, setcsrf_token] = useState<string | null>(
-        sessionStorage.getItem('csrf_token')
-    );
+
     const navigate = useNavigate();
-    const [isRecruiter, setIsRecruiter] = useState<boolean>(true);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-        sessionStorage.getItem('csrf_token') !== null
+
+    // Common States for Recruiter and Job Seeker
+    const [refresh_token, setRefreshToken] = useState<string | null>(
+        sessionStorage.getItem('refresh_token')
     );
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+        sessionStorage.getItem('refresh_token') !== null
+    );
+
+
+    // Recruiter States
+    const [isRecruiter, setIsRecruiter] = useState<boolean>(true);
     const [jobs, setJobs] = useState<Job[]>([]);
 
     useEffect(() => {
-        if (!csrf_token) {
+        if (!refresh_token) {
             setIsAuthenticated(false);
             navigate('/login');
         }
-    }, [csrf_token]);
+    }, [refresh_token]);
 
+
+    // Auth functions
+    // Signup function - Recruiter
     const signup = async (
         email: string,
         password: string,
@@ -95,6 +102,52 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return true;
     };
 
+    // Signup function - Job Seeker
+    const signupJobSeeker = async (
+        email: string,
+        password: string,
+        retypePassword: string,
+        name: string,
+    ) => {
+        // Password validation
+        if (!passwordRegex.test(password)) {
+            toast.error(
+                'Password must contain at least 8 characters, one uppercase, one lowercase, one number, and one special character!'
+            );
+            return false;
+        }
+
+        // Password confirmation
+        if (password !== retypePassword) {
+            toast.error('Passwords do not match!');
+            return false;
+        }
+
+        // Perform signup request to backend
+        const response = await fetch(`${API_URL}/api/register/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+                password: password,
+                name,
+            })
+        });
+
+        if (response.ok) {
+            toast.success('Signup successful!');
+            navigate('/login');
+        } else {
+            // Handle errors
+            toast.error('Signup failed!');
+            return false;
+        }
+        return true;
+    }
+
+    // Signin function - Both
     const signin = async (email: string, password: string) => {
         // Perform signin request to backend
         const response = await fetch(`${API_URL}/login/`, {
@@ -104,12 +157,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             },
             body: JSON.stringify({ email, password })
         });
-
-        if (response.ok) {
-            const data = await response.json();
-
-            setcsrf_token(data.csrf_token);
-            sessionStorage.setItem('csrf_token', data.csrf_token);
+        const data = await response.json();
+        if (data['status'] == 200) {
+            console.log(data);
+            setRefreshToken(data['refresh_token']);
+            sessionStorage.setItem('refresh_token', data['refresh_token']);
             setIsAuthenticated(true);
             toast.success('Signin successful!');
         } else {
@@ -119,51 +171,263 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return true;
     };
 
+    // Logout function - Both
     const logout = async () => {
         // Perform logout actions (e.g., invalidate session on backend)
-        console.log(csrf_token);
+        console.log(refresh_token);
         const response = await fetch(`${API_URL}/api/logout/`, {
             method: 'POST',
             headers: {
-                'X-CSRFToken': csrf_token || '',
+                Authorization: refresh_token || '',
                 'Content-Type': 'application/json'
             }
         });
-        if (!response.ok) {
+        const data = await response.json();
+        if (data['status'] != 200) {
             toast.error('Logout failed');
             console.error('Logout failed');
         } else {
-            setcsrf_token(null);
-            sessionStorage.removeItem('csrf_token');
+            setRefreshToken(null);
+            sessionStorage.removeItem('refresh_token');
             toast.success('Logout successful');
             navigate('/login');
             setIsAuthenticated(false);
         }
     };
 
-    const createJobPosting = async (job: Job) => {
+    // ! Recruiter specific functions
+    const createJobPosting = async ({ job, refresh_token }: any) => {
+        console.log(refresh_token);
         const response = await fetch(`${API_URL}/api/new_posting/`, {
             method: 'POST',
             headers: {
-                'X-CSRFToken': csrf_token || '',
+                Authorization: refresh_token || '',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(job)
         });
 
-        if (response.status === 201) {
+        const data = await response.json();
+        if (data.status === 201) {
             toast.success('Job created successfully!');
-            return true;
+            return {posting_link: data.posting_link, success: true};
         } else {
             toast.error('Job creation failed!');
-            return false;
+            return {posting_link: '', success: false};
+        }
+    };
+
+    // Return List of Jobs for Recruiter
+    const getJobs = async () => {
+        const response = await fetch(`${API_URL}/api/jobs/`, {
+            method: 'GET',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            setJobs(data.jobs);
+        } else {
+            toast.error('Failed to fetch jobs!');
+        }
+    };
+
+    // Return individual job for Recruiter
+    const getJob = async (jobId: number) => {
+        const response = await fetch(`${API_URL}/api/jobs/${jobId}/`, {
+            method: 'GET',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            return data.job;
+        } else {
+            toast.error('Failed to fetch job!');
+        }
+    };
+
+    // Update job for Recruiter
+    const updateJob = async (job: Job) => {
+        const response = await fetch(`${API_URL}/api/jobs/${job.id}/`, {
+            method: 'PUT',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(job)
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            toast.success('Job updated successfully!');
+        } else {
+            toast.error('Failed to update job!');
+        }
+    };
+
+    // Delete job for Recruiter
+    const deleteJob = async (jobId: number) => {
+        const response = await fetch(`${API_URL}/api/jobs/${jobId}/`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            toast.success('Job deleted successfully!');
+        } else {
+            toast.error('Failed to delete job!');
+        }
+    }
+
+    // Update Status of Job Application and send email to Job Seeker
+    const updateJobApplication = async (jobId: number, applicationId: number, status: string) => {
+        const response = await fetch(`${API_URL}/api/jobs/${jobId}/applications/${applicationId}/`, {
+            method: 'PUT',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status, email: ''})
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            toast.success('Job application updated successfully!');
+        } else {
+            toast.error('Failed to update job application!');
+        }
+    };
+
+    // Update recruiter profile
+    const updateRecruiterProfile = async (profile: any) => {
+        const response = await fetch(`${API_URL}/api/recruiter/`, {
+            method: 'PUT',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(profile)
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            toast.success('Profile updated successfully!');
+        } else {
+            toast.error('Failed to update profile!');
+        }
+    };
+
+
+    // ! Candidate specific functions
+
+    // Apply for a job on link
+    // link would start with apply/ and then job id
+    const applyForJob = async (jobId: number) => {
+        const response = await fetch(`${API_URL}/api/apply/${jobId}/`, {
+            method: 'POST',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            toast.success('Job application submitted successfully!');
+        } else {
+            toast.error('Failed to submit job application!');
+        }
+    };
+
+    // Return List of Jobs for Candidate
+    const getAppliedJobs = async () => {
+        const response = await fetch(`${API_URL}/api/applied_jobs/`, {
+            method: 'GET',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            setJobs(data.jobs);
+        } else {
+            toast.error('Failed to fetch jobs!');
+        }
+    };
+
+    // Return individual job for Candidate
+    const getAppliedJob = async (jobId: number) => {
+        const response = await fetch(`${API_URL}/api/applied_jobs/${jobId}/`, {
+            method: 'GET',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            return data.job;
+        } else {
+            toast.error('Failed to fetch job!');
+        }
+    };
+
+    // Update candidate profile
+    const updateCandidateProfile = async (profile: any) => {
+        const response = await fetch(`${API_URL}/api/candidate/`, {
+            method: 'PUT',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(profile)
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            toast.success('Profile updated successfully!');
+        } else {
+            toast.error('Failed to update profile!');
+        }
+    };
+
+    // Accept or Reject Job Offer for Candidate
+    const updateJobOffer = async (jobId: number, status: string) => {
+        const response = await fetch(`${API_URL}/api/applied_jobs/${jobId}/`, {
+            method: 'PUT',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status })
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            toast.success('Job offer updated successfully!');
+        } else {
+            toast.error('Failed to update job offer!');
         }
     };
 
     return (
         <AuthContext.Provider
             value={{
-                csrf_token,
+                refresh_token,
                 isAuthenticated,
                 isRecruiter,
                 signup,
