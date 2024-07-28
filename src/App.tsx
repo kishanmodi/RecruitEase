@@ -4,18 +4,21 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import Login from './pages/Authentication/Login';
-import Dashboard from './pages/Dashboard/Dashboard';
-
+import ECommerce from './pages/Dashboard/Dashboard';
 import Profile from './pages/Profile';
+
 import Register from './pages/Authentication/Register';
+import RegisterC from './pages/Authentication/RegisterC';
+import Forgot from './pages/Authentication/Forgot';
+import Reset from './pages/Authentication/Reset';
 import JobPosting from './pages/JobPosting/JobPosting';
 import Candidates from './pages/Candidate/Candidates';
 import Jobs from './pages/Jobs/Jobs';
 import RegisterSwitch from './pages/Authentication/RegisterSwitch';
 
-
 import PrivateRoute from './route/PrivateRoute';
 import RedirectAuthRoute from './route/RedirectAuthRoute';
+import SendEmail from './pages/JobPosting/SendEmail';
 
 function App() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -39,7 +42,7 @@ function App() {
                     element={
                         <PrivateRoute>
                             <PageTitle title='RecruitEase' />
-                            <Dashboard />
+                            <ECommerce />
                         </PrivateRoute>
                     }
                 />
@@ -67,6 +70,33 @@ function App() {
                         <RedirectAuthRoute>
                             <PageTitle title='Register - RecruitEase' />
                             <Register />
+                        </RedirectAuthRoute>
+                    }
+                />
+                <Route
+                    path='/signup'
+                    element={
+                        <RedirectAuthRoute>
+                            <PageTitle title='Signup - RecruitEase' />
+                            <RegisterC />
+                        </RedirectAuthRoute>
+                    }
+                />
+                <Route
+                    path='/forgot'
+                    element={
+                        <RedirectAuthRoute>
+                            <PageTitle title='Forgot Password - RecruitEase' />
+                            <Forgot />
+                        </RedirectAuthRoute>
+                    }
+                />
+                <Route
+                    path='/reset'
+                    element={
+                        <RedirectAuthRoute>
+                            <PageTitle title='Reset Password - RecruitEase' />
+                            <Reset />
                         </RedirectAuthRoute>
                     }
                 />
@@ -104,6 +134,15 @@ function App() {
                             <PageTitle title='Type - RecruitEase' />
                             <RegisterSwitch />
                         </RedirectAuthRoute>
+                    }
+                />
+
+                <Route path='/update-status'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Update Status - RecruitEase' />
+                            <SendEmail />
+                        </PrivateRoute>
                     }
                 />
             </Routes>

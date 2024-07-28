@@ -4,6 +4,7 @@ import TableOne from '../../components/Tables/TableOne';
 import DefaultLayout from '../../layout/DefaultLayout';
 import { Link } from 'react-router-dom';
 import { BsBoxArrowUpRight } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 
 interface CardDataStatsProps {
     jobTitle: string;
@@ -114,6 +115,7 @@ const cardData: CardDataStatsProps[] = [
 ];
 
 const Dashboard: React.FC = () => {
+    const navigate = useNavigate();
     return (
         <DefaultLayout>
             <div className='flex flex-row mb-5 justify-between items-center'>
@@ -160,7 +162,9 @@ const Dashboard: React.FC = () => {
                                     />
                                 </svg>
                                 <div className='cursor-pointer'>
-                                    <BsBoxArrowUpRight />
+                                    <BsBoxArrowUpRight
+                                        onClick={() => navigate('/create-job')}
+                                    />
                                 </div>
                             </CardDataStats>
                         </div>
