@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import {useEffect,useState} from 'react';
+import {Route,Routes,useLocation} from 'react-router-dom';
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
@@ -18,19 +18,23 @@ import RegisterSwitch from './pages/Authentication/RegisterSwitch';
 
 import PrivateRoute from './route/PrivateRoute';
 import RedirectAuthRoute from './route/RedirectAuthRoute';
+import Applications from './pages/Applications/applications';
 import SendEmail from './pages/JobPosting/SendEmail';
+import JobApplication from './pages/ApplyJob/JobApplication';
+import AppliedJob from './pages/Applications/AppliedJob';
+import CandidateProfile from './pages/CandidateProfile/CandidateProfile';
 
 function App() {
-    const [loading, setLoading] = useState<boolean>(true);
-    const { pathname } = useLocation();
+    const [loading,setLoading] = useState<boolean>(true);
+    const {pathname} = useLocation();
 
     useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [pathname]);
+        window.scrollTo(0,0);
+    },[pathname]);
 
     useEffect(() => {
-        setTimeout(() => setLoading(false), 1000);
-    }, []);
+        setTimeout(() => setLoading(false),1000);
+    },[]);
 
     return loading ? (
         <Loader />
@@ -136,6 +140,24 @@ function App() {
                         </RedirectAuthRoute>
                     }
                 />
+                <Route
+                    path='/candidate-applications'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Candidate - Applications' />
+                            <Applications />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path='/apply-job'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Candidate - Apply' />
+                            <JobApplication />
+                        </PrivateRoute>
+                    }
+                />
 
                 <Route path='/update-status'
                     element={
@@ -143,6 +165,25 @@ function App() {
                             <PageTitle title='Update Status - RecruitEase' />
                             <SendEmail />
                         </PrivateRoute>
+                    }
+                />
+                <Route path='application-status'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Application Status - RecruitEase' />
+                            <AppliedJob />
+                        </PrivateRoute>
+
+                    }
+                />
+
+                <Route path='candidate-profile'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Profile - RecruitEase' />
+                          <CandidateProfile/>
+                        </PrivateRoute>
+
                     }
                 />
             </Routes>

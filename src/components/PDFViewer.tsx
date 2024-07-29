@@ -6,7 +6,7 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.mjs`;
 
 // URL of the static PDF file
-const STATIC_PDF_URL = 'https://cgfm.com/wp-content/uploads/Resume-test-pdf.pdf'; // Replace with your PDF file path
+const STATIC_PDF_URL = 'https://www.unf.edu/careerservices/CCEC/files/certified.rf.sample_resumes.pdf'; // Replace with your PDF file path
 
 const PdfViewer = () => {
   const [numPages, setNumPages] = React.useState<number | null>(null);
