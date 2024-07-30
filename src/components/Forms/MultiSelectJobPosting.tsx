@@ -22,6 +22,15 @@ const MultiSelectJobPosting: React.FC<DropdownProps> = ({
     const trigger = useRef<any>(null);
 
     useEffect(() => {
+        // Initialize selected options based on the options prop
+        const initialSelected = options
+            .map((option, index) => option.selected ? index : -1)
+            .filter(index => index !== -1);
+        
+        setSelected(initialSelected);
+    }, [options]);
+
+    useEffect(() => {
         const loadOptions = () => {
             const select = document.getElementById(
                 id

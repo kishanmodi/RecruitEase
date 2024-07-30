@@ -156,11 +156,6 @@ const Review: React.FC = () => {
                             <PdfViewer />
                         </div>
                     )}
-                    {uploadStatus && (
-                        <div className={`text-sm font-medium ${uploadStatus.includes('successful') ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'}`}>
-                            {uploadStatus}
-                        </div>
-                    )}
                 </div>
             </section>
         </div>

@@ -163,7 +163,7 @@ const Dashboard: React.FC = () => {
                                 </svg>
                                 <div className='cursor-pointer'>
                                     <BsBoxArrowUpRight
-                                        onClick={() => navigate('/create-job')}
+                                        onClick={() => navigate('/job')}
                                     />
                                 </div>
                             </CardDataStats>

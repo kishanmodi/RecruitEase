@@ -158,7 +158,6 @@ const Test: React.FC = () => {
                                                 email,
                                                 password
                                             );
-                                            console.log(res);
 
                                             if (res) {
                                                 return <Navigate to='/login' />;
