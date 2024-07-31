@@ -15,7 +15,7 @@ import Loader from "../../common/Loader";
 
 const JobApplication = () => {
 
-  const pages = ['Post','Personal Information','Legal','Assessment','Documents','Review'];
+  const pages = ['Post','Personal Information','Legal','Assessment','Documents','Review','Success'];
   // const pages = ['Personal Information','Legal','Education','Experience','Assessment','Documents','Review'];
   const [currentPage,setCurrentPage] = useState(pages[0]);
 
@@ -108,6 +108,7 @@ const JobApplication = () => {
 
   const handleSubmit = () => {
     // Submit the form
+    setCurrentPage('Success');
   }
   return (
     <DefaultLayout>
@@ -185,7 +186,7 @@ const JobApplication = () => {
             />}
 
           <div className="flex justify-center gap-4">
-            {currentPage !== 'Post' && <button onClick={ ()=>{
+            {currentPage !== 'Post' && currentPage !=='Success' && <button onClick={ ()=>{
               const currentIndex = pages.indexOf(currentPage);
               if(currentIndex > 0) {
                 setCurrentPage(pages[currentIndex - 1]);

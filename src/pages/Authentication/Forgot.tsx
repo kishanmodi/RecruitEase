@@ -1,10 +1,19 @@
 import React from 'react';
 import BrandLogo from '../../images/brand/job.jpg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LogoDark from '../../images/logo/Logo-3.png';
 import Logo from '../../images/logo/Logo-2.png';
+import {useAuth} from '../../context/AppContext';
+import Loader from '../../common/Loader';
 const Forgot: React.FC = () => {
+    const [email, setEmail] = React.useState('');
+    const {forgotPassword} = useAuth();
+    const [loading, setLoading] = React.useState(false);
+    const navigate = useNavigate();
+
     return (
+        <>
+        {loading && <Loader/>}
         <div className='flex h-screen overflow-hidden'>
             <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark w-full h-full'>
                 <div className='flex flex-wrap items-center h-full'>
@@ -61,7 +70,7 @@ const Forgot: React.FC = () => {
                                 />
                             </Link>
                             <h2 className='mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 max-sm:text-center'>
-                                Reset Password
+                                Forgot Password
                             </h2>
 
                             <form>
@@ -72,6 +81,10 @@ const Forgot: React.FC = () => {
                                     <div className='relative'>
                                         <input
                                             type='email'
+                                            value={email}
+                                            onChange={(e) =>
+                                                setEmail(e.target.value)
+                                            }
                                             placeholder='Enter your email'
                                             className='w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
                                         />
@@ -102,11 +115,24 @@ const Forgot: React.FC = () => {
                                     </Link>
                                 </p>
                                 <div className='mb-8'>
-                                    <input
+                                    <button
                                         type='submit'
                                         value='Forgot Password'
+                                        onClick={async (e) => {
+                                            e.preventDefault();
+                                            setLoading(true);
+                                            const success = await forgotPassword(email);
+                                            if(success){
+                                                setLoading(false);
+                                                navigate('/reset')
+                                            }else{
+                                                setLoading(false);
+                                            }
+                                        }}
                                         className='w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90'
-                                    />
+                                    >
+                                        Forgot Password
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -114,7 +140,7 @@ const Forgot: React.FC = () => {
                 </div>
             </div>
         </div>
-    );
+    </>);
 };
 
 export default Forgot;

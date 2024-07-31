@@ -142,7 +142,7 @@ const JobStatus = () => {
                             <div className="border rounded-md overflow-hidden">
                                 <Editor
                                     value={emailContent}
-                                    apiKey='vnqpntfiwpv5rbvardvia6bdy5l9aoxjwq51of571oj6ed2s'
+                                    apiKey='YOUR_API_KEY'
                                     onEditorChange={(content) => setEmailContent(content)}
                                     init={{
                                         height: 800,
