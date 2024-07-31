@@ -12,11 +12,13 @@ interface AuthContextState {
     refresh_token: string | null;
     isAuthenticated: boolean;
     isRecruiter: boolean;
+    email: string;
     jobs: Job[];
     currentJobId: string;
     user: string;
     company: string;
     applyJobId: string;
+    didEmailSend: boolean;
     setApplyJobId: (jobId: string) => void;
     signup: (
         email: string,
@@ -40,6 +42,8 @@ interface AuthContextState {
     setCurrentJobId: (jobId: string) => void;
     updateJob: (job: Job) => Promise<boolean>;
     getPostData: (jobId: string) => Promise<{ job: Job | null, success: boolean }>;
+    forgotPassword: (email: string) => Promise<boolean>;
+    resetPassword: (email: string, otp: number, password: string, retypePassword: string) => Promise<boolean>;
 }
 
 // Create Auth context
@@ -59,6 +63,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(sessionStorage.getItem('refresh_token') !== null);
     const [user, setUser] = useState<string>(sessionStorage.getItem('user') || "");
     const [company, setCompany] = useState<string>(sessionStorage.getItem('company') || "");
+    const [email, setEmail] = useState<string>(sessionStorage.getItem('email') || "");
+    const [didEmailSend, setDidEmailSend] = useState<boolean>(sessionStorage.getItem('didEmailSend') !== null);
     const [isRecruiter, setIsRecruiter] = useState<boolean>(sessionStorage.getItem('isRecruiter') === 'true');
 
     // Recruiter specific states
@@ -223,6 +229,83 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
     };
 
+    // Function to Forgot Password for both Recruiter and Job Seeker
+    const forgotPassword = async (email: string) => {
+        // Perform forgot password request to backend
+        const response = await fetch(`${API_URL}/forgot_password/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+        if (data.status === 200) {
+            toast.success('OTP has been sent to your email!');
+            setEmail(email);
+            setDidEmailSend(true);
+            sessionStorage.setItem('didEmailSend', 'true');
+            sessionStorage.setItem('email', email);
+            // Expire Session after 5 minutes
+            setTimeout(() => {
+               if(sessionStorage.getItem('didEmailSend') && sessionStorage.getItem('email') ){
+                    sessionStorage.removeItem('email');
+                    sessionStorage.removeItem('didEmailSend');
+               }
+            }, 300000);
+            return true;
+        } else {
+            setEmail('');
+            setDidEmailSend(false);
+            sessionStorage.removeItem('didEmailSend');
+            sessionStorage.removeItem('email');
+            toast.error('Failed to send password reset link!');
+            return false;
+        }
+    }
+
+    const resetPassword = async (email: string, otp: number, password: string, retypePassword: string) => {
+        // Password validation
+        if (!passwordRegex.test(password)) {
+            toast.error('Password must contain at least 8 characters, one uppercase, one lowercase, one number, and one special character!');
+            return false;
+        }
+
+        // Password confirmation
+        if (password !== retypePassword) {
+            toast.error('Passwords do not match!');
+            return false;
+        }
+
+        // Perform reset password request to backend
+        const response = await fetch(`${API_URL}/reset_password/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, otp, password })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            toast.success('Password reset successful!');
+            setEmail('');
+            setDidEmailSend(false);
+            sessionStorage.removeItem('didEmailSend');
+            sessionStorage.removeItem('email');
+            navigate('/login');
+            return true;
+        } else {
+            toast.error('Password reset failed!');
+            setEmail('');
+            setDidEmailSend(false);
+            sessionStorage.removeItem('didEmailSend');
+            sessionStorage.removeItem('email');
+            return false;
+        }
+    }
+
     // Function to create a new job posting for Recruiter
     const createJobPosting = async ({ job, refresh_token }: any) => {
         const response = await fetch(`${API_URL}/api/new_posting/`, {
@@ -351,8 +434,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             jobs,
             currentJobId,
             user,
+            email,
             company,
             applyJobId,
+            didEmailSend,
             setApplyJobId,
             signup,
             signupJobSeeker,
@@ -365,6 +450,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             setCurrentJobId,
             updateJob,
             getPostData,
+            forgotPassword,
+            resetPassword,
+
         }}>
             {children}
         </AuthContext.Provider>

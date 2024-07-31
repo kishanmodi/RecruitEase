@@ -20,7 +20,7 @@ interface JobPostingProps {
 const JobPosting = (props: JobPostingProps) => {
     const navigate = useNavigate();
     const {edit} = props;
-    const {createJobPosting,refresh_token,getJob,currentJobId: jobId,currentJobId,deleteJob,updateJob, setCurrentJobId} = useAuth();
+    const {createJobPosting,refresh_token,getJob,currentJobId: jobId,currentJobId,deleteJob,updateJob,setCurrentJobId} = useAuth();
 
     const [jobTitle,setJobTitle] = useState('');
     const [jobDepartment,setJobDepartment] = useState('');
@@ -53,7 +53,7 @@ const JobPosting = (props: JobPostingProps) => {
     const [showDeleteModal,setShowDeleteModal] = useState(false);
 
     useEffect(() => {
-        if(!edit){
+        if(!edit) {
             emptyAllFields();
             setCurrentJobId('');
             setIsEditOrNew(false);
@@ -205,26 +205,26 @@ const JobPosting = (props: JobPostingProps) => {
 
         // Verify if all required fields are filled
 
-        // if(
-        //     !jobTitle ||
-        //     !jobDepartment ||
-        //     !city ||
-        //     !country ||
-        //     !postingDate ||
-        //     !deadline ||
-        //     !softSkills ||
-        //     !technicalSkills ||
-        //     !questions ||
-        //     !recruiterName ||
-        //     !recruiterEmail ||
-        //     !companyDescription ||
-        //     !jobDescription ||
-        //     !qualifications ||
-        //     !keyRequirements
-        // ) {
-        //     toast.error('Please fill all required fields.');
-        //     return;
-        // }
+        if(
+            !jobTitle ||
+            !jobDepartment ||
+            !city ||
+            !country ||
+            !postingDate ||
+            !deadline ||
+            !softSkills ||
+            !technicalSkills ||
+            !questions ||
+            !recruiterName ||
+            !recruiterEmail ||
+            !companyDescription ||
+            !jobDescription ||
+            !qualifications ||
+            !keyRequirements
+        ) {
+            toast.error('Please fill all required fields.');
+            return;
+        }
 
 
         if(!edit && !jobId) {
@@ -233,7 +233,7 @@ const JobPosting = (props: JobPostingProps) => {
             if(data.success) {
                 setIsEditOrNew(true);
                 const jobPostingLink = `${window.location.origin}/${data.posting_link}`;
-                
+
                 setJobPostingLink(jobPostingLink);
             } else {
                 console.error('Failed to post job.');
@@ -697,39 +697,48 @@ const JobPosting = (props: JobPostingProps) => {
                 </div>
             </div>
 
-            {/* Modal to Confirm Delete */}
             {showDeleteModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-10">
-                    <div className="bg-white dark:bg-gray-800 w-full max-w-xl mx-4 p-6 rounded-lg shadow-lg">
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 text-center">
-                            Are you sure you want to delete this job posting?
+                <div x-show="modalOpen" x-transition="" className="fixed left-0 top-0 z-999999 flex h-full min-h-screen w-full items-center justify-center bg-black/90 px-4 py-5">
+                    <div className="w-full max-w-142.5 rounded-lg bg-white px-8 py-12 text-center dark:bg-boxdark md:px-17.5 md:py-15">
+                        <span className="mx-auto inline-block">
+                            <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.1" width="60" height="60" rx="30" fill="#DC2626"></rect>
+                                <path d="M30 27.2498V29.9998V27.2498ZM30 35.4999H30.0134H30ZM20.6914 41H39.3086C41.3778 41 42.6704 38.7078 41.6358 36.8749L32.3272 20.3747C31.2926 18.5418 28.7074 18.5418 27.6728 20.3747L18.3642 36.8749C17.3296 38.7078 18.6222 41 20.6914 41Z" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                        <h3 className="mt-5.5 pb-2 text-xl font-bold text-black dark:text-white sm:text-2xl">
+                            Delete Job Posting
                         </h3>
-                        <p className="mt-2 text-gray-600 dark:text-gray-300 text-center">
+                        <p className="mb-10 font-medium">
+                            Are you sure you want to delete this job posting?
                             This action cannot be undone. Please confirm your decision.
                         </p>
-                        <div className="flex gap-4 mt-6 justify-center">
-                            <button
-                                className="inline-flex items-center justify-center rounded-md bg-red-600 py-2 px-4 text-white font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-                                onClick={() => {
-                                    // Handle delete action
-                                    handleDeletePosting();
-                                    setShowDeleteModal(false);
-                                }}
-                            >
-                                Delete
-                            </button>
-                            <button
-                                className="inline-flex items-center justify-center rounded-md bg-gray-300 py-2 px-4 text-black font-medium hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
-                                onClick={() => setShowDeleteModal(false)}
-                            >
-                                Cancel
-                            </button>
+                        <div className="-mx-3 flex flex-wrap gap-y-4">
+                            <div className="w-full px-3 2xsm:w-1/2">
+                                <button className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1"
+                                    onClick={() => setShowDeleteModal(false)}>
+                                    Cancel
+
+                                </button>
+                            </div>
+                            <div className="w-full px-3 2xsm:w-1/2">
+                                <button className="block w-full rounded border border-meta-1 bg-meta-1 p-3 text-center font-medium text-white transition hover:bg-opacity-90"
+                                    onClick={() => {
+                                        // Handle delete action
+                                        handleDeletePosting();
+                                        setShowDeleteModal(false);
+                                    }}
+                                >
+                                    Delete
+
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </div >
             )}
 
-        </DefaultLayout>
+        </DefaultLayout >
     );
 };
 
