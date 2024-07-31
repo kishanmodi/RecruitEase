@@ -2,15 +2,44 @@ import DefaultLayout from '../../layout/DefaultLayout';
 import {useState} from 'react';
 import SingleOption from '../../components/Forms/SelectGroup/SingleOption';
 import {Editor} from '@tinymce/tinymce-react';
-import Swtich from '../../components/Switchers/Switch';
-import PdfViewer from '../../components/PDFViewer';
 import Review from '../ApplyJob/Review';
 import {BsEnvelope} from 'react-icons/bs';
-
+import Logo from '../../images/logo/Logo-3.png'
 const JobStatus = () => {
     const [status,setStatus] = useState('new application');
     const [sendEmail,setSendEmail] = useState(false);
-    const [emailContent,setEmailContent] = useState('');
+    const [emailContent,setEmailContent] = useState(`
+  <p><img style="display: block; margin-left: auto; margin-right: auto;" title="Company Logo" src="${Logo}" alt="Company Logo" width="230" height="auto"></p>
+  <h2 style="text-align: center;">Application Status Update</h2>
+
+  <h2>Hi [Candidate Name],</h2>
+
+  <p>Thank you for your application for the position of <strong>[Job Title]</strong> at <strong>[Company Name]</strong>. We appreciate your interest in joining our team.</p>
+
+  <h2>Current Status: <strong>[Application Status]</strong></h2>
+  
+  <p>[Provide a brief update on the status of the application. This could include whether the application is still under review, if the candidate has been shortlisted for an interview, or if the application has been declined.]</p>
+
+  <h2>Next Steps</h2>
+
+  <ul>
+    <li>[If shortlisted for an interview, provide details of the interview process and scheduling information.]</li>
+    <li>[If the application is still under review, provide an estimated timeline for when they can expect to hear back.]</li>
+  </ul>
+
+  <h2>Need Help?</h2>
+
+  <ul>
+    <li>For any questions, feel free to reach out to us at <a href="mailto:[Your Contact Email]">[Your Contact Email]</a>.</li>
+    <li>Visit our <a href="[Company Website URL]">website</a> for more information about our company and job opportunities.</li>
+  </ul>
+
+  <h2>Thank You</h2>
+
+  <p>Thank you once again for your interest in <strong>[Company Name]</strong>.</p>
+  <p>Best regards,<br>[Your Name]<br>[Your Position]<br>[Company Name]<br>[Contact Information]</p>
+
+`);
 
     const [viewStatus,setViewStatus] = useState(false);
 
@@ -23,7 +52,7 @@ const JobStatus = () => {
                 <div className="flex space-x-2">
                     <button
                         type="button"
-                        onClick={() => setSendEmail(!sendEmail)}
+                        onClick={() => {setSendEmail(!sendEmail)}}
                         style={{backgroundColor: '#48BB78',color: 'white',padding: '0.5rem 1rem',borderRadius: '0.25rem',border: 'none',cursor: 'pointer'}}
                     >
                         <BsEnvelope />
@@ -31,14 +60,17 @@ const JobStatus = () => {
                     <button
                         type="button"
                         style={{backgroundColor: '#3B82F6',color: 'white',padding: '0.5rem 1rem',borderRadius: '0.25rem',border: 'none',cursor: 'pointer'}}
-                        onClick={() => setViewStatus(!viewStatus)}
+                        onClick={() => {
+                            setViewStatus(!viewStatus)
+                            setSendEmail(false)
+                        }}
                     >
                         {viewStatus ? 'Profile' : 'Status'}
                     </button>
                 </div>
 
             </div>
-            {!viewStatus && !sendEmail && <Review />}
+            {/* {!viewStatus && !sendEmail && <Review />} */}
             {viewStatus && !sendEmail &&
                 <>
                     <div className='flex flex-col gap-9 mt-10'>
@@ -113,7 +145,7 @@ const JobStatus = () => {
                                     apiKey='vnqpntfiwpv5rbvardvia6bdy5l9aoxjwq51of571oj6ed2s'
                                     onEditorChange={(content) => setEmailContent(content)}
                                     init={{
-                                        height: 200,
+                                        height: 800,
                                         menubar: false,
                                         plugins: [
                                             'autolink lists link image charmap print ',

@@ -4,6 +4,7 @@ import LogoDark from '../../images/logo/Logo-3.png';
 import Logo from '../../images/logo/Logo-2.png';
 import BrandLogo from '../../images/brand/job.jpg';
 import { useAuth } from '../../context/AppContext';
+import toast from 'react-hot-toast';
 
 const Register: React.FC = () => {
     const { signup } = useAuth();
@@ -262,6 +263,12 @@ const Register: React.FC = () => {
                                     <button
                                         className='w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90'
                                         onClick={() => {
+
+                                            // Validate the form
+                                            if (!email || !password || !retypePassword || !name || !address) {
+                                                toast.error('Please fill all the fields');
+                                                return;
+                                            }
                                             const res = signup(
                                                 email,
                                                 password,

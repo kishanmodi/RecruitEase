@@ -6,12 +6,29 @@ import BrandLogo from '../../images/brand/job.jpg';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AppContext';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 const Test: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const { signin } = useAuth();
+
+    const handleSignIn = async () => {
+        // validate
+        if (!email || !password) {
+            toast.error('Please fill all fields');
+            return;
+        }
+        const res = await signin(email, password);
+
+        if (res) {
+            return <Navigate to='/login' />;
+        } else {
+            setPassword('');
+        }
+    };
+
     return (
         <div className='flex h-screen overflow-hidden'>
             <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark w-full h-full'>
@@ -114,6 +131,11 @@ const Test: React.FC = () => {
                                         <input
                                             type='password'
                                             value={password}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    handleSignIn();
+                                                }
+                                            }}
                                             onChange={(e) =>
                                                 setPassword(e.target.value)
                                             }
@@ -153,18 +175,8 @@ const Test: React.FC = () => {
                                 <div className='mb-5'>
                                     <button
                                         className='w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90'
-                                        onClick={async () => {
-                                            const res = await signin(
-                                                email,
-                                                password
-                                            );
-
-                                            if (res) {
-                                                return <Navigate to='/login' />;
-                                            } else {
-                                                setPassword('');
-                                            }
-                                        }}>
+                                        onClick={handleSignIn}
+                                       >
                                         Sign in
                                     </button>
                                 </div>

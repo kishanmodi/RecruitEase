@@ -1,4 +1,37 @@
-const LegalQuestionComponent = () => {
+interface LegalQuestionComponentProps {
+    workEligibility: string;
+    setWorkEligibility: (workEligibility: string) => void;
+    sex: string;
+    setSex: (workEligibility: string) => void;
+    languagePreference: string;
+    setLanguagePreference: (languagePreference: string) => void;
+    raceEthnicity: string;
+    setRaceEthnicity: (raceEthnicity: string) => void;
+    graduationYear: string;
+    setGraduationYear: (graduationYear: string) => void;
+    disabilityStatus: string;
+    setDisabilityStatus: (disabilityStatus: string) => void;
+    graduationMonth: string;
+    setGraduationMonth: (graduationMonth: string) => void;
+}
+
+const LegalQuestionComponent = (props: LegalQuestionComponentProps) => {
+    const {
+        workEligibility,
+        setWorkEligibility,
+        sex,
+        setSex,
+        languagePreference,
+        setLanguagePreference,
+        raceEthnicity,
+        setRaceEthnicity,
+        graduationYear,
+        setGraduationYear,
+        disabilityStatus,
+        setDisabilityStatus,
+        graduationMonth,
+        setGraduationMonth
+    } = props;
 
     return (
         <div className="flex flex-col gap-9">
@@ -19,6 +52,8 @@ const LegalQuestionComponent = () => {
                                 <input
                                     type="text"
                                     placeholder="Yes / No"
+                                    value={workEligibility}
+                                    onChange={(e) => setWorkEligibility(e.target.value)}
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
                             </div>
@@ -30,6 +65,8 @@ const LegalQuestionComponent = () => {
                                 <input
                                     type="text"
                                     placeholder="Enter Sex"
+                                    value={sex}
+                                    onChange={(e) => setSex(e.target.value)}
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
                             </div>
@@ -42,6 +79,8 @@ const LegalQuestionComponent = () => {
                                 </label>
                                 <input
                                     type="text"
+                                    value={languagePreference}
+                                    onChange={(e) => setLanguagePreference(e.target.value)}
                                     placeholder="Language Preference"
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
@@ -52,6 +91,8 @@ const LegalQuestionComponent = () => {
                                 </label>
                                 <input
                                     type="text"
+                                    value={raceEthnicity}
+                                    onChange={(e) => setRaceEthnicity(e.target.value)}
                                     placeholder="Enter Race / Ethinicity"
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
@@ -66,6 +107,8 @@ const LegalQuestionComponent = () => {
                                 </label>
                                 <input
                                     type="text"
+                                    value={graduationYear}
+                                    onChange={(e) => setGraduationYear(e.target.value)}
                                     placeholder="Enter year"
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
@@ -76,6 +119,8 @@ const LegalQuestionComponent = () => {
                                 </label>
                                 <input
                                     type="text"
+                                    value={disabilityStatus}
+                                    onChange={(e) => setDisabilityStatus(e.target.value)}
                                     placeholder="Yes / No"
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
@@ -89,6 +134,8 @@ const LegalQuestionComponent = () => {
                                 </label>
                                 <input
                                     type="text"
+                                    value={graduationMonth}
+                                    onChange={(e) => setGraduationMonth(e.target.value)}
                                     placeholder="Enter month"
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />

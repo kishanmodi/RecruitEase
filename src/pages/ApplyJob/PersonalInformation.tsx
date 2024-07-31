@@ -1,4 +1,35 @@
-const PersonalInformation = () => {
+
+interface PersonalInformationProps {
+  firstName: string;
+  setFirstName: (firstName: string) => void;
+  lastName: string;
+  setLastName: (lastName: string) => void;
+  phoneNumber: string;
+  setPhoneNumber: (phoneNumber: string) => void;
+  country: string;
+  setCountry: (country: string) => void;
+  address: string;
+  setAddress: (address: string) => void;
+  bio: string;
+  setBio: (bio: string) => void;
+}
+const PersonalInformation = (props: PersonalInformationProps) => {
+
+  const {
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    phoneNumber,
+    setPhoneNumber,
+    country,
+    setCountry,
+    address,
+    setAddress,
+    bio,
+    setBio,
+  } = props;
+
   return (
     <div className="flex flex-col gap-9">
       {/* <!-- Input Fields --> */}
@@ -18,6 +49,8 @@ const PersonalInformation = () => {
                 <input
                   type="text"
                   placeholder="Enter your first name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
@@ -28,6 +61,8 @@ const PersonalInformation = () => {
                 </label>
                 <input
                   type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   placeholder="Enter your last name"
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
@@ -41,6 +76,8 @@ const PersonalInformation = () => {
                 </label>
                 <input
                   type="text"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder="Enter your phone number"
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
@@ -52,6 +89,8 @@ const PersonalInformation = () => {
                 <input
                   type="text"
                   placeholder="Enter your your country"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
@@ -65,6 +104,8 @@ const PersonalInformation = () => {
                 <input
                   type="text"
                   placeholder="Enter your address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
@@ -77,6 +118,8 @@ const PersonalInformation = () => {
               <textarea
                 rows={6}
                 placeholder="Type your bio here"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               ></textarea>
             </div>

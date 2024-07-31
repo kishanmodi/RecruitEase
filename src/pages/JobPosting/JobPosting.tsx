@@ -12,13 +12,13 @@ import {useAuth} from '../../context/AppContext';
 import {Option} from '../../types/option';
 import Swtich from '../../components/Switchers/Switch';
 import {toast} from 'react-hot-toast';
-
+import {useNavigate} from 'react-router-dom';
 
 interface JobPostingProps {
     edit: boolean;
 }
 const JobPosting = (props: JobPostingProps) => {
-
+    const navigate = useNavigate();
     const {edit} = props;
     const {createJobPosting,refresh_token,getJob,currentJobId: jobId,currentJobId,deleteJob,updateJob, setCurrentJobId} = useAuth();
 
@@ -26,7 +26,7 @@ const JobPosting = (props: JobPostingProps) => {
     const [jobDepartment,setJobDepartment] = useState('');
     const [city,setCity] = useState('');
     const [country,setCountry] = useState('');
-    const [postingDate,setPostingDate] = useState(new Date().toISOString());
+    const [postingDate,setPostingDate] = useState(new Date().toLocaleDateString('en-US'));
     const [deadline,setDeadline] = useState(addDaysToDate(30));
     const [softSkills,setSoftSkills] = useState<Option[]>(SoftSkillOptions);
     const [technicalSkills,setTechnicalSkills] =
@@ -53,6 +53,15 @@ const JobPosting = (props: JobPostingProps) => {
     const [showDeleteModal,setShowDeleteModal] = useState(false);
 
     useEffect(() => {
+        if(!edit){
+            emptyAllFields();
+            setCurrentJobId('');
+            setIsEditOrNew(false);
+        }
+
+        if(edit && !jobId) {
+            navigate('/job');
+        }
         return () => {
             emptyAllFields();
             setIsEditOrNew(false);
@@ -60,7 +69,9 @@ const JobPosting = (props: JobPostingProps) => {
                 setCurrentJobId('');
             }
         }
-    },[]);
+
+
+    },[edit]);
 
 
     // Get Job details if we are editing an existing job
@@ -194,29 +205,29 @@ const JobPosting = (props: JobPostingProps) => {
 
         // Verify if all required fields are filled
 
-        if(
-            !jobTitle ||
-            !jobDepartment ||
-            !city ||
-            !country ||
-            !postingDate ||
-            !deadline ||
-            !softSkills ||
-            !technicalSkills ||
-            !questions ||
-            !recruiterName ||
-            !recruiterEmail ||
-            !companyDescription ||
-            !jobDescription ||
-            !qualifications ||
-            !keyRequirements
-        ) {
-            toast.error('Please fill all required fields.');
-            return;
-        }
+        // if(
+        //     !jobTitle ||
+        //     !jobDepartment ||
+        //     !city ||
+        //     !country ||
+        //     !postingDate ||
+        //     !deadline ||
+        //     !softSkills ||
+        //     !technicalSkills ||
+        //     !questions ||
+        //     !recruiterName ||
+        //     !recruiterEmail ||
+        //     !companyDescription ||
+        //     !jobDescription ||
+        //     !qualifications ||
+        //     !keyRequirements
+        // ) {
+        //     toast.error('Please fill all required fields.');
+        //     return;
+        // }
 
 
-        if(isEditOrNew && !jobId) {
+        if(!edit && !jobId) {
             const data = await createJobPosting({job: job,refresh_token});
 
             if(data.success) {
@@ -391,7 +402,7 @@ const JobPosting = (props: JobPostingProps) => {
                                 id='multiSelectSoft'
                                 label={'Soft Skills'}
                                 options={softSkills}
-                                disabled={false}
+                                disabled={isEditOrNew}
                                 setOptions={setSoftSkills}
                             />
                         </div>
@@ -441,8 +452,12 @@ const JobPosting = (props: JobPostingProps) => {
                                                 }}
                                                 className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
                                             />
-                                            <Link
-                                                to='#'
+                                            <button
+                                                type='button'
+                                                onClick={() =>
+                                                    !isEditOrNew &&
+                                                    deleteQuestion(index)
+                                                }
                                                 className={`inline-flex items-center justify-center rounded-md border py-4 px-10 text-center font-medium transition  ${isEditOrNew
                                                     ? 'cursor-default text-gray-500 bg-whiter dark:bg-black border-stroke dark:border-form-strokedark'
                                                     : 'border-black text-black hover:bg-opacity-90 focus:border-primary active:border-primary dark:bg-form-input dark:focus:border-primary dark:text-white'
@@ -454,7 +469,7 @@ const JobPosting = (props: JobPostingProps) => {
                                                         deleteQuestion(index)
                                                     }
                                                 />
-                                            </Link>
+                                            </button>
                                         </div>
                                     </div>
                                 );
@@ -641,8 +656,8 @@ const JobPosting = (props: JobPostingProps) => {
                             <div className='flex gap-2'>
                                 <button
                                     type='button'
-                                    disabled={false}
                                     onClick={() => {
+                                        if(!jobPostingLink) return;
                                         navigator.clipboard.writeText(
                                             jobPostingLink
                                         );
@@ -655,7 +670,7 @@ const JobPosting = (props: JobPostingProps) => {
                                 </button>
                                 <input
                                     type='text'
-                                    placeholder='https://www.example.com/job-posting'
+                                    placeholder='https://www.recruitease.com/apply/M28-123455-2345624354VGHJB-BHJJH'
                                     value={jobPostingLink}
                                     disabled={true}
                                     className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-transparent dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
@@ -665,18 +680,19 @@ const JobPosting = (props: JobPostingProps) => {
                     </div>
 
                     <div className='flex flex-col gap-4 mx-5'>
-                        {currentJobId && <button className='inline-flex items-center justify-center rounded-md bg-teal-600	 py-3 px-8 text-center font-medium text-white hover:bg-opacity-90 lg:px-4 xl:px-4' onClick={() => setIsEditOrNew(!isEditOrNew)}>
-                            Edit
-                        </button>}
                         {/* Delete */}
                         {currentJobId && <button className='inline-flex items-center justify-center rounded-md bg-red-600 py-3 px-8 text-center font-medium text-white hover:bg-opacity-90 lg:px-4 xl:px-4' onClick={() => handleDeletePostingModal()}>
                             Delete
                         </button>}
-                        <button
+                        {currentJobId && <button className='inline-flex items-center justify-center rounded-md bg-teal-600	 py-3 px-8 text-center font-medium text-white hover:bg-opacity-90 lg:px-4 xl:px-4' onClick={() => setIsEditOrNew(!isEditOrNew)}>
+                            {isEditOrNew ? 'Edit' : 'Cancel'}
+                        </button>}
+                        {!isEditOrNew && <button
+                            disabled={isEditOrNew}
                             className='inline-flex items-center justify-center rounded-md bg-primary py-3 px-8 text-center font-medium text-white hover:bg-opacity-90 lg:px-5 xl:px-5'
                             onClick={handleSubmit}>
                             Submit
-                        </button>
+                        </button>}
                     </div>
                 </div>
             </div>

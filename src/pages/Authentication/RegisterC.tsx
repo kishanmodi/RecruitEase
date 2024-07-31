@@ -6,12 +6,11 @@ import BrandLogo from '../../images/brand/job.jpg';
 import { useAuth } from '../../context/AppContext';
 
 const RegisterC: React.FC = () => {
-    const { signup } = useAuth();
+    const { signupJobSeeker } = useAuth();
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [retypePassword, setRetypePassword] = React.useState('');
     const [name, setName] = React.useState('');
-    const [address, setAddress] = React.useState('');
     return (
         <div className='flex h-screen overflow-hidden'>
             <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark w-full h-full'>
@@ -225,12 +224,11 @@ const RegisterC: React.FC = () => {
                                     <button
                                         className='w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90'
                                         onClick={() => {
-                                            const res = signup(
+                                            const res = signupJobSeeker(
                                                 email,
                                                 password,
                                                 retypePassword,
                                                 name,
-                                                address
                                             );
                                             if (!res) {
                                                 setPassword('');

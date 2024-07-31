@@ -636,7 +636,7 @@ const TableOne = ({}) => {
                 </div>
             </div>
 
-            {filteredCandidates.length > 0 && (
+            {filteredCandidates.length > 5 && (
                 <div className='flex justify-center items-center mt-10 mb-10'>
                     <ReactPaginate
                         previousLabel='Previous'
