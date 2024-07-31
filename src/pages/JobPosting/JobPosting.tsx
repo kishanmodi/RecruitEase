@@ -1,48 +1,145 @@
 import DefaultLayout from '../../layout/DefaultLayout';
 import DatePickerOne from '../../components/Forms/DatePicker/DatePickerOne';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { BsCopy, BsFillTrashFill } from 'react-icons/bs';
+import {useEffect,useState} from 'react';
+import {Link} from 'react-router-dom';
+import {BsCopy,BsFillTrashFill} from 'react-icons/bs';
 import SingleOption from '../../components/Forms/SelectGroup/SingleOption';
 import MultiSelectJobPosting from '../../components/Forms/MultiSelectJobPosting';
 import SoftSkillOptions from './SoftSkillsOptions.json';
 import TechSkillOptions from './TechSkillsOptions.json';
-import { Job } from '../../types/job';
-import { useAuth } from '../../context/AppContext';
-import { Option } from '../../types/option';
+import {Job} from '../../types/job';
+import {useAuth} from '../../context/AppContext';
+import {Option} from '../../types/option';
 import Swtich from '../../components/Switchers/Switch';
+import {toast} from 'react-hot-toast';
 
-const JobPosting = () => {
-    const [jobTitle, setJobTitle] = useState('');
-    const [jobDepartment, setJobDepartment] = useState('');
-    const [city, setCity] = useState('');
-    const [country, setCountry] = useState('');
-    const [postingDate, setPostingDate] = useState(new Date().toISOString());
-    const [deadline, setDeadline] = useState(addDaysToDate(30));
-    const [softSkills, setSoftSkills] = useState<Option[]>(SoftSkillOptions);
-    const [technicalSkills, setTechnicalSkills] =
+
+interface JobPostingProps {
+    edit: boolean;
+}
+const JobPosting = (props: JobPostingProps) => {
+
+    const {edit} = props;
+    const {createJobPosting,refresh_token,getJob,currentJobId: jobId,currentJobId,deleteJob,updateJob, setCurrentJobId} = useAuth();
+
+    const [jobTitle,setJobTitle] = useState('');
+    const [jobDepartment,setJobDepartment] = useState('');
+    const [city,setCity] = useState('');
+    const [country,setCountry] = useState('');
+    const [postingDate,setPostingDate] = useState(new Date().toISOString());
+    const [deadline,setDeadline] = useState(addDaysToDate(30));
+    const [softSkills,setSoftSkills] = useState<Option[]>(SoftSkillOptions);
+    const [technicalSkills,setTechnicalSkills] =
         useState<Option[]>(TechSkillOptions);
 
-    const [questions, setQuestions] = useState([
-        { question: 'Tell me about yourself?' }
+    const [questions,setQuestions] = useState([
+        {question: 'Tell me about yourself?'}
     ]);
-    const [recruiterName, setRecruiterName] = useState('');
-    const [recruiterEmail, setRecruiterEmail] = useState('');
-    const [companyDescription, setCompanyDescription] = useState('');
-    const [jobDescription, setJobDescription] = useState('');
-    const [qualifications, setQualifications] = useState('');
-    const [keyRequirements, setKeyRequirements] = useState('');
-    const [niceToHave, setNiceToHave] = useState('');
-    const [otherRemarks, setOtherRemarks] = useState('');
-    const [isActive, setIsActive] = useState(true);
-    const [jobPostingLink, setJobPostingLink] = useState('');
+    const [recruiterName,setRecruiterName] = useState('');
+    const [recruiterEmail,setRecruiterEmail] = useState('');
+    const [companyDescription,setCompanyDescription] = useState('');
+    const [jobDescription,setJobDescription] = useState('');
+    const [qualifications,setQualifications] = useState('');
+    const [keyRequirements,setKeyRequirements] = useState('');
+    const [niceToHave,setNiceToHave] = useState('');
+    const [otherRemarks,setOtherRemarks] = useState('');
+    const [isActive,setIsActive] = useState(true);
+    const [jobPostingLink,setJobPostingLink] = useState('');
 
-    const [isEditOrNew, setIsEditOrNew] = useState(false);
+    const [isEditOrNew,setIsEditOrNew] = useState(edit);
+
+    const [job,setJob] = useState<Job>({} as Job);
+
+    const [showDeleteModal,setShowDeleteModal] = useState(false);
+
+    useEffect(() => {
+        return () => {
+            emptyAllFields();
+            setIsEditOrNew(false);
+            if(window.location.pathname !== '/edit-job') {
+                setCurrentJobId('');
+            }
+        }
+    },[]);
+
+
+    // Get Job details if we are editing an existing job
+    useEffect(() => {
+        if(jobId) {
+            getJob(jobId)
+                .then((data) => {
+                    if(data.success) {
+                        setJob(data.job || ({} as Job));
+                    } else {
+                        console.error('Failed to get job details');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Failed to get job details:',error);
+                });
+        }
+    },[jobId]);
+
+    const emptyAllFields = () => {
+        setJobTitle('');
+        setJobDepartment('');
+        setCity('');
+        setCountry('');
+        setPostingDate(new Date().toISOString());
+        setDeadline(addDaysToDate(30));
+        setSoftSkills(SoftSkillOptions);
+        setTechnicalSkills(TechSkillOptions);
+        setQuestions([{question: 'Tell me about yourself?'}]);
+        setRecruiterName('');
+        setRecruiterEmail('');
+        setCompanyDescription('');
+        setJobDescription('');
+        setQualifications('');
+        setKeyRequirements('');
+        setNiceToHave('');
+        setOtherRemarks('');
+        setIsActive(true);
+        setJobPostingLink('');
+        setJob({} as Job);
+    }
+
+
+    useEffect(() => {
+        // If job is not empty, set the values
+        if(Object.keys(job).length !== 0) {
+            setJobTitle(job.title);
+            setJobDepartment(job.department);
+            setCity(job.city);
+            setCountry(job.country);
+            setPostingDate(new Date(job.posting_date).toLocaleDateString());
+            setDeadline(new Date(job.deadline).toLocaleDateString() || addDaysToDate(30));
+            setSoftSkills(job.soft_skills);
+            setTechnicalSkills(job.technical_skills);
+            setQuestions(
+                job.questions.map((question) => ({question: question}))
+            );
+            setRecruiterName(job.recruiter_name);
+            setRecruiterEmail(job.recruiter_email);
+            setCompanyDescription(job.about_company);
+            setJobDescription(job.about_job);
+            setQualifications(job.qualification);
+            setKeyRequirements(job.key_requirements);
+            setNiceToHave(job.nice_to_have || '');
+            setOtherRemarks(job.other_remarks || '');
+            setIsActive(job.is_active);
+            const jobPostingLink = job.posting_link ? `${window.location.origin}/${job.posting_link}` : '';
+            setJobPostingLink(jobPostingLink);
+
+            setIsEditOrNew(true);
+        }
+    },[job]);
 
     const deleteQuestion = (index: number) => {
-        console.log('Deleting index:', index);
-        const newQuestions = questions.filter((_, i) => i !== index);
-        console.log('New questions:', newQuestions);
+        if(questions.length === 1) {
+            toast.error('At least one question is required.');
+            return;
+        }
+        const newQuestions = questions.filter((_,i) => i !== index);
         setQuestions([...newQuestions]);
     };
 
@@ -52,25 +149,27 @@ const JobPosting = () => {
         return currentDate.toISOString();
     }
 
-    const updateQuestion = (index: number, value: string) => {
-        const newQuestions = questions.map((question, i) => {
-            if (i === index) {
-                return { question: value };
+    const updateQuestion = (index: number,value: string) => {
+        const newQuestions = questions.map((question,i) => {
+            if(i === index) {
+                return {question: value};
             }
             return question;
         });
         setQuestions([...newQuestions]);
     };
-    const { createJobPosting, refresh_token } = useAuth();
+
+
 
     const handleSubmit = async () => {
         const job: Job = {
+            id: jobId || '',
             title: jobTitle,
             department: jobDepartment,
             city,
             country,
-            posting_date: new Date(postingDate), // Convert ISO string to Date
-            expiration_date: new Date(deadline), // Convert ISO string to Date
+            posting_date: new Date(postingDate),// Convert ISO string to Date
+            deadline: new Date(deadline), // Convert ISO string to Date
             soft_skills: softSkills.map((skill) => ({
                 value: skill.value,
                 selected: skill.selected,
@@ -90,44 +189,65 @@ const JobPosting = () => {
             key_requirements: keyRequirements,
             nice_to_have: niceToHave,
             other_remarks: otherRemarks,
-            is_active: isActive
+            is_active: isActive,
         };
 
-        // // Verify if all required fields are filled
+        // Verify if all required fields are filled
 
-        // if (
-        //     !jobTitle ||
-        //     !jobDepartment ||
-        //     !city ||
-        //     !country ||
-        //     !postingDate ||
-        //     !deadline ||
-        //     !softSkills ||
-        //     !technicalSkills ||
-        //     !questions ||
-        //     !recruiterName ||
-        //     !recruiterEmail ||
-        //     !companyDescription ||
-        //     !jobDescription ||
-        //     !qualifications ||
-        //     !keyRequirements
-        // ) {
-        //     toast.error('Please fill all required fields.');
-        //     return;
-        // }
-
-        console.log(refresh_token, 'sdfb ');
-        const data = await createJobPosting({ job: job, refresh_token });
-
-        if (data.success) {
-            console.log('Job posted successfully!');
-            setIsEditOrNew(true);
-            const jobPostingLink = `${window.location.origin}/${data.posting_link}`;
-            setJobPostingLink(jobPostingLink);
-        } else {
-            console.error('Failed to post job.');
+        if(
+            !jobTitle ||
+            !jobDepartment ||
+            !city ||
+            !country ||
+            !postingDate ||
+            !deadline ||
+            !softSkills ||
+            !technicalSkills ||
+            !questions ||
+            !recruiterName ||
+            !recruiterEmail ||
+            !companyDescription ||
+            !jobDescription ||
+            !qualifications ||
+            !keyRequirements
+        ) {
+            toast.error('Please fill all required fields.');
+            return;
         }
+
+
+        if(isEditOrNew && !jobId) {
+            const data = await createJobPosting({job: job,refresh_token});
+
+            if(data.success) {
+                setIsEditOrNew(true);
+                const jobPostingLink = `${window.location.origin}/${data.posting_link}`;
+                
+                setJobPostingLink(jobPostingLink);
+            } else {
+                console.error('Failed to post job.');
+            }
+        } else if(jobId) {
+            const success = await updateJob(job);
+            if(success) {
+                setIsEditOrNew(true);
+            } else {
+                console.error('Failed to update job.');
+            }
+        } else {
+            toast.error('Job ID is missing.');
+        }
+
+
     };
+
+    // Delete Job Posting
+    const handleDeletePosting = () => {
+        deleteJob(jobId)
+    }
+    const handleDeletePostingModal = () => {
+        setShowDeleteModal(!showDeleteModal);
+    }
 
     return (
         <DefaultLayout>
@@ -199,7 +319,7 @@ const JobPosting = () => {
                             </div>
                             <SingleOption
                                 label={'Country'}
-                                options={['USA', 'UK', 'Canada']}
+                                options={['USA','UK','Canada']}
                                 selectedOption={country}
                                 disabled={isEditOrNew}
                                 setSelectedOption={(value) =>
@@ -271,7 +391,7 @@ const JobPosting = () => {
                                 id='multiSelectSoft'
                                 label={'Soft Skills'}
                                 options={softSkills}
-                                disabled={isEditOrNew}
+                                disabled={false}
                                 setOptions={setSoftSkills}
                             />
                         </div>
@@ -301,7 +421,7 @@ const JobPosting = () => {
                             </h3>
                         </div>
                         <div className='flex flex-col gap-5.5 p-6.5'>
-                            {questions.map((question, index) => {
+                            {questions.map((question,index) => {
                                 return (
                                     <div key={index}>
                                         <label className='mb-3 block text-black dark:text-white'>
@@ -323,13 +443,12 @@ const JobPosting = () => {
                                             />
                                             <Link
                                                 to='#'
-                                                className={`inline-flex items-center justify-center rounded-md border py-4 px-10 text-center font-medium transition ${
-                                                    isEditOrNew
-                                                        ? 'cursor-default text-gray-500 bg-whiter dark:bg-black border-stroke dark:border-form-strokedark'
-                                                        : 'border-black text-black hover:bg-opacity-90 focus:border-primary active:border-primary dark:bg-form-input dark:focus:border-primary dark:text-white'
-                                                } lg:px-4 xl:px-4`}>
+                                                className={`inline-flex items-center justify-center rounded-md border py-4 px-10 text-center font-medium transition  ${isEditOrNew
+                                                    ? 'cursor-default text-gray-500 bg-whiter dark:bg-black border-stroke dark:border-form-strokedark'
+                                                    : 'border-black text-black hover:bg-opacity-90 focus:border-primary active:border-primary dark:bg-form-input dark:focus:border-primary dark:text-white'
+                                                    } lg:px-4 xl:px-4`}>
                                                 <BsFillTrashFill
-                                                    className='delete-btn cursor-pointer '
+                                                    className='delete-btn cursor-pointer'
                                                     onClick={() =>
                                                         !isEditOrNew &&
                                                         deleteQuestion(index)
@@ -340,23 +459,22 @@ const JobPosting = () => {
                                     </div>
                                 );
                             })}
-                            <Link
-                                to='#'
-                                className={`mb-2 flex items-center justify-center rounded border py-4 px-10 text-center font-medium transition ${
-                                    isEditOrNew
-                                        ? 'cursor-default text-gray-500 bg-whiter dark:bg-black border-stroke dark:border-form-strokedark'
-                                        : 'border-black text-black hover:bg-opacity-90 focus:border-primary active:border-primary dark:bg-form-input dark:focus:border-primary dark:text-white'
-                                } lg:px-8 xl:px-10`}
+                            <button
+                                type='button'
+                                className={`mb-2 flex items-center justify-center rounded border py-4 px-10 text-center font-medium transition ${isEditOrNew
+                                    ? 'cursor-default text-gray-500 bg-whiter dark:bg-black border-stroke dark:border-form-strokedark'
+                                    : 'border-black text-black hover:bg-opacity-90 focus:border-primary active:border-primary dark:bg-form-input dark:focus:border-primary dark:text-white'
+                                    } lg:px-8 xl:px-10`}
                                 onClick={() => {
-                                    if (isEditOrNew) return;
+                                    if(isEditOrNew) return;
                                     const newQuestions = [
                                         ...questions,
-                                        { question: '' }
+                                        {question: ''}
                                     ];
                                     setQuestions(newQuestions);
                                 }}>
                                 Add New Question
-                            </Link>
+                            </button>
                         </div>
                     </div>
                     <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark'>
@@ -521,13 +639,20 @@ const JobPosting = () => {
                         </div>
                         <div className='flex flex-col gap-5.5 p-6.5'>
                             <div className='flex gap-2'>
-                                <Link
-                                    to='#'
+                                <button
+                                    type='button'
+                                    disabled={false}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(
+                                            jobPostingLink
+                                        );
+                                        toast.success('Link copied to clipboard');
+                                    }}
                                     className={
                                         'rounded-lg border-[1.5px] border-stroke bg-transparent py-4 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
                                     }>
                                     <BsCopy className='delete-btn cursor-pointer ' />
-                                </Link>
+                                </button>
                                 <input
                                     type='text'
                                     placeholder='https://www.example.com/job-posting'
@@ -540,9 +665,13 @@ const JobPosting = () => {
                     </div>
 
                     <div className='flex flex-col gap-4 mx-5'>
-                        <button className='inline-flex items-center justify-center rounded-md bg-teal-600	 py-3 px-8 text-center font-medium text-white hover:bg-opacity-90 lg:px-4 xl:px-4'>
+                        {currentJobId && <button className='inline-flex items-center justify-center rounded-md bg-teal-600	 py-3 px-8 text-center font-medium text-white hover:bg-opacity-90 lg:px-4 xl:px-4' onClick={() => setIsEditOrNew(!isEditOrNew)}>
                             Edit
-                        </button>
+                        </button>}
+                        {/* Delete */}
+                        {currentJobId && <button className='inline-flex items-center justify-center rounded-md bg-red-600 py-3 px-8 text-center font-medium text-white hover:bg-opacity-90 lg:px-4 xl:px-4' onClick={() => handleDeletePostingModal()}>
+                            Delete
+                        </button>}
                         <button
                             className='inline-flex items-center justify-center rounded-md bg-primary py-3 px-8 text-center font-medium text-white hover:bg-opacity-90 lg:px-5 xl:px-5'
                             onClick={handleSubmit}>
@@ -551,6 +680,39 @@ const JobPosting = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal to Confirm Delete */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-10">
+                    <div className="bg-white dark:bg-gray-800 w-full max-w-xl mx-4 p-6 rounded-lg shadow-lg">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 text-center">
+                            Are you sure you want to delete this job posting?
+                        </h3>
+                        <p className="mt-2 text-gray-600 dark:text-gray-300 text-center">
+                            This action cannot be undone. Please confirm your decision.
+                        </p>
+                        <div className="flex gap-4 mt-6 justify-center">
+                            <button
+                                className="inline-flex items-center justify-center rounded-md bg-red-600 py-2 px-4 text-white font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                                onClick={() => {
+                                    // Handle delete action
+                                    handleDeletePosting();
+                                    setShowDeleteModal(false);
+                                }}
+                            >
+                                Delete
+                            </button>
+                            <button
+                                className="inline-flex items-center justify-center rounded-md bg-gray-300 py-2 px-4 text-black font-medium hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+                                onClick={() => setShowDeleteModal(false)}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </DefaultLayout>
     );
 };

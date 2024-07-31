@@ -19,7 +19,7 @@ import RegisterSwitch from './pages/Authentication/RegisterSwitch';
 import PrivateRoute from './route/PrivateRoute';
 import RedirectAuthRoute from './route/RedirectAuthRoute';
 import Applications from './pages/Applications/applications';
-import SendEmail from './pages/JobPosting/SendEmail';
+// import SendEmail from './pages/JobPosting/SendEmail';
 import JobApplication from './pages/ApplyJob/JobApplication';
 import AppliedJob from './pages/Applications/AppliedJob';
 import CandidateProfile from './pages/CandidateProfile/CandidateProfile';
@@ -42,7 +42,7 @@ function App() {
         <>
             <Routes>
                 <Route
-                    index
+                    path='/'
                     element={
                         <PrivateRoute>
                             <PageTitle title='RecruitEase' />
@@ -105,11 +105,20 @@ function App() {
                     }
                 />
                 <Route
-                    path='/create-job'
+                    path='/job'
                     element={
                         <PrivateRoute>
                             <PageTitle title='Create Job Posting- RecruitEase' />
-                            <JobPosting />
+                            <JobPosting edit={false}/>
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path='/edit-job'
+                    element={
+                        <PrivateRoute>
+                            <PageTitle title='Edit Job Posting- RecruitEase' />
+                            <JobPosting edit={true} />
                         </PrivateRoute>
                     }
                 />
@@ -150,7 +159,7 @@ function App() {
                     }
                 />
                 <Route
-                    path='/apply-job'
+                    path='/apply'
                     element={
                         <PrivateRoute>
                             <PageTitle title='Candidate - Apply' />
@@ -163,7 +172,7 @@ function App() {
                     element={
                         <PrivateRoute>
                             <PageTitle title='Update Status - RecruitEase' />
-                            <SendEmail />
+                            <AppliedJob />
                         </PrivateRoute>
                     }
                 />

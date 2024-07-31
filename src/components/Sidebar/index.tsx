@@ -165,10 +165,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className='mb-6 flex flex-col gap-1.5'>
                             <li>
                                 <NavLink
-                                    to='/create-job'
+                                    to='/job'
                                     className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                                        (pathname === '/create-job' ||
-                                            pathname.includes('create-job')) &&
+                                        (pathname === '/job' ) &&
                                         'bg-graydark dark:bg-meta-4'
                                     }`}>
                                     <svg
@@ -234,8 +233,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 <NavLink
                                     to='/jobs'
                                     className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                                        (pathname === '/jobs' ||
-                                            pathname.includes('jobs')) &&
+                                        (pathname === '/jobs' ) &&
                                         'bg-graydark dark:bg-meta-4'
                                     }`}>
                                     <svg
@@ -376,10 +374,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             </li>
                             <li>
                                 <NavLink
-                                    to='/apply-job'
+                                    to='/apply'
                                     className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                                        (pathname === '/apply-job' ||
-                                            pathname.includes('apply-job')) &&
+                                        (pathname === '/apply' ||
+                                            pathname.includes('/apply')) &&
                                         'bg-graydark dark:bg-meta-4'
                                     }`}>
                                     <svg

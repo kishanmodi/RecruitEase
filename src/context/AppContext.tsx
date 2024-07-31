@@ -11,6 +11,8 @@ interface AuthContextState {
     refresh_token: string | null;
     isAuthenticated: boolean;
     isRecruiter: boolean;
+    jobs: Job[];
+    currentJobId: string;
     signup: (
         email: string,
         password: string,
@@ -21,6 +23,11 @@ interface AuthContextState {
     signin: (email: string, password: string) => Promise<boolean>;
     logout: () => void;
     createJobPosting: ({ job, refresh_token }: any) => Promise<{posting_link: string, success: boolean}>;
+    getJobs: () => void;
+    getJob: (jobId: string) => Promise<{job: Job | null, success: boolean}>;
+    deleteJob: (jobId: string) => void;
+    setCurrentJobId: (jobId: string) => void;
+    updateJob: (job: Job) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextState | undefined>(undefined);
@@ -45,6 +52,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Recruiter States
     const [isRecruiter, setIsRecruiter] = useState<boolean>(true);
     const [jobs, setJobs] = useState<Job[]>([]);
+
+    const[currentJobId, setCurrentJobId] = useState<string>("");
 
     useEffect(() => {
         if (!refresh_token) {
@@ -159,7 +168,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
         const data = await response.json();
         if (data['status'] == 200) {
-            console.log(data);
             setRefreshToken(data['refresh_token']);
             sessionStorage.setItem('refresh_token', data['refresh_token']);
             setIsAuthenticated(true);
@@ -174,7 +182,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Logout function - Both
     const logout = async () => {
         // Perform logout actions (e.g., invalidate session on backend)
-        console.log(refresh_token);
         const response = await fetch(`${API_URL}/api/logout/`, {
             method: 'POST',
             headers: {
@@ -197,7 +204,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     // ! Recruiter specific functions
     const createJobPosting = async ({ job, refresh_token }: any) => {
-        console.log(refresh_token);
+
         const response = await fetch(`${API_URL}/api/new_posting/`, {
             method: 'POST',
             headers: {
@@ -219,7 +226,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     // Return List of Jobs for Recruiter
     const getJobs = async () => {
-        const response = await fetch(`${API_URL}/api/jobs/`, {
+        const response = await fetch(`${API_URL}/api/postings/`, {
             method: 'GET',
             headers: {
                 Authorization: refresh_token || '',
@@ -229,33 +236,34 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         const data = await response.json();
         if (data.status === 200) {
-            setJobs(data.jobs);
+            setJobs(data.data);
         } else {
             toast.error('Failed to fetch jobs!');
         }
     };
-
-    // Return individual job for Recruiter
-    const getJob = async (jobId: number) => {
-        const response = await fetch(`${API_URL}/api/jobs/${jobId}/`, {
-            method: 'GET',
-            headers: {
-                Authorization: refresh_token || '',
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-        if (data.status === 200) {
-            return data.job;
-        } else {
-            toast.error('Failed to fetch job!');
+// Return individual job for Recruiter
+const getJob = async (jobId: string) => {
+    const response = await fetch(`${API_URL}/api/postings/?id=${encodeURIComponent(jobId)}`, {
+        method: 'GET',
+        headers: {
+            Authorization: `${refresh_token || ''}`,
+            'Content-Type': 'application/json'
         }
-    };
+    });
+
+    const data = await response.json();
+    if (data.status === 200) {
+        return { job: data.data[0], success: true };
+    } else {
+        toast.error('Failed to fetch job!');
+        return { job: null, success: false };
+    }
+};
+
 
     // Update job for Recruiter
     const updateJob = async (job: Job) => {
-        const response = await fetch(`${API_URL}/api/jobs/${job.id}/`, {
+        const response = await fetch(`${API_URL}/api/update_posting/`, {
             method: 'PUT',
             headers: {
                 Authorization: refresh_token || '',
@@ -267,24 +275,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const data = await response.json();
         if (data.status === 200) {
             toast.success('Job updated successfully!');
+            return true;
         } else {
             toast.error('Failed to update job!');
+            return false;
+
         }
     };
 
     // Delete job for Recruiter
-    const deleteJob = async (jobId: number) => {
-        const response = await fetch(`${API_URL}/api/jobs/${jobId}/`, {
+    const deleteJob = async (jobId: string) => {
+        const response = await fetch(`${API_URL}/api/delete_posting/`, {
             method: 'DELETE',
             headers: {
                 Authorization: refresh_token || '',
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({ id: jobId })
+
         });
 
         const data = await response.json();
         if (data.status === 200) {
             toast.success('Job deleted successfully!');
+            navigate('/jobs');
         } else {
             toast.error('Failed to delete job!');
         }
@@ -430,10 +444,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 refresh_token,
                 isAuthenticated,
                 isRecruiter,
+                jobs,
+                currentJobId,
+                setCurrentJobId,
                 signup,
                 signin,
                 logout,
-                createJobPosting
+                createJobPosting,
+                getJobs,
+                getJob,
+                deleteJob,
+                updateJob,
             }}>
             {children}
         </AuthContext.Provider>

@@ -7,9 +7,10 @@ import WorkExperience from "./WorkExperience";
 import Documents from "./Documents";
 import Review from "./Review";
 import Assessment from "./Assessment";
+import JobPost from "./JobPost";
 const JobApplication = () => {
 
-  const pages = ['Personal Information','Legal','Assessment','Documents','Review'];
+  const pages = ['Post','Personal Information','Legal','Assessment','Documents','Review'];
   // const pages = ['Personal Information','Legal','Education','Experience','Assessment','Documents','Review'];
   const [currentPage,setCurrentPage] = useState(pages[0]);
 
@@ -29,6 +30,7 @@ const JobApplication = () => {
         Applicaiton Form
       </h2>
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-1">
+        {currentPage === 'Post' && <JobPost/>}
         {currentPage === 'Personal Information' && <PersonalInformation />}
         {currentPage === 'Legal' && <LegalQuestionComponent/>}
         {currentPage === 'Education' && <Education />}
@@ -38,7 +40,7 @@ const JobApplication = () => {
         {currentPage === 'Review' && <Review/>}
 
         <button onClick ={currentPage==="Review" ? handleSubmit : handleNext } className="flex justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
-          {currentPage === 'Review' ? 'Submit' : 'Next'}
+          {currentPage === 'Review' ? 'Submit' : currentPage === 'Post' ? 'Apply' : 'Next'}
         </button>
       </div>
     </DefaultLayout>
