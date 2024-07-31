@@ -52,6 +52,7 @@ const MultiSelectJobPosting: React.FC<DropdownProps> = ({
     }, [id]);
 
     const open = () => {
+        if(disabled) return;
         setShow(true);
     };
 
@@ -60,6 +61,7 @@ const MultiSelectJobPosting: React.FC<DropdownProps> = ({
     };
 
     const select = (index: number, event: React.MouseEvent) => {
+        if(disabled) return;
         const newOptions = [...options];
 
         if (!newOptions[index].selected) {
@@ -77,6 +79,7 @@ const MultiSelectJobPosting: React.FC<DropdownProps> = ({
     };
 
     const remove = (index: number) => {
+        if(disabled) return;
         const newOptions = [...options];
         const selectedIndex = selected.indexOf(index);
 
@@ -93,6 +96,7 @@ const MultiSelectJobPosting: React.FC<DropdownProps> = ({
 
     useEffect(() => {
         const clickHandler = ({ target }: MouseEvent) => {
+            if(disabled) return;
             if (!dropdownRef.current) return;
             if (
                 !show ||
@@ -157,8 +161,10 @@ const MultiSelectJobPosting: React.FC<DropdownProps> = ({
                                                 </div>
                                                 <div className='flex flex-auto flex-row-reverse'>
                                                     <div
-                                                        onClick={() =>
-                                                            remove(index)
+                                                        onClick={() =>{
+                                                            if(!disabled){
+                                                            remove(index)}
+                                                        }
                                                         }
                                                         className='cursor-pointer pl-2 hover:text-danger'>
                                                         <svg
@@ -227,7 +233,10 @@ const MultiSelectJobPosting: React.FC<DropdownProps> = ({
                                                 <div
                                                     className='w-full cursor-pointer rounded-t border-b border-stroke hover:bg-primary/5 dark:border-form-strokedark'
                                                     onClick={(event) =>
-                                                        select(index, event)
+                                                    {
+                                                        if(!disabled){
+                                                            select(index, event);
+                                                        }}
                                                     }>
                                                     <div
                                                         className={`relative flex w-full items-center border-l-2 border-transparent p-2 pl-2 ${

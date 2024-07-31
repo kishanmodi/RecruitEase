@@ -4,7 +4,8 @@ import {Route,Routes,useLocation} from 'react-router-dom';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import Login from './pages/Authentication/Login';
-import ECommerce from './pages/Dashboard/Dashboard';
+import Dashboard from './pages/Dashboard/Dashboard';
+import CandidateDashboard from './pages/Dashboard/DashboardC';
 import Profile from './pages/Profile';
 
 import Register from './pages/Authentication/Register';
@@ -19,14 +20,19 @@ import RegisterSwitch from './pages/Authentication/RegisterSwitch';
 import PrivateRoute from './route/PrivateRoute';
 import RedirectAuthRoute from './route/RedirectAuthRoute';
 import Applications from './pages/Applications/applications';
-// import SendEmail from './pages/JobPosting/SendEmail';
 import JobApplication from './pages/ApplyJob/JobApplication';
 import AppliedJob from './pages/Applications/AppliedJob';
 import CandidateProfile from './pages/CandidateProfile/CandidateProfile';
+import JobStatus from './pages/JobPosting/JobStatus';
+import RecruiterRoute from './route/RecruiterRoute';
+import CandidateRoute from './route/CandidateRoutes';
+import {useAuth} from './context/AppContext';
+import ApplyRoute from './route/ApplyRoute';
 
 function App() {
     const [loading,setLoading] = useState<boolean>(true);
     const {pathname} = useLocation();
+    const {isRecruiter} = useAuth();
 
     useEffect(() => {
         window.scrollTo(0,0);
@@ -46,7 +52,7 @@ function App() {
                     element={
                         <PrivateRoute>
                             <PageTitle title='RecruitEase' />
-                            <ECommerce />
+                            {isRecruiter ? <Dashboard /> : <CandidateDashboard />}
                         </PrivateRoute>
                     }
                 />
@@ -54,8 +60,10 @@ function App() {
                     path='/profile'
                     element={
                         <PrivateRoute>
-                            <PageTitle title='Profile - RecruitEase' />
-                            <Profile />
+                            <RecruiterRoute>
+                                <PageTitle title='Profile - RecruitEase' />
+                                <Profile />
+                            </RecruiterRoute>
                         </PrivateRoute>
                     }
                 />
@@ -108,8 +116,10 @@ function App() {
                     path='/job'
                     element={
                         <PrivateRoute>
-                            <PageTitle title='Create Job Posting- RecruitEase' />
-                            <JobPosting edit={false}/>
+                            <RecruiterRoute>
+                                <PageTitle title='Create Job Posting- RecruitEase' />
+                                <JobPosting edit={false} />
+                            </RecruiterRoute>
                         </PrivateRoute>
                     }
                 />
@@ -117,8 +127,10 @@ function App() {
                     path='/edit-job'
                     element={
                         <PrivateRoute>
-                            <PageTitle title='Edit Job Posting- RecruitEase' />
-                            <JobPosting edit={true} />
+                            <RecruiterRoute>
+                                <PageTitle title='Edit Job Posting- RecruitEase' />
+                                <JobPosting edit={true} />
+                            </RecruiterRoute>
                         </PrivateRoute>
                     }
                 />
@@ -126,8 +138,10 @@ function App() {
                     path='/candidates'
                     element={
                         <PrivateRoute>
-                            <PageTitle title='Candidates- RecruitEase' />
-                            <Candidates />
+                            <RecruiterRoute>
+                                <PageTitle title='Candidates- RecruitEase' />
+                                <Candidates />
+                            </RecruiterRoute>
                         </PrivateRoute>
                     }
                 />
@@ -135,8 +149,10 @@ function App() {
                     path='/jobs'
                     element={
                         <PrivateRoute>
-                            <PageTitle title='Job Postings- RecruitEase' />
-                            <Jobs />
+                            <RecruiterRoute>
+                                <PageTitle title='Job Postings - RecruitEase' />
+                                <Jobs />
+                            </RecruiterRoute>
                         </PrivateRoute>
                     }
                 />
@@ -153,34 +169,42 @@ function App() {
                     path='/candidate-applications'
                     element={
                         <PrivateRoute>
-                            <PageTitle title='Candidate - Applications' />
-                            <Applications />
+                            <CandidateRoute>
+                                <PageTitle title='Candidate - Applications' />
+                                <Applications />
+                            </CandidateRoute>
                         </PrivateRoute>
                     }
                 />
-                <Route
+                {/* <Route
                     path='/apply'
                     element={
                         <PrivateRoute>
-                            <PageTitle title='Candidate - Apply' />
-                            <JobApplication />
+                            <CandidateRoute>
+                                <PageTitle title='Candidate - Apply' />
+                                <JobApplication />
+                            </CandidateRoute>
                         </PrivateRoute>
                     }
-                />
+                /> */}
 
                 <Route path='/update-status'
                     element={
                         <PrivateRoute>
-                            <PageTitle title='Update Status - RecruitEase' />
-                            <AppliedJob />
+                            <RecruiterRoute>
+                                <PageTitle title='Update Status - RecruitEase' />
+                                <JobStatus />
+                            </RecruiterRoute>
                         </PrivateRoute>
                     }
                 />
                 <Route path='application-status'
                     element={
                         <PrivateRoute>
-                            <PageTitle title='Application Status - RecruitEase' />
-                            <AppliedJob />
+                            <CandidateRoute>
+                                <PageTitle title='Application Status - RecruitEase' />
+                                <AppliedJob />
+                            </CandidateRoute>
                         </PrivateRoute>
 
                     }
@@ -189,12 +213,29 @@ function App() {
                 <Route path='candidate-profile'
                     element={
                         <PrivateRoute>
-                            <PageTitle title='Profile - RecruitEase' />
-                          <CandidateProfile/>
+                            <CandidateRoute>
+                                <PageTitle title='Profile - RecruitEase' />
+                                <CandidateProfile />
+                            </CandidateRoute>
                         </PrivateRoute>
 
                     }
                 />
+
+                <Route
+                    path="/apply/:id"
+                    element={
+                        <ApplyRoute>
+                            <PrivateRoute>
+                                <CandidateRoute>
+                                    <PageTitle title="Apply - RecruitEase" />
+                                    <JobApplication />
+                                </CandidateRoute>
+                            </PrivateRoute>
+                        </ApplyRoute>
+                    }
+                />
+
             </Routes>
         </>
     );
