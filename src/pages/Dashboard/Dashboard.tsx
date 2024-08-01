@@ -6,7 +6,8 @@ import {BsBoxArrowUpRight} from 'react-icons/bs';
 import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../../context/AppContext';
 import {Job} from '../../types/job';
-import TableOne from '../../components/Tables/TableOne';
+import CandidateList from '../RCandidates/CandidateList';
+
 const Dashboard: React.FC = () => {
     const navigate = useNavigate();
     const {getJobs,jobs,setCurrentJobId} = useAuth();
@@ -38,7 +39,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <DefaultLayout>
-            <div className='flex flex-row mb-5 justify-between items-center'>
+            <div className='flex flex-row mb-5 justify-between items-center px-4'>
                 <h2 className='text-2xl font-semibold dark:text-white'>
                     Current Openings ({dashboardJobs.length})
                 </h2>
@@ -110,9 +111,20 @@ const Dashboard: React.FC = () => {
                     </div>
                 </div>}
 
-            <div className='mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5'>
+            {/* Applications Starts */}
+            <div className='flex flex-row mb-2 justify-between items-center mt-4 px-4'>
+                <h2 className='text-2xl font-semibold dark:text-white'>
+                    Applications
+                </h2>
+                <div className='text-primary font-bold'>
+                    <Link to='/candidates'>
+                        <span className='cursor-pointer'>See All</span>
+                    </Link>
+                </div>
+            </div>
+            <div className='mt-1 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5'>
                 <div className='col-span-12 xl:col-span-16'>
-                    <TableOne />
+                    <CandidateList dashboard={true} />
                 </div>
             </div>
         </DefaultLayout>

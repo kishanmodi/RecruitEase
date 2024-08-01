@@ -2,9 +2,10 @@ import React from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import TableOne from '../../components/Tables/TableOne';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { Link } from 'react-router-dom';
-import { BsBoxArrowUpRight } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
+import {Link} from 'react-router-dom';
+import {BsBoxArrowUpRight} from 'react-icons/bs';
+import {useNavigate} from 'react-router-dom';
+import TableTwo from '../CApplications/ApplicationsList';
 
 interface CardDataStatsProps {
     jobTitle: string;
@@ -120,61 +121,13 @@ const Dashboard: React.FC = () => {
         <DefaultLayout>
             <div className='flex flex-row mb-5 justify-between items-center'>
                 <h2 className='text-2xl font-semibold dark:text-white '>
-                    Current Openings (15)
+                    Dashboard
                 </h2>
-                <div className='text-primary font-bold'>
-                    <Link to='/jobs'>
-                        <a className=''>See All</a>
-                    </Link>
-                </div>
-            </div>
-
-            <div className='overflow-x-auto'>
-                <div className='flex flex-nowrap space-x-4 md:space-x-6 xl:space-x-7.5'>
-                    {cardData.map((data, index) => (
-                        <div
-                            key={index}
-                            className='min-w-[350px]'>
-                            {/* Adjust the width classes (w-80, md:w-96, xl:w-96) based on your desired card width */}
-                            <CardDataStats
-                                jobTitle={data.jobTitle}
-                                location={data.location}
-                                applicants={data.applicants}
-                                daysLeft={data.daysLeft}
-                                appliedToday={data.appliedToday}>
-                                <svg
-                                    width='36'
-                                    height='36'
-                                    viewBox='0 0 36 36'
-                                    fill='none'
-                                    xmlns='http://www.w3.org/2000/svg'>
-                                    <rect
-                                        width='36'
-                                        height='36'
-                                        rx='8'
-                                        fill={data.color}
-                                    />
-                                    <path
-                                        d='M14.5352 23.5125V14.7433M20.9674 23.5125V14.7433M15.0299 14.2561V12.3074C15.0299 11.7692 15.473 11.333 16.0195 11.333H19.4831C20.0296 11.333 20.4727 11.7692 20.4727 12.3074V14.2561M12.0612 23.9997H23.9362C25.0293 23.9997 25.9154 23.1272 25.9154 22.051V16.2048C25.9154 15.1286 25.0293 14.2561 23.9362 14.2561H12.0612C10.9681 14.2561 10.082 15.1286 10.082 16.2048V22.051C10.082 23.1272 10.9681 23.9997 12.0612 23.9997Z'
-                                        stroke='white'
-                                        strokeWidth='2'
-                                        strokeLinecap='round'
-                                    />
-                                </svg>
-                                <div className='cursor-pointer'>
-                                    <BsBoxArrowUpRight
-                                        onClick={() => navigate('/job')}
-                                    />
-                                </div>
-                            </CardDataStats>
-                        </div>
-                    ))}
-                </div>
             </div>
 
             <div className='mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5'>
                 <div className='col-span-12 xl:col-span-16'>
-                    <TableOne />
+                    <TableTwo dashboard={true} />
                 </div>
             </div>
         </DefaultLayout>
