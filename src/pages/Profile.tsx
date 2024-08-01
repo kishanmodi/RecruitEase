@@ -40,7 +40,7 @@ const Profile = () => {
         setIsEditing(!isEditing);
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e:any) => {
         const { name, value, files } = e.target;
         if (files) {
             const reader = new FileReader();

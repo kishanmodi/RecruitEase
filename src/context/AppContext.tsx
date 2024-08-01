@@ -1,7 +1,9 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { Job } from '../types/job';
+import React,{createContext,useState,useContext,useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {toast} from 'react-hot-toast';
+import {Job} from '../types/job';
+import {Application} from '../types/application';
+import {ApplicationDetails} from '../types/applicationdetails';
 
 // Regex pattern for password validation
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
@@ -33,17 +35,19 @@ interface AuthContextState {
         retypePassword: string,
         name: string,
     ) => Promise<boolean>;
-    signin: (email: string, password: string) => Promise<boolean>;
+    signin: (email: string,password: string) => Promise<boolean>;
     logout: () => void;
-    createJobPosting: ({ job, refresh_token }: any) => Promise<{ posting_link: string, success: boolean }>;
+    createJobPosting: ({job,refresh_token}: any) => Promise<{posting_link: string,success: boolean}>;
     getJobs: () => void;
-    getJob: (jobId: string) => Promise<{ job: Job | null, success: boolean }>;
+    getJob: (jobId: string) => Promise<{job: Job | null,success: boolean}>;
     deleteJob: (jobId: string) => void;
     setCurrentJobId: (jobId: string) => void;
     updateJob: (job: Job) => Promise<boolean>;
-    getPostData: (jobId: string) => Promise<{ job: Job | null, success: boolean }>;
+    getPostData: (jobId: string) => Promise<{job: Job | null,success: boolean}>;
     forgotPassword: (email: string) => Promise<boolean>;
-    resetPassword: (email: string, otp: number, password: string, retypePassword: string) => Promise<boolean>;
+    resetPassword: (email: string,otp: number,password: string,retypePassword: string) => Promise<boolean>;
+    applyJob: (filledDetails: Application) => Promise<boolean>;
+    getJobApplicationC: (id?: string) => Promise<{applications: any,success: boolean}>;
 }
 
 // Create Auth context
@@ -53,33 +57,34 @@ interface AuthProviderProps {
     children: React.ReactNode;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const AuthProvider = ({children}: AuthProviderProps) => {
 
     // Common hooks
     const navigate = useNavigate();
 
     // Common States for Recruiter and Job Seeker
-    const [refresh_token, setRefreshToken] = useState<string | null>(sessionStorage.getItem('refresh_token'));
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(sessionStorage.getItem('refresh_token') !== null);
-    const [user, setUser] = useState<string>(sessionStorage.getItem('user') || "");
-    const [company, setCompany] = useState<string>(sessionStorage.getItem('company') || "");
-    const [email, setEmail] = useState<string>(sessionStorage.getItem('email') || "");
-    const [didEmailSend, setDidEmailSend] = useState<boolean>(sessionStorage.getItem('didEmailSend') !== null);
-    const [isRecruiter, setIsRecruiter] = useState<boolean>(sessionStorage.getItem('isRecruiter') === 'true');
+    const [refresh_token,setRefreshToken] = useState<string | null>(localStorage.getItem('refresh_token'));
+    const [isAuthenticated,setIsAuthenticated] = useState<boolean>(localStorage.getItem('refresh_token') !== null);
+    const [user,setUser] = useState<string>(localStorage.getItem('user') || "");
+    const [company,setCompany] = useState<string>(localStorage.getItem('company') || "");
+    const [email,setEmail] = useState<string>(localStorage.getItem('email') || "");
+    const [didEmailSend,setDidEmailSend] = useState<boolean>(localStorage.getItem('didEmailSend') !== null);
+    const [isRecruiter,setIsRecruiter] = useState<boolean>(localStorage.getItem('isRecruiter') === 'true');
 
     // Recruiter specific states
-    const [jobs, setJobs] = useState<Job[]>([]);
-    const [currentJobId, setCurrentJobId] = useState<string>("");
+    const [jobs,setJobs] = useState<Job[]>([]);
+    const [currentJobId,setCurrentJobId] = useState<string>("");
 
     // Job Seeker specific states
-    const [applyJobId, setApplyJobId] = useState<string>("");
+    const [applyJobId,setApplyJobId] = useState<string>("");
 
     // Effect to handle navigation based on token
     useEffect(() => {
-        if (!refresh_token) {
+        console.log(refresh_token);
+        if(!refresh_token) {
             setIsAuthenticated(false);
         }
-    }, [refresh_token]);
+    },[refresh_token]);
 
     // Function to handle signup for Recruiter
     const signup = async (
@@ -90,27 +95,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         address: string
     ) => {
         // Password validation
-        if (!passwordRegex.test(password)) {
+        if(!passwordRegex.test(password)) {
             toast.error('Password must contain at least 8 characters, one uppercase, one lowercase, one number, and one special character!');
             return false;
         }
 
         // Password confirmation
-        if (password !== retypePassword) {
+        if(password !== retypePassword) {
             toast.error('Passwords do not match!');
             return false;
         }
 
         // Perform signup request to backend
-        const response = await fetch(`${API_URL}/api/register/`, {
+        const response = await fetch(`${API_URL}/api/register/`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password, name, address })
+            body: JSON.stringify({email,password,name,address})
         });
 
-        if (response.ok) {
+        if(response.ok) {
             toast.success('Signup successful!');
             navigate('/login');
             return true;
@@ -128,27 +133,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         name: string,
     ) => {
         // Password validation
-        if (!passwordRegex.test(password)) {
+        if(!passwordRegex.test(password)) {
             toast.error('Password must contain at least 8 characters, one uppercase, one lowercase, one number, and one special character!');
             return false;
         }
 
         // Password confirmation
-        if (password !== retypePassword) {
+        if(password !== retypePassword) {
             toast.error('Passwords do not match!');
             return false;
         }
 
         // Perform signup request to backend
-        const response = await fetch(`${API_URL}/api/candidate/register/`, {
+        const response = await fetch(`${API_URL}/api/candidate/register/`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password, name })
+            body: JSON.stringify({email,password,name})
         });
 
-        if (response.status === 201) {
+        if(response.status === 201) {
             toast.success('Signup successful!');
             navigate('/login');
             return true;
@@ -159,32 +164,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     // Function to handle signin for both Recruiter and Job Seeker
-    const signin = async (email: string, password: string) => {
+    const signin = async (email: string,password: string) => {
         // Perform signin request to backend
-        const response = await fetch(`${API_URL}/login/`, {
+        const response = await fetch(`${API_URL}/login/`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({email,password})
         });
 
         const data = await response.json();
-        if (data.status === 200) {
+        if(data.status === 200) {
             setRefreshToken(data.refresh_token);
-            sessionStorage.setItem('refresh_token', data.refresh_token);
+            localStorage.setItem('refresh_token',data.refresh_token);
             setIsAuthenticated(true);
             setIsRecruiter(data.is_company);
-            sessionStorage.setItem('isRecruiter', data.is_company.toString());
+            localStorage.setItem('isRecruiter',data.is_company.toString());
 
-            if (data.is_company) {
+            if(data.is_company) {
                 setCompany(data.name);
-                sessionStorage.setItem('company', data.name);
+                localStorage.setItem('company',data.name);
             } else {
                 setUser(data.name);
-                sessionStorage.setItem('user', data.name);
+                localStorage.setItem('user',data.name);
 
-                if (applyJobId) {
+                if(applyJobId) {
                     toast.success('Signin successful!');
                     navigate(`/apply/${applyJobId}`);
                     return true;
@@ -202,7 +207,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Function to handle logout for both Recruiter and Job Seeker
     const logout = async () => {
         const logoutApi = isRecruiter ? '/api/logout/' : '/api/candidate/logout/';
-        const response = await fetch(`${API_URL}${logoutApi}`, {
+        const response = await fetch(`${API_URL}${logoutApi}`,{
             method: 'POST',
             headers: {
                 Authorization: refresh_token || '',
@@ -211,14 +216,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
 
         const data = await response.json();
-        if (data.status !== 200) {
+        if(data.status !== 200) {
             toast.error('Logout failed');
         } else {
             // Clear session storage and state
-            sessionStorage.removeItem('refresh_token');
-            sessionStorage.removeItem('isRecruiter');
-            sessionStorage.removeItem('user');
-            sessionStorage.removeItem('company');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('isRecruiter');
+            localStorage.removeItem('user');
+            localStorage.removeItem('company');
             setRefreshToken(null);
             setIsAuthenticated(false);
             setIsRecruiter(false);
@@ -232,83 +237,83 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Function to Forgot Password for both Recruiter and Job Seeker
     const forgotPassword = async (email: string) => {
         // Perform forgot password request to backend
-        const response = await fetch(`${API_URL}/forgot_password/`, {
+        const response = await fetch(`${API_URL}/forgot_password/`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email })
+            body: JSON.stringify({email})
         });
 
         const data = await response.json();
-        if (data.status === 200) {
+        if(data.status === 200) {
             toast.success('OTP has been sent to your email!');
             setEmail(email);
             setDidEmailSend(true);
-            sessionStorage.setItem('didEmailSend', 'true');
-            sessionStorage.setItem('email', email);
+            localStorage.setItem('didEmailSend','true');
+            localStorage.setItem('email',email);
             // Expire Session after 5 minutes
             setTimeout(() => {
-               if(sessionStorage.getItem('didEmailSend') && sessionStorage.getItem('email') ){
-                    sessionStorage.removeItem('email');
-                    sessionStorage.removeItem('didEmailSend');
-               }
-            }, 300000);
+                if(localStorage.getItem('didEmailSend') && localStorage.getItem('email')) {
+                    localStorage.removeItem('email');
+                    localStorage.removeItem('didEmailSend');
+                }
+            },300000);
             return true;
         } else {
             setEmail('');
             setDidEmailSend(false);
-            sessionStorage.removeItem('didEmailSend');
-            sessionStorage.removeItem('email');
+            localStorage.removeItem('didEmailSend');
+            localStorage.removeItem('email');
             toast.error('Failed to send password reset link!');
             return false;
         }
     }
 
-    const resetPassword = async (email: string, otp: number, password: string, retypePassword: string) => {
+    const resetPassword = async (email: string,otp: number,password: string,retypePassword: string) => {
         // Password validation
-        if (!passwordRegex.test(password)) {
+        if(!passwordRegex.test(password)) {
             toast.error('Password must contain at least 8 characters, one uppercase, one lowercase, one number, and one special character!');
             return false;
         }
 
         // Password confirmation
-        if (password !== retypePassword) {
+        if(password !== retypePassword) {
             toast.error('Passwords do not match!');
             return false;
         }
 
         // Perform reset password request to backend
-        const response = await fetch(`${API_URL}/reset_password/`, {
+        const response = await fetch(`${API_URL}/reset_password/`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, otp, password })
+            body: JSON.stringify({email,otp,password})
         });
 
         const data = await response.json();
-        if (data.success) {
+        if(data.success) {
             toast.success('Password reset successful!');
             setEmail('');
             setDidEmailSend(false);
-            sessionStorage.removeItem('didEmailSend');
-            sessionStorage.removeItem('email');
+            localStorage.removeItem('didEmailSend');
+            localStorage.removeItem('email');
             navigate('/login');
             return true;
         } else {
             toast.error('Password reset failed!');
             setEmail('');
             setDidEmailSend(false);
-            sessionStorage.removeItem('didEmailSend');
-            sessionStorage.removeItem('email');
+            localStorage.removeItem('didEmailSend');
+            localStorage.removeItem('email');
             return false;
         }
     }
 
     // Function to create a new job posting for Recruiter
-    const createJobPosting = async ({ job, refresh_token }: any) => {
-        const response = await fetch(`${API_URL}/api/new_posting/`, {
+    const createJobPosting = async ({job,refresh_token}: any) => {
+        const response = await fetch(`${API_URL}/api/new_posting/`,{
             method: 'POST',
             headers: {
                 Authorization: refresh_token || '',
@@ -318,18 +323,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
 
         const data = await response.json();
-        if (data.status === 201) {
+        if(data.status === 201) {
             toast.success('Job created successfully!');
-            return { posting_link: data.posting_link, success: true };
+            return {posting_link: data.posting_link,success: true};
         } else {
             toast.error('Job creation failed!');
-            return { posting_link: '', success: false };
+            return {posting_link: '',success: false};
         }
     };
 
     // Function to fetch all jobs for Recruiter
     const getJobs = async () => {
-        const response = await fetch(`${API_URL}/api/postings/`, {
+        const response = await fetch(`${API_URL}/api/postings/`,{
             method: 'GET',
             headers: {
                 Authorization: refresh_token || '',
@@ -338,7 +343,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
 
         const data = await response.json();
-        if (data.status === 200) {
+        if(data.status === 200) {
             setJobs(data.data);
         } else {
             toast.error('Failed to fetch jobs!');
@@ -347,7 +352,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     // Function to fetch a single job by ID for Recruiter
     const getJob = async (jobId: string) => {
-        const response = await fetch(`${API_URL}/api/postings/?id=${encodeURIComponent(jobId)}`, {
+        const response = await fetch(`${API_URL}/api/postings/?id=${encodeURIComponent(jobId)}`,{
             method: 'GET',
             headers: {
                 Authorization: refresh_token || '',
@@ -356,18 +361,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
 
         const data = await response.json();
-        if (data.status === 200) {
-            return { job: data.data, success: true };
+        if(data.status === 200) {
+            return {job: data.data,success: true};
         } else {
             toast.error('Failed to fetch job!');
-            return { job: null, success: false };
+            return {job: null,success: false};
         }
     };
 
 
     // Function to fetch a single job by ID for Job Seeker
     const getPostData = async (jobId: string) => {
-        const response = await fetch(`${API_URL}/api/apply/${encodeURIComponent(jobId)}`, {
+        const response = await fetch(`${API_URL}/api/apply/${encodeURIComponent(jobId)}`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -375,17 +380,38 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
 
         const data = await response.json();
-        if (data.status === 200) {
-            return { job: data.data, success: true };
+        if(data.status === 200) {
+            return {job: data.data,success: true};
         } else {
             toast.error('Failed to fetch job!');
-            return { job: null, success: false };
+            return {job: null,success: false};
+        }
+    };
+
+    // Function to delete a job by ID for Recruiter
+    const deleteJob = async (jobId: string) => {
+        const response = await fetch(`${API_URL}/api/delete_posting/`,{
+            method: 'DELETE',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: jobId})
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            toast.success('Job deleted successfully!');
+            getJobs();
+            navigate('/jobs');
+        } else {
+            toast.error('Job deletion failed!');
         }
     };
 
     // Function to update a job for Recruiter
     const updateJob = async (job: Job) => {
-        const response = await fetch(`${API_URL}/api/update_posting/`, {
+        const response = await fetch(`${API_URL}/api/update_posting/`,{
             method: 'PUT',
             headers: {
                 Authorization: refresh_token || '',
@@ -395,7 +421,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
 
         const data = await response.json();
-        if (data.status === 200) {
+        if(data.status === 200) {
             toast.success('Job updated successfully!');
             return true;
         } else {
@@ -403,27 +429,186 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             return false;
         }
     };
+    // Function to apply for a job by ID for Job Seeker
+    const applyJob = async (filledDetails: Application): Promise<boolean> => {
+        try {
+            // Convert resume to Base64 string
+            const convertFileToBase64 = (file: File): Promise<string> => {
+                return new Promise((resolve,reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onloadend = () => {
+                        if(reader.result) {
+                            resolve(reader.result.toString());
+                        } else {
+                            reject('Error reading file');
+                        }
+                    };
+                    reader.onerror = () => {
+                        reject('Error reading file');
+                    };
+                });
+            };
 
-    // Function to delete a job by ID for Recruiter
-    const deleteJob = async (jobId: string) => {
-        const response = await fetch(`${API_URL}/api/delete_posting/`, {
-            method: 'DELETE',
+            // Convert the resume and update filledDetails
+            if(filledDetails.resume) {
+                filledDetails.resume = await convertFileToBase64(filledDetails.resume);
+            }
+
+            // Send the application details to the server
+            const response = await fetch(`${API_URL}/api/candidate/new_application/`,{
+                method: 'POST',
+                headers: {
+                    'Authorization': refresh_token || '',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(filledDetails)
+            });
+
+            const data = await response.json();
+
+            if(data.status === 201) {
+                toast.success('Thank you for applying to this job!');
+                navigate('/');
+                return true;
+            } else {
+                toast.error('There was an error applying to this job!');
+                return false;
+            }
+        } catch(error) {
+            console.error('Error applying to job:',error);
+            toast.error('There was an error applying to this job!');
+            return false;
+        }
+    };
+
+
+
+    // Function to get all applied job applications for candidate // ! Candidate
+    const getJobApplicationC = async (id?: string) => {
+        let query = '';
+        if(id) {
+            query = `?application_id=${id}`;
+        }
+        const response = await fetch(`${API_URL}/api/candidate/applications${query}`,{
+            method: 'GET',
+            headers: {
+                'Authorization': refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            if(id) {
+                return {applications: data.data[0],success: true};
+            } else {
+                return {applications: data.data,success: true};
+            }
+        } else {
+            toast.error('Failed to fetch job applications!');
+            return {applications: [],success: false};
+        }
+    }
+
+    // Function to get a job application by ID for candidate // ! Candidate
+    const getJobApplication = async (applicationId: string) => {
+        const response = await fetch(`${API_URL}/api/apply/${applicationId}`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            return {application: data.application,success: true};
+        } else {
+            toast.error('Failed to fetch job application!');
+            return {application: null,success: false};
+        }
+    }
+
+    // Function to get all job applications for candidate // ! Recruiter
+    const getAllCandidateApplications = async () => {
+        const response = await fetch(`${API_URL}/api/applications/`,{
+            method: 'GET',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            return {applications: data.applications,success: true};
+        } else {
+            toast.error('Failed to fetch applications!');
+            return {applications: [],success: false};
+        }
+    }
+
+    // Function to get a job application by ID for recruiter // ! Recruiter
+    const getCandidateApplication = async (applicationId: string) => {
+        const response = await fetch(`${API_URL}/api/applications/${applicationId}`,{
+            method: 'GET',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            return {application: data.application,success: true};
+        } else {
+            toast.error('Failed to fetch application!');
+            return {application: null,success: false};
+        }
+    }
+
+    // Function to Update Status of a job application by ID for recruiter // ! Recruiter
+    const updateApplicationStatus = async (applicationId: string,status: string) => {
+        const response = await fetch(`${API_URL}/api/applications/${applicationId}`,{
+            method: 'PUT',
             headers: {
                 Authorization: refresh_token || '',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ id: jobId })
+            body: JSON.stringify({status})
         });
 
         const data = await response.json();
-        if (data.status === 200) {
-            toast.success('Job deleted successfully!');
-            getJobs();
-            navigate('/jobs');
+        if(data.status === 200) {
+            toast.success('Application status updated successfully!');
+            return true;
         } else {
-            toast.error('Job deletion failed!');
+            toast.error('Failed to update application status!');
+            return false;
         }
-    };
+    }
+
+    // Function to send email to candidate for recruiter // ! Recruiter
+    const sendEmailToCandidate = async (applicationId: string,subject: string,message: string) => {
+        const response = await fetch(`${API_URL}/api/applications/${applicationId}/email`,{
+            method: 'POST',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({subject,message})
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            toast.success('Email sent successfully!');
+            return true;
+        } else {
+            toast.error('Failed to send email!');
+            return false;
+        }
+    }
+
 
     // Provide the context to children components
     return (
@@ -452,6 +637,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             getPostData,
             forgotPassword,
             resetPassword,
+            applyJob,
+            getJobApplicationC,
 
         }}>
             {children}
@@ -462,7 +649,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 // Custom hook to use the Auth context
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    if (context === undefined) {
+    if(context === undefined) {
         throw new Error('useAuth must be used within an AuthProvider');
     }
     return context;

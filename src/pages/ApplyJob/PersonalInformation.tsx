@@ -12,6 +12,14 @@ interface PersonalInformationProps {
   setAddress: (address: string) => void;
   bio: string;
   setBio: (bio: string) => void;
+  city: string;
+  setCity: (city: string) => void;
+  state: string;
+  setState: (state: string) => void;
+  postalCode: string;
+  setPostalCode: (postalCode: string) => void;
+  email: string;
+  setEmail: (email: string) => void;
 }
 const PersonalInformation = (props: PersonalInformationProps) => {
 
@@ -28,6 +36,14 @@ const PersonalInformation = (props: PersonalInformationProps) => {
     setAddress,
     bio,
     setBio,
+    city,
+    setCity,
+    state,
+    setState,
+    postalCode,
+    setPostalCode,
+    email,
+    setEmail
   } = props;
 
   return (
@@ -84,13 +100,13 @@ const PersonalInformation = (props: PersonalInformationProps) => {
               </div>
               <div className="w-full xl:w-1/2">
                 <label className="mb-2.5 block text-black dark:text-white">
-                  Your Country
+                  Email
                 </label>
                 <input
-                  type="text"
-                  placeholder="Enter your your country"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
@@ -99,7 +115,7 @@ const PersonalInformation = (props: PersonalInformationProps) => {
             <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
               <div className="w-full">
                 <label className="mb-2.5 block text-black dark:text-white">
-                  Your Address
+                  Address
                 </label>
                 <input
                   type="text"
@@ -110,7 +126,58 @@ const PersonalInformation = (props: PersonalInformationProps) => {
                 />
               </div>
             </div>
-
+            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+              <div className="w-full xl:w-1/2">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  City
+                </label>
+                <input
+                  type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="Enter your city"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                />
+              </div>
+              <div className="w-full xl:w-1/2">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Province
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your province"
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                />
+              </div>
+            </div>
+            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+              <div className="w-full xl:w-1/2">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Postal Code
+                </label>
+                <input
+                  type="text"
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value)}
+                  placeholder="Enter your phone number"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                />
+              </div>
+              <div className="w-full xl:w-1/2">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Country
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your country"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                />
+              </div>
+            </div>
             <div className="mb-4.5">
               <label className="mb-2.5 block text-black dark:text-white">
                 Short Bio

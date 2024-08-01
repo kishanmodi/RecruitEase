@@ -1,6 +1,8 @@
 import React from 'react';
-import TableTwo from '../../pages/Applications/TableTwo';
+import TableTwo from './TableTwo';
 import DefaultLayout from '../../layout/DefaultLayout';
+import { ApplicationDetails } from "../../types/applicationdetails";
+import { useState } from "react";
 
 const Applications: React.FC = () => {
     return (
