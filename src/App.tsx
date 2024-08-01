@@ -25,17 +25,17 @@ import CandidateRoute from './route/CandidateRoutes';
 
 // Candidate Pages
 import CandidateDashboard from './pages/Dashboard/DashboardC';
-import AppliedJob from './pages/Applications/AppliedJob';
+import AppliedJob from './pages/CApplications/AppliedJob';
 import CandidateProfile from './pages/CandidateProfile/CandidateProfile';
-import Candidates from './pages/Candidate/Candidates';
+import Candidates from './pages/RCandidates/CandidateMainR';
 
 // Recruiter Pages
 import Dashboard from './pages/Dashboard/Dashboard';
 import JobPosting from './pages/JobPosting/JobPosting';
 import Jobs from './pages/Jobs/Jobs';
-import Applications from './pages/Applications/Applications';
+import Applications from './pages/CApplications/ApplicationsMainC';
 import JobApplication from './pages/ApplyJob/JobApplication';
-import JobStatus from './pages/JobPosting/JobStatus';
+import JobStatus from './pages/RCandidates/JobStatusR';
 import Profile from './pages/Profile';
 
 function App() {
@@ -166,6 +166,17 @@ function App() {
                                 <Candidates />
                             </RecruiterRoute>
                         </PrivateRoute>
+                    }
+                />
+                <Route path='candidate/:id'
+                    element={
+                        <PrivateRoute>
+                            <RecruiterRoute>
+                                <PageTitle title='Candidate Info - RecruitEase' />
+                                <JobStatus />
+                            </RecruiterRoute>
+                        </PrivateRoute>
+
                     }
                 />
                 <Route

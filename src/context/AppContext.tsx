@@ -48,6 +48,9 @@ interface AuthContextState {
     resetPassword: (email: string,otp: number,password: string,retypePassword: string) => Promise<boolean>;
     applyJob: (filledDetails: Application) => Promise<boolean>;
     getJobApplicationC: (id?: string) => Promise<{applications: any,success: boolean}>;
+    getAllCandidateApplications: (id?: string) => Promise<{applications: any,success: boolean}>;
+    updateApplicationStatus: (applicationId: string,status: string) => Promise<boolean>;
+    sendEmailToCandidate: (id: string,subject: string,message: string) => Promise<boolean>;
 }
 
 // Create Auth context
@@ -511,27 +514,15 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         }
     }
 
-    // Function to get a job application by ID for candidate // ! Candidate
-    const getJobApplication = async (applicationId: string) => {
-        const response = await fetch(`${API_URL}/api/apply/${applicationId}`,{
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-        if(data.status === 200) {
-            return {application: data.application,success: true};
-        } else {
-            toast.error('Failed to fetch job application!');
-            return {application: null,success: false};
-        }
-    }
 
     // Function to get all job applications for candidate // ! Recruiter
-    const getAllCandidateApplications = async () => {
-        const response = await fetch(`${API_URL}/api/applications/`,{
+    const getAllCandidateApplications = async (id?: string) => {
+        let query = ``;
+        if(id) {
+            query = `?application_id=${id}`;
+        }
+
+        const response = await fetch(`${API_URL}/api/applications/${query}`,{
             method: 'GET',
             headers: {
                 Authorization: refresh_token || '',
@@ -541,41 +532,22 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
 
         const data = await response.json();
         if(data.status === 200) {
-            return {applications: data.applications,success: true};
+            return {applications: data.data,success: true};
         } else {
             toast.error('Failed to fetch applications!');
             return {applications: [],success: false};
         }
     }
 
-    // Function to get a job application by ID for recruiter // ! Recruiter
-    const getCandidateApplication = async (applicationId: string) => {
-        const response = await fetch(`${API_URL}/api/applications/${applicationId}`,{
-            method: 'GET',
-            headers: {
-                Authorization: refresh_token || '',
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-        if(data.status === 200) {
-            return {application: data.application,success: true};
-        } else {
-            toast.error('Failed to fetch application!');
-            return {application: null,success: false};
-        }
-    }
-
     // Function to Update Status of a job application by ID for recruiter // ! Recruiter
     const updateApplicationStatus = async (applicationId: string,status: string) => {
-        const response = await fetch(`${API_URL}/api/applications/${applicationId}`,{
+        const response = await fetch(`${API_URL}/api/change_status/`,{
             method: 'PUT',
             headers: {
                 Authorization: refresh_token || '',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({status})
+            body: JSON.stringify({id: applicationId,status})
         });
 
         const data = await response.json();
@@ -589,14 +561,14 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     }
 
     // Function to send email to candidate for recruiter // ! Recruiter
-    const sendEmailToCandidate = async (applicationId: string,subject: string,message: string) => {
-        const response = await fetch(`${API_URL}/api/applications/${applicationId}/email`,{
+    const sendEmailToCandidate = async (id: string,subject: string,message: string) => {
+        const response = await fetch(`${API_URL}/api/send_email/`,{
             method: 'POST',
             headers: {
                 Authorization: refresh_token || '',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({subject,message})
+            body: JSON.stringify({id,subject,message})
         });
 
         const data = await response.json();
@@ -639,7 +611,9 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             resetPassword,
             applyJob,
             getJobApplicationC,
-
+            getAllCandidateApplications,
+            updateApplicationStatus,
+            sendEmailToCandidate,
         }}>
             {children}
         </AuthContext.Provider>

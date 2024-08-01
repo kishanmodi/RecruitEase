@@ -123,7 +123,7 @@ const JobApplication = () => {
       country: country,
       address: address,
       // bio: bio,
-      email: email,
+      email: `email`,
       city: city,
       province: state,
       postal_code: postalCode,

@@ -5,7 +5,7 @@ import { ApplicationDetails } from '../../types/applicationdetails';
 import { useAuth } from '../../context/AppContext';
 import Loader from '../../common/Loader';
 
-const TableTwo = () => {
+const TableTwo = ({dashboard}: {dashboard: boolean}) => {
     const { getJobApplicationC } = useAuth();
     const [applications, setApplications] = useState<ApplicationDetails[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -14,7 +14,7 @@ const TableTwo = () => {
     const [stageFilter, setStageFilter] = useState<string>('');
     const [currentPage, setCurrentPage] = useState<number>(0); // Adjusted to zero-indexed for react-paginate
     const [filteredApplications, setFilteredApplications] = useState<ApplicationDetails[]>([]);
-    const perPage: number = 5; // Number of items per page
+    const perPage: number = dashboard ? 1000000 : 5; // Number of items per page
 
     const navigate = useNavigate();
 
@@ -114,7 +114,7 @@ const TableTwo = () => {
             </div>
             {loading && <Loader />}
             <>
-                <div className='flex flex-col md:flex-row mb-5 justify-between items-center gap-6 md:gap-10'>
+                {!dashboard && <div className='flex flex-col md:flex-row mb-5 justify-between items-center gap-6 md:gap-10'>
                     {/* Search input */}
                     <input
                         type='text'
@@ -147,7 +147,7 @@ const TableTwo = () => {
                             <option key={index} value={stage}>{stage}</option>
                         ))}
                     </select>
-                </div>
+                </div>}
 
                 <div className='overflow-x-auto'>
                     <div className='min-w-[850px]'>
@@ -249,7 +249,7 @@ const TableTwo = () => {
                     </div>
                 </div>
 
-                {filteredApplications.length > perPage && (
+                {!dashboard && filteredApplications.length > perPage &&  (
                     <div className='flex justify-center items-center mt-10 mb-10'>
                         <ReactPaginate
                             previousLabel='Previous'
