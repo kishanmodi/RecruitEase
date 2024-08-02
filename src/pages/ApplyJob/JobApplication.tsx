@@ -10,6 +10,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useAuth} from "../../context/AppContext";
 import {useEffect} from "react";
 import Loader from "../../common/Loader";
+import {toast} from "react-hot-toast";
 
 const JobApplication = () => {
 
@@ -98,40 +99,40 @@ const JobApplication = () => {
       });
   },[]);
 
-  const handleNext = () => {
-    const currentIndex = pages.indexOf(currentPage);
-    if(currentIndex < pages.length - 1) {
-      setCurrentPage(pages[currentIndex + 1]);
-    }
-  };
-
   // const handleNext = () => {
-  //   const isPersonalInfoValid = firstName && lastName && phoneNumber && country && address && bio;
-  //   const isLegalInfoValid = workEligibility && sex && languagePreference && raceEthnicity && graduationYear && disabilityStatus && graduationMonth;
-  //   const isAssessmentValid = assessmentAnswers.length === assessmentQuestions.length;
-  //   const isDocumentsValid = resume;
-
-  //   switch(currentPage) {
-  //     case 'Post':
-  //       setCurrentPage('Personal Information');
-  //       break;
-  //     case 'Personal Information':
-  //       isPersonalInfoValid ? setCurrentPage('Legal') : toast.error('Please fill all the fields');
-  //       break;
-  //     case 'Legal':
-  //       isLegalInfoValid ? setCurrentPage('Assessment') : toast.error('Please fill all the fields');
-  //       break;
-  //     case 'Assessment':
-  //       isAssessmentValid ? setCurrentPage('Documents') : toast.error('Please fill all the fields');
-  //       break;
-  //     case 'Documents':
-  //       isDocumentsValid ? setCurrentPage('Review') : toast.error('Please fill all the fields');
-  //       break;
-  //     default:
-  //       // Handle unexpected currentPage values if needed
-  //       break;
+  //   const currentIndex = pages.indexOf(currentPage);
+  //   if(currentIndex < pages.length - 1) {
+  //     setCurrentPage(pages[currentIndex + 1]);
   //   }
   // };
+
+  const handleNext = () => {
+    const isPersonalInfoValid = firstName && lastName && phoneNumber && country && address && bio && city && state && postalCode && email;
+    const isLegalInfoValid = workEligibility && sex && languagePreference && raceEthnicity && graduationYear && disabilityStatus && graduationMonth;
+    const isAssessmentValid = assessmentAnswers.length === assessmentQuestions.length;
+    const isDocumentsValid = resume;
+
+    switch(currentPage) {
+      case 'Post':
+        setCurrentPage('Personal Information');
+        break;
+      case 'Personal Information':
+        isPersonalInfoValid ? setCurrentPage('Legal') : toast.error('Please fill all the fields');
+        break;
+      case 'Legal':
+        isLegalInfoValid ? setCurrentPage('Assessment') : toast.error('Please fill all the fields');
+        break;
+      case 'Assessment':
+        isAssessmentValid ? setCurrentPage('Documents') : toast.error('Please fill all the fields');
+        break;
+      case 'Documents':
+        isDocumentsValid ? setCurrentPage('Review') : toast.error('Please fill all the fields');
+        break;
+      default:
+        toast.error('Invalid page');
+        break;
+    }
+  };
 
   const handleSubmit = async () => {
     // Submit the form

@@ -479,7 +479,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 navigate('/');
                 return true;
             } else {
-                toast.error('There was an error applying to this job!');
+                toast.error(data.error || 'Failed to apply to this job!');
                 return false;
             }
         } catch(error) {
