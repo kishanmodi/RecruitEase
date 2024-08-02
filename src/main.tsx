@@ -12,15 +12,16 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <Router>
             <AuthProvider>
-
                 <Toaster
                     toastOptions={{
                         style: {
+                            background: '#ffffff',  // Pure white background
+                            color: '#333333',      // Dark gray text for a softer contrast
                             width: '100%',
-                            maxWidth: '400px',
-                            padding: '16px',
+                            maxWidth: '350px',     // Narrower maxWidth for a sleeker look
+                            padding: '10px 15px', // Reduced padding with horizontal padding for balance
                             borderRadius: '8px',
-                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',  // Equal shadow values
                             textAlign: 'center',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
@@ -28,6 +29,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                         },
                     }}
                 />
+
 
                 <App />
             </AuthProvider>

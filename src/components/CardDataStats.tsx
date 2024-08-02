@@ -5,7 +5,7 @@ interface CardDataStatsProps {
     location: string;
     applicants: number;
     daysLeft: number;
-    appliedToday: number;
+    appliedToday: string;
     children: ReactNode;
 }
 

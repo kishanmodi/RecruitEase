@@ -1,5 +1,5 @@
 import DefaultLayout from '../../layout/DefaultLayout';
-import {useState} from 'react';
+import {ChangeEvent, useState} from 'react';
 import SingleOption from '../../components/Forms/SelectGroup/SingleOption';
 import {Editor} from '@tinymce/tinymce-react';
 import {BsEnvelope} from 'react-icons/bs';
@@ -23,6 +23,7 @@ const JobStatus = () => {
     const [applicationDetails,setApplicationDetails] = useState<ApplicationDetails | null>(null);
     const [status,setStatus] = useState(applicationDetails?.status || 'New Application');
     const [emailContent,setEmailContent] = useState(``);
+    const [offerLetter,setOfferLetter] = useState<File | null>(null);
 
     const fetchApplications = async () => {
         try {
@@ -75,11 +76,12 @@ const JobStatus = () => {
             setLoading(false);
         }
     };
+
     useEffect(() => {
         if(id) {
             fetchApplications();
         }
-    },[id,getAllCandidateApplications]);
+    },[]);
 
     const [viewStatus,setViewStatus] = useState(false);
 
@@ -114,15 +116,29 @@ const JobStatus = () => {
                 return;
             }
             setLoading(true);
-            const success = await updateApplicationStatus(id || "",status);
+            const success = await updateApplicationStatus(id || "",status, offerLetter);
             if(success) {
                 fetchApplications();
+                setOfferLetter(null);
             }
         } catch(error) {
             console.error('Error updating application status:',error);
         } finally {
             setLoading(false);
         }
+    }
+
+
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if(files && files.length > 0) {
+            setOfferLetter(files[0]);
+        }
+    }
+
+    const handleRemoveFile = () => {
+        setOfferLetter(null);
     }
 
     return (
@@ -184,29 +200,48 @@ const JobStatus = () => {
                             </div>
                             <div className='flex flex-col gap-9 mt-10'>
                                 {status === 'Offer Sent' &&
-                                    <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark'>
-                                        <div className='border-b border-stroke py-4 px-6.5 dark:border-strokedark'>
-                                            <h3 className='font-medium text-black dark:text-white'>
-                                                Offer Letter
-                                            </h3>
-                                        </div>
-                                        <div className='flex flex-col gap-5.5 p-6.5'>
+                                    <div className="p-6.5 space-y-6">
+                                        <div className="flex flex-col gap-6">
+                                            <label className="mb-2.5 block text-black dark:text-white">
+                                                {offerLetter ? "Uploaded Resume" : "Upload Resume"}
+                                            </label>
 
-                                            <div className="flex items-center justify-center w-full">
-                                                <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                            {offerLetter ? (
+                                                <div className="flex flex-col items-center justify-center w-full">
                                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                        <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                                        <svg className="w-8 h-8 mb-4 text-green-500 dark:text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                                         </svg>
-                                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                                        <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">File Name:</span> {offerLetter.name}</p>
+                                                        <p className="text-xs text-gray-500 dark:text-gray-400">Size: {(offerLetter.size / 1024).toFixed(2)} KB</p>
+                                                        <button
+                                                            className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
+                                                            onClick={handleRemoveFile}
+                                                        >
+                                                            Remove File
+                                                        </button>
                                                     </div>
-                                                    <input id="dropzone-file" type="file" className="hidden" />
-                                                </label>
-                                            </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center justify-center w-full">
+                                                    <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                            <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                                            </svg>
+                                                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                                                            <p className="text-xs text-gray-500 dark:text-gray-400">PDF, DOC, DOCX</p>
+                                                        </div>
+                                                        <input id="dropzone-file" className="hidden" type="file"
+                                                            accept=".pdf,.doc,.docx"
+                                                            onChange={handleFileChange} />
+                                                    </label>
+                                                </div>
+                                            )}
 
                                         </div>
-                                    </div>}
+                                    </div>
+                                }
                             </div>
 
                             {/* Submit */}
