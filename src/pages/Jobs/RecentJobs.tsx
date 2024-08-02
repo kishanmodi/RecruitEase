@@ -1,31 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React,{useState,useEffect} from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { BsBoxArrowUpRight } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
+import {BsBoxArrowUpRight} from 'react-icons/bs';
+import {useNavigate} from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
-import { useAuth } from '../../context/AppContext';
+import {useAuth} from '../../context/AppContext';
 import Loader from '../../common/Loader';
-
+import {Link} from 'react-router-dom';
 
 const ITEMS_PER_PAGE = 10;
 
 const RecentJobs: React.FC = () => {
-    const [searchTerm, setSearchTerm] = useState<string>('');
-    const [locationFilter, setLocationFilter] = useState<string>('');
-    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [searchTerm,setSearchTerm] = useState<string>('');
+    const [locationFilter,setLocationFilter] = useState<string>('');
+    const [currentPage,setCurrentPage] = useState<number>(0);
     const navigate = useNavigate();
-    const { getRecentJobs } = useAuth();
-    const [jobs, setJobs] = useState<any>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const {getRecentJobs} = useAuth();
+    const [jobs,setJobs] = useState<any>([]);
+    const [loading,setLoading] = useState<boolean>(true);
 
     const getJobs = async () => {
         try {
             setLoading(true);
             const response = await getRecentJobs();
             setJobs(response.jobs);
-        } catch (error) {
-            console.log('Error fetching jobs', error);
+        } catch(error) {
+            console.log('Error fetching jobs',error);
         } finally {
             setLoading(false);
         }
@@ -33,13 +33,13 @@ const RecentJobs: React.FC = () => {
 
     useEffect(() => {
         getJobs();
-    }, []);
+    },[]);
 
     // Function to generate random color
     const getRandomColor = () => {
         const colors = [
-            '#FFB800', '#FF4D4F', '#40A9FF', '#36CFC9', '#9254DE',
-            '#F759AB', '#FF7A45', '#00C1DE', '#4482FF', '#F5317F'
+            '#FFB800','#FF4D4F','#40A9FF','#36CFC9','#9254DE',
+            '#F759AB','#FF7A45','#00C1DE','#4482FF','#F5317F'
         ];
         return colors[Math.floor(Math.random() * colors.length)];
     };
@@ -68,7 +68,7 @@ const RecentJobs: React.FC = () => {
         (currentPage + 1) * ITEMS_PER_PAGE
     );
 
-    const handlePageChange = (selected: { selected: number }) => {
+    const handlePageChange = (selected: {selected: number}) => {
         setCurrentPage(selected.selected);
     };
 
@@ -101,7 +101,7 @@ const RecentJobs: React.FC = () => {
                                 onChange={handleLocationFilterChange}
                             >
                                 <option value=''>Location</option>
-                                {uniqueCities.map((city, index) => (
+                                {uniqueCities.map((city,index) => (
                                     <option key={index} value={city}>{city}</option>
                                 ))}
                             </select>
@@ -109,7 +109,9 @@ const RecentJobs: React.FC = () => {
                     </div>
 
                     <div className='grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5'>
-                        {currentJobs.map((job: {job_title: string; location: any; num_applicants: number; deadline: string | number | Date; applied_today: any; posting_id: any;}, index: React.Key | null | undefined) => (
+                        {currentJobs.map((job: {
+                            company_name: string; job_title: string; location: any; num_applicants: number; deadline: string | number | Date; applied_today: any; posting_id: any;
+                        },index: React.Key | null | undefined) => (
                             <CardDataStats
                                 key={index}
                                 jobTitle={job.job_title}
@@ -117,6 +119,7 @@ const RecentJobs: React.FC = () => {
                                 applicants={job.num_applicants} // Fixed value
                                 daysLeft={Math.ceil((new Date(job.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
                                 appliedToday={`${job.applied_today}`} // Fixed value
+                                company_name={job.company_name}
                             >
                                 <svg
                                     width='36'
@@ -139,10 +142,11 @@ const RecentJobs: React.FC = () => {
                                     />
                                 </svg>
                                 <div className='cursor-pointer'>
-                                    <BsBoxArrowUpRight
-                                        onClick={() => navigate(`/apply/${job.posting_id}`)}
-                                    />
-                                </div>
+                                        {/* Apply Icon */}
+                                        <Link to={`/apply/${job.posting_id}`}>
+                                            <BsBoxArrowUpRight className='text-primary text-2xl' />
+                                        </Link>
+                                    </div>
                             </CardDataStats>
                         ))}
                     </div>

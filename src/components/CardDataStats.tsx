@@ -6,6 +6,7 @@ interface CardDataStatsProps {
     applicants: number;
     daysLeft: number;
     appliedToday: string;
+    company_name: string;
     children: ReactNode;
 }
 
@@ -13,7 +14,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
     jobTitle,
     location,
     applicants,
-
+    company_name,
     appliedToday,
     children
 }) => {
@@ -24,10 +25,13 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
             </div>
 
             <div className='mt-4 flex flex-col items-start justify-between'>
-                <div className='flex flex-col mb-4'>
+                <div className='flex flex-col'>
                     <h3 className='text-lg font-semibold dark:text-white mb-1'>
-                        {jobTitle}
+                        {jobTitle} 
                     </h3>
+                    <p className='text-sm text-teal-500  mb-4'>
+                        {company_name}
+                    </p>
                     <div className='flex flex-row w-full items-center'>
                         <svg
                             xmlns='http://www.w3.org/2000/svg'

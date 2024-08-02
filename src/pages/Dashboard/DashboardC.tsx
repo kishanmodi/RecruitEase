@@ -69,6 +69,7 @@ const Dashboard: React.FC = () => {
                 <div className='overflow-x-auto'>
                     <div className='flex flex-nowrap space-x-4 md:space-x-6 xl:space-x-7.5'>
                         {dashboardJobs.map((job: {
+                            company_name: string;
                             applied_today: string;
                             num_applicants: number; job_title: string; city: any; location: any; deadline: string | number | Date; posting_id: string;
                         },index: React.Key | null | undefined) => (
@@ -76,6 +77,7 @@ const Dashboard: React.FC = () => {
                                 <CardDataStats
                                     jobTitle={job.job_title}
                                     location={` ${job.location}`}
+                                    company_name={job.company_name}
                                     applicants={job.num_applicants} // Fixed value
                                     daysLeft={Math.ceil((new Date(job.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
                                     appliedToday={""+job.applied_today} // Fixed value
