@@ -1,5 +1,5 @@
 import React from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import {Document,Page,pdfjs} from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
 // Set the worker URL for PDF.js
@@ -9,16 +9,16 @@ interface PdfViewerProps {
   file: string;
 }
 
-const PdfViewer = ({ file }: PdfViewerProps) => {
-  const [numPages, setNumPages] = React.useState<number | null>(null);
-  const [pageNumber, setPageNumber] = React.useState(1);
+const PdfViewer = ({file}: PdfViewerProps) => {
+  const [numPages,setNumPages] = React.useState<number | null>(null);
+  const [pageNumber,setPageNumber] = React.useState(1);
 
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+  const onDocumentLoadSuccess = ({numPages}: {numPages: number}) => {
     setNumPages(numPages);
   };
 
   const onLoadError = (error: any) => {
-    console.error('Error loading PDF: ', error);
+    console.error('Error loading PDF: ',error);
   };
 
   return (
@@ -37,6 +37,19 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
             />
           </Document>
         </div>
+      </div>
+      <div className="flex justify-between px-2">
+        <button onClick={() => setPageNumber(pageNumber - 1)} disabled={pageNumber <= 1}
+          className='mr-2'>
+          Previous
+        </button>
+        <p>
+          Page {pageNumber} of {numPages}
+        </p>
+
+        <button onClick={() => setPageNumber(pageNumber + 1)} disabled={pageNumber >= numPages}>
+          Next
+        </button>
       </div>
     </div>
   );

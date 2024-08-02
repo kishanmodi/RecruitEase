@@ -6,7 +6,7 @@ import Documents from "./Documents";
 import Review from "./Review";
 import Assessment from "./Assessment";
 import JobPost from "./JobPost";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useAuth} from "../../context/AppContext";
 import {useEffect} from "react";
 import Loader from "../../common/Loader";
@@ -19,7 +19,7 @@ const JobApplication = () => {
 
   const {id} = useParams<{id: string | undefined}>(); // Assuming jobId is part of the URL parameters
   const jobId = id || ''; // Set a default value for id if it is undefined
-  const {getPostData,applyJob} = useAuth();
+  const {getPostData,applyJob, getProfileData} = useAuth();
 
   const [job,setJob] = useState<any>(null);
   const [loading,setLoading] = useState(true);
@@ -54,7 +54,7 @@ const JobApplication = () => {
   // Documents States
   const [resume,setResume] = useState<File | null >(null);
 
-
+  const navigate = useNavigate();
   useEffect(() => {
     if(id) {
       setLoading(true);
@@ -64,7 +64,7 @@ const JobApplication = () => {
             setJob(data.job);
             setAssessmentQuestions(data.job.questions);
           } else {
-            setError('Failed to fetch job details');
+            navigate('/'); // Redirect to home page if job details are not found
           }
         })
         .catch(() => {
@@ -75,6 +75,28 @@ const JobApplication = () => {
         });
     }
   },[id]);
+
+  useEffect(() => {
+    setLoading(true);
+    getProfileData()
+      .then((data: any) => {
+        if(data.success) {
+          setFirstName(data.profile.first_name);
+          setLastName(data.profile.last_name);
+          setPhoneNumber(data.profile.phone);
+          setCountry(data.profile.country);
+          setAddress(data.profile.address);
+          setBio(data.profile.short_bio);
+          setCity(data.profile.city);
+          setState(data.profile.province);
+          setPostalCode(data.profile.postal_code);
+          setEmail(data.profile.email);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  },[]);
 
   const handleNext = () => {
     const currentIndex = pages.indexOf(currentPage);
