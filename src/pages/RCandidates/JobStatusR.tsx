@@ -10,6 +10,7 @@ import {useAuth} from '../../context/AppContext';
 import {ApplicationDetails} from '../../types/applicationdetails';
 import Loader from '../../common/Loader';
 import JobApplication from './JobApplicationDetailsR';
+import toast from 'react-hot-toast';
 const EDITOR_API_KEY = (import.meta as any).env.VITE_EDITOR_API_KEY;
 
 const JobStatus = () => {
@@ -108,6 +109,10 @@ const JobStatus = () => {
 
     const handleUpdateStatus = async () => {
         try {
+            if(status === applicationDetails?.status) {
+                toast.error('Please select a different status to update');
+                return;
+            }
             setLoading(true);
             const success = await updateApplicationStatus(id || "",status);
             if(success) {
@@ -169,7 +174,7 @@ const JobStatus = () => {
                                     <div className='flex flex-col gap-5.5 p-6.5'>
                                         <SingleOption
                                             label=''
-                                            options={['New Application','Under Review','Interview Scheduled','Under Evaluation','Offered','Offer Accepted','Offer Declined','Not Selected']}
+                                            options={['Application Submitted','Under Review','Interview Scheduled','Under Evaluation','Offer Sent','Not Selected']}
                                             selectedOption={status}
                                             setSelectedOption={setStatus}
                                             icon={<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"> <path fillRule="evenodd" d="M10 12a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" /> <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16z" clipRule="evenodd" /> </svg>}
@@ -178,7 +183,7 @@ const JobStatus = () => {
                                 </div>
                             </div>
                             <div className='flex flex-col gap-9 mt-10'>
-                                {status === 'Offered' &&
+                                {status === 'Offer Sent' &&
                                     <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark'>
                                         <div className='border-b border-stroke py-4 px-6.5 dark:border-strokedark'>
                                             <h3 className='font-medium text-black dark:text-white'>

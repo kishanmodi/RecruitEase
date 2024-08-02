@@ -51,6 +51,10 @@ interface AuthContextState {
     getAllCandidateApplications: (id?: string) => Promise<{applications: any,success: boolean}>;
     updateApplicationStatus: (applicationId: string,status: string) => Promise<boolean>;
     sendEmailToCandidate: (id: string,subject: string,message: string) => Promise<boolean>;
+    getProfileData: () => Promise<{profile: any,success: boolean}>;
+    saveProfileData: (profile: any) => Promise<boolean>;
+    getProfileDataRecruiter: () => Promise<{profile: any,success: boolean}>;
+    saveProfileDataRecruiter: (profile: any) => Promise<boolean>;
 }
 
 // Create Auth context
@@ -581,7 +585,85 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         }
     }
 
+    // Function to get profile data for candidate // ! Candidate
+    const getProfileData = async () => {
+        const response = await fetch(`${API_URL}/api/candidate/get_profile/`,{
+            method: 'GET',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
 
+        const data = await response.json();
+        if(data.status === 200) {
+            return {profile: data.data,success: true};
+        } else {
+            toast.error('Failed to fetch profile data!');
+            return {profile: null,success: false};
+        }
+    }
+
+    // Function to Save profile data for candidate // ! Candidate
+    const saveProfileData = async (profile: any) => {
+        const response = await fetch(`${API_URL}/api/candidate/save_profile/`,{
+            method: 'POST',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(profile)
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            toast.success('Profile data saved successfully!');
+            return true;
+        } else {
+            toast.error('Failed to save profile data!');
+            return false;
+        }
+    }
+
+    // Function to get Profile data for recruiter // ! Recruiter
+    const getProfileDataRecruiter = async () => {
+        const response = await fetch(`${API_URL}/api/get_profile/`,{
+            method: 'GET',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            return {profile: data.data,success: true};
+        } else {
+            toast.error('Failed to fetch profile data!');
+            return {profile: null,success: false};
+        }
+    }
+
+    // Function to Save profile data for recruiter // ! Recruiter
+    const saveProfileDataRecruiter = async (profile: any) => {
+        const response = await fetch(`${API_URL}/api/save_profile/`,{
+            method: 'POST',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(profile)
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            toast.success('Profile data saved successfully!');
+            return true;
+        } else {
+            toast.error('Failed to save profile data!');
+            return false;
+        }
+    }
     // Provide the context to children components
     return (
         <AuthContext.Provider value={{
@@ -614,6 +696,10 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             getAllCandidateApplications,
             updateApplicationStatus,
             sendEmailToCandidate,
+            getProfileData,
+            saveProfileData,
+            getProfileDataRecruiter,
+            saveProfileDataRecruiter,
         }}>
             {children}
         </AuthContext.Provider>
