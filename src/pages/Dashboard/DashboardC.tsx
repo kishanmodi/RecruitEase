@@ -59,7 +59,7 @@ const Dashboard: React.FC = () => {
                     Current Openings ({dashboardJobs.length})
                 </h2>
                 <div className='text-primary font-bold'>
-                    <Link to='/jobs'>
+                    <Link to='/recent-jobs'>
                         <span className='cursor-pointer'>See All</span>
                     </Link>
                 </div>
@@ -120,12 +120,6 @@ const Dashboard: React.FC = () => {
                         <p className="text-gray-600 dark:text-gray-400 mb-6">
                             It looks like there are currently no job postings available.
                         </p>
-                        <button
-                            className="bg-primary text-white px-4 py-2 rounded-md font-medium hover:bg-primary-dark transition-colors"
-                            onClick={() => navigate('/job')}
-                        >
-                            Create Job
-                        </button>
                     </div>
                 </div>}
 
