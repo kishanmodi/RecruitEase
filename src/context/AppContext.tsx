@@ -6,7 +6,7 @@ import {Application} from '../types/application';
 
 // Regex pattern for password validation
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-const API_URL = 'http://localhost:8000';
+const API_URL = 'http://13.232.238.173:8000';
 
 // Auth context interface
 interface AuthContextState {
