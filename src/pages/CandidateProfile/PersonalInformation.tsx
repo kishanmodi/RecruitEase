@@ -43,7 +43,6 @@ const PersonalInformation = (props: PersonalInformationProps) => {
     postalCode,
     setPostalCode,
     email,
-    setEmail
   } = props;
 
   return (

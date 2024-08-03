@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState} from 'react';
 import {Link} from 'react-router-dom';
 
-import UserOne from '../../images/logo/meta.png';
+import UserOne from '../../images/logo/Logo-6.jpg';
 import UserTwo from '../../images/user/user.png';
 import {useAuth} from '../../context/AppContext';
 
@@ -55,20 +55,20 @@ const DropdownUser = () => {
                 </span>
 
                 <span className='relative h-12 w-12 rounded-full border overflow-hidden'>
-    {isRecruiter ? 
-        <img
-            src={UserOne}
-            alt='User'
-            className='object-contain w-full h-full'
-        />
-        : 
-        <img
-            src={UserTwo}
-            alt='User'
-            className='object-contain w-full h-full'
-        />
-    }
-</span>
+                    {isRecruiter ?
+                        <img
+                            src={UserOne}
+                            alt='User'
+                            className='object-contain w-full h-full'
+                        />
+                        :
+                        <img
+                            src={UserTwo}
+                            alt='User'
+                            className='object-contain w-full h-full'
+                        />
+                    }
+                </span>
 
 
                 <svg

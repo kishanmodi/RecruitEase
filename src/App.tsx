@@ -37,6 +37,7 @@ import Applications from './pages/CApplications/ApplicationsMainC';
 import JobApplication from './pages/ApplyJob/JobApplication';
 import JobStatus from './pages/RCandidates/JobStatusR';
 import Profile from './pages/Profile';
+import RecentJobs from './pages/Jobs/RecentJobs';
 
 function App() {
     const [loading,setLoading] = useState<boolean>(true);
@@ -248,6 +249,21 @@ function App() {
                         </ApplyRoute>
                     }
                 />
+
+                <Route
+                    path="/recent-jobs"
+                    element={
+                        <ApplyRoute>
+                            <PrivateRoute>
+                                <CandidateRoute>
+                                    <PageTitle title="Recent Jobs - RecruitEase" />
+                                    <RecentJobs />
+                                </CandidateRoute>
+                            </PrivateRoute>
+                        </ApplyRoute>
+                    }
+                />
+
             </Routes>
         </>
     );

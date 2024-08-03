@@ -4,8 +4,8 @@ interface CardDataStatsProps {
     jobTitle: string;
     location: string;
     applicants: number;
-    daysLeft: number;
-    appliedToday: number;
+    company_name?: string;
+    appliedToday: string;
     children: ReactNode;
 }
 
@@ -13,23 +13,25 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
     jobTitle,
     location,
     applicants,
-
+    company_name,
     appliedToday,
     children
 }) => {
     return (
-        <div className='rounded-sm border border-stroke bg-white py-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark'>
-            <div className='flex h-11.5 items-center rounded-full justify-between w-full'>
+        <div className='rounded-xl border border-gray-200 bg-white py-6 px-8 shadow-lg dark:border-gray-700 dark:bg-gray-800 transition duration-300'>
+            <div className='flex items-center justify-between w-full mb-6'>
                 {children}
             </div>
 
-            <div className='mt-4 flex flex-col items-start justify-between'>
-                <div className='flex flex-col mb-4'>
-                    <h3 className='text-lg font-semibold dark:text-white mb-1'>
-                        {jobTitle}
-                    </h3>
-                    <div className='flex flex-row w-full items-center'>
-                        <svg
+            <div className='flex flex-col'>
+                <h3 className='text-2xl font-bold text-gray-800 dark:text-white mb-2'>
+                    {jobTitle}
+                </h3>
+               {company_name && <p className='text-md text-teal-600 dark:text-teal-400 mb-4'>
+                    {company_name}
+                </p>}
+                <div className='flex items-center mb-6'>
+                <svg
                             xmlns='http://www.w3.org/2000/svg'
                             xmlnsXlink='http://www.w3.org/1999/xlink'
                             version='1.1'
@@ -69,24 +71,24 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
                                 />
                             </g>
                         </svg>
-                        <p className='text-xs dark:text-white ml-1'>
-                            {location}
-                        </p>
-                    </div>
+                    <p className='text-sm text-gray-600 dark:text-gray-300 ml-2'>
+                        {location}
+                    </p>
                 </div>
-                <div className='flex flex-row justify-between items-evenly w-full'>
-                    <h2 className='flex flex-row items-center'>
-                        <span className='text-xl font-semibold dark:text-white mr-2'>
+
+                <div className='flex justify-between items-center'>
+                    <div className='flex items-center'>
+                        <span className='text-3xl font-bold text-gray-800 dark:text-white mr-2'>
                             {applicants}
                         </span>
-                        <span className='text-sm  dark:text-white'>
+                        <span className='text-lg text-gray-600 dark:text-gray-300'>
                             Applicants
                         </span>
-                    </h2>
-                    <div className='flex flex-row items-center'>
-                        <h3 className='text-xs  dark:text-white border rounded px-2 py-1.5 text-meta-3'>
+                    </div>
+                    <div className='flex items-center'>
+                        <span className='text-sm text-white bg-teal-500 rounded-full px-3 py-1'>
                             + {appliedToday} Today
-                        </h3>
+                        </span>
                     </div>
                 </div>
             </div>

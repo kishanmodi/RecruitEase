@@ -1,12 +1,12 @@
 import React from 'react';
 import PdfViewer from '../../components/PDFViewer';
-import {ApplicationDetails} from '../../types/applicationdetails';
+import { ApplicationDetails } from '../../types/applicationdetails';
 
 interface ReviewProps {
     applicationDetails: ApplicationDetails;
 }
 
-const Review: React.FC<ReviewProps> = ({applicationDetails}: ReviewProps) => {
+const Review: React.FC<ReviewProps> = ({ applicationDetails }: ReviewProps) => {
     const {
         first_name: firstName,
         last_name: lastName,
@@ -33,30 +33,28 @@ const Review: React.FC<ReviewProps> = ({applicationDetails}: ReviewProps) => {
         resume,
     } = applicationDetails;
 
-    const base64ToBlob = (base64: string,mimeType: string) => {
-        const base64String = base64.replace(/^data:(.*?);base64,/,'');
+    const base64ToBlob = (base64: string, mimeType: string) => {
+        const base64String = base64.replace(/^data:(.*?);base64,/, '');
         const byteCharacters = atob(base64String);
-        const byteNumbers = Array.from(byteCharacters).map(char => char.charCodeAt(0));
+        const byteNumbers = Array.from(byteCharacters).map((char) => char.charCodeAt(0));
         const byteArray = new Uint8Array(byteNumbers);
-        return new Blob([byteArray],{type: mimeType});
+        return new Blob([byteArray], { type: mimeType });
     };
 
-    const resumeBlob = resume ? base64ToBlob(resume,'application/pdf') : null;
+    const resumeBlob = resume ? base64ToBlob(resume, 'application/pdf') : null;
     const resumePreviewUrl = resumeBlob ? URL.createObjectURL(resumeBlob) : null;
 
-    const [showResume,setShowResume] = React.useState(false);
+    const [showResume, setShowResume] = React.useState(false);
 
     return (
-        <div className="p-6 space-y-6">
-
+        <div className="p-6 space-y-6 bg-gray-50">
             {/* Personal Information */}
-            <section className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                    <h3 className="font-medium text-black dark:text-white">Personal Information</h3>
+            <section className="rounded-md border border-gray-300 bg-white shadow-md">
+                <div className="border-b border-gray-200 py-4 px-6 bg-gray-100">
+                    <h3 className="font-medium text-gray-900">Personal Information</h3>
                 </div>
-                <div className="p-6.5">
-                    {/* Personal Information */}
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                <div className="p-6">
+                    <div className="mb-4 flex flex-col gap-6 xl:flex-row">
                         <div className="w-full xl:w-1/2">
                             <p><strong>First Name:</strong> {firstName}</p>
                         </div>
@@ -65,7 +63,7 @@ const Review: React.FC<ReviewProps> = ({applicationDetails}: ReviewProps) => {
                         </div>
                     </div>
 
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                    <div className="mb-4 flex flex-col gap-6 xl:flex-row">
                         <div className="w-full xl:w-1/2">
                             <p><strong>Email:</strong> {email}</p>
                         </div>
@@ -74,7 +72,7 @@ const Review: React.FC<ReviewProps> = ({applicationDetails}: ReviewProps) => {
                         </div>
                     </div>
 
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                    <div className="mb-4 flex flex-col gap-6 xl:flex-row">
                         <div className="w-full xl:w-1/2">
                             <p><strong>Address:</strong> {address}</p>
                         </div>
@@ -83,7 +81,7 @@ const Review: React.FC<ReviewProps> = ({applicationDetails}: ReviewProps) => {
                         </div>
                     </div>
 
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                    <div className="mb-4 flex flex-col gap-6 xl:flex-row">
                         <div className="w-full xl:w-1/2">
                             <p><strong>Province:</strong> {province}</p>
                         </div>
@@ -92,7 +90,7 @@ const Review: React.FC<ReviewProps> = ({applicationDetails}: ReviewProps) => {
                         </div>
                     </div>
 
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                    <div className="mb-4 flex flex-col gap-6 xl:flex-row">
                         <div className="w-full xl:w-1/2">
                             <p><strong>Country:</strong> {country}</p>
                         </div>
@@ -101,7 +99,7 @@ const Review: React.FC<ReviewProps> = ({applicationDetails}: ReviewProps) => {
                         </div>
                     </div>
 
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                    <div className="mb-4 flex flex-col gap-6 xl:flex-row">
                         <div className="w-full xl:w-1/2">
                             <p><strong>Company Name:</strong> {companyName}</p>
                         </div>
@@ -110,15 +108,14 @@ const Review: React.FC<ReviewProps> = ({applicationDetails}: ReviewProps) => {
                         </div>
                     </div>
                 </div>
-
             </section>
 
             {/* Legal Questions */}
-            <section className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                    <h3 className="font-medium text-black dark:text-white">Legal Questions</h3>
+            <section className="rounded-md border border-gray-300 bg-white shadow-md">
+                <div className="border-b border-gray-200 py-4 px-6 bg-gray-100">
+                    <h3 className="font-medium text-gray-900">Legal Questions</h3>
                 </div>
-                <div className="p-6.5 space-y-2">
+                <div className="p-6 space-y-2">
                     <p><strong>Legally Eligible to Work:</strong> {eligibleToWork}</p>
                     <p><strong>Sex:</strong> {sex}</p>
                     <p><strong>Language Preference:</strong> {languagePreference}</p>
@@ -130,40 +127,41 @@ const Review: React.FC<ReviewProps> = ({applicationDetails}: ReviewProps) => {
             </section>
 
             {/* Assessment Questions */}
-            <section className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                    <h3 className="font-medium text-black dark:text-white">Assessment Questions</h3>
+            <section className="rounded-md border border-gray-300 bg-white shadow-md">
+                <div className="border-b border-gray-200 py-4 px-6 bg-gray-100">
+                    <h3 className="font-medium text-gray-900">Assessment Questions</h3>
                 </div>
-                <div className="p-6.5 space-y-2">
-                    {assessmentQuestions.map((questionObj,index) => (
+                <div className="p-6 space-y-2">
+                    {assessmentQuestions.map((questionObj, index) => (
                         <p key={index}><strong>{questionObj.question}</strong>: {questionObj.answer}</p>
                     ))}
                 </div>
             </section>
 
             {/* Resume */}
-            <section className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                    <h3 className="font-medium text-black dark:text-white text-center">Resume</h3>
+            <section className="rounded-md border border-gray-300 bg-white shadow-md">
+                <div className="border-b border-gray-200 py-4 px-6 bg-gray-100 text-center">
+                    <h3 className="font-medium text-gray-900">Resume</h3>
                 </div>
-                {/* Button */}
-                <div className="p-0 flex justify-center my-8">
+                <div className="p-6 flex justify-center">
                     <button
-                        className="px-4 py-2 bg-primary text-white rounded hover:bg-opacity-90"
+                        className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition"
                         onClick={() => setShowResume(!showResume)}
                     >
                         {showResume ? 'Hide Resume' : 'Show Resume'}
                     </button>
                 </div>
-                {showResume && <div className="p-3 text-center">
-                    {resumePreviewUrl ? (
-                        <div className="mb-4">
-                            <PdfViewer file={resumePreviewUrl} />
-                        </div>
-                    ) : (
-                        <p>No resume was uploaded</p>
-                    )}
-                </div>}
+                {showResume && (
+                    <div className="p-6">
+                        {resumePreviewUrl ? (
+                            <div className="mb-4">
+                                <PdfViewer file={resumePreviewUrl} />
+                            </div>
+                        ) : (
+                            <p>No resume was uploaded</p>
+                        )}
+                    </div>
+                )}
             </section>
         </div>
     );

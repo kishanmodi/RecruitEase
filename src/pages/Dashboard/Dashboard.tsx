@@ -58,9 +58,8 @@ const Dashboard: React.FC = () => {
                                 <CardDataStats
                                     jobTitle={job.title}
                                     location={`${job.city}, ${job.country}`}
-                                    applicants={150} // Fixed value
-                                    daysLeft={Math.ceil((new Date(job.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
-                                    appliedToday={10} // Fixed value
+                                    applicants={job.num_applications} // Fixed value
+                                    appliedToday={job.applied_today} // Fixed value
                                 >
                                     <svg
                                         width='36'

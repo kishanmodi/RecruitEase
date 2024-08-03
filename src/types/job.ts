@@ -1,4 +1,7 @@
 export interface Job {
+    applied_today: string;
+    appliedToday: string;
+    num_applications: number;
     id: string;
     title: string;
     department: string;
