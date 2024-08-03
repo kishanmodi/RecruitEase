@@ -176,7 +176,7 @@ const Jobs: React.FC = () => {
                     </div>
 
                     {/* Pagination Controls */}
-                    {filteredJobs.length > 0 && (
+                    {filteredJobs.length > ITEMS_PER_PAGE && filteredJobs.length > 0 && (
                         <div className='flex justify-center items-center mt-10 mb-10'>
                             <ReactPaginate
                                 previousLabel='Previous'
