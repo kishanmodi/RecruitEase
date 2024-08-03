@@ -2,7 +2,6 @@ import React,{useState,useEffect} from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import DefaultLayout from '../../layout/DefaultLayout';
 import {BsBoxArrowUpRight} from 'react-icons/bs';
-import {useNavigate} from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import {useAuth} from '../../context/AppContext';
 import Loader from '../../common/Loader';
@@ -14,7 +13,6 @@ const RecentJobs: React.FC = () => {
     const [searchTerm,setSearchTerm] = useState<string>('');
     const [locationFilter,setLocationFilter] = useState<string>('');
     const [currentPage,setCurrentPage] = useState<number>(0);
-    const navigate = useNavigate();
     const {getRecentJobs} = useAuth();
     const [jobs,setJobs] = useState<any>([]);
     const [loading,setLoading] = useState<boolean>(true);
@@ -73,7 +71,7 @@ const RecentJobs: React.FC = () => {
     };
 
     // Unique city options for the dropdown
-    const uniqueCities = Array.from(new Set(jobs.map((job: {location: string;}) => job.location.split(',')[0])));
+    const uniqueCities: string[] = Array.from(new Set(jobs.map((job: {location: string;}) => job.location.split(',')[0])));
 
     return (
         <DefaultLayout>
@@ -117,7 +115,7 @@ const RecentJobs: React.FC = () => {
                                 jobTitle={job.job_title}
                                 location={`${job.location}`}
                                 applicants={job.num_applicants} // Fixed value
-                                daysLeft={Math.ceil((new Date(job.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
+                                // daysLeft={Math.ceil((new Date(job.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
                                 appliedToday={`${job.applied_today}`} // Fixed value
                                 company_name={job.company_name}
                             >

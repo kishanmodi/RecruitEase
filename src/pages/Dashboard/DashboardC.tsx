@@ -3,13 +3,11 @@ import CardDataStats from '../../components/CardDataStats';
 import DefaultLayout from '../../layout/DefaultLayout';
 import {Link} from 'react-router-dom';
 import {BsBoxArrowUpRight} from 'react-icons/bs';
-import {useNavigate} from 'react-router-dom';
 import TableTwo from '../CApplications/ApplicationsList';
 import {useAuth} from '../../context/AppContext';
 import Loader from '../../common/Loader';
 
 const Dashboard: React.FC = () => {
-    const navigate = useNavigate();
     const [jobs,setJobs] = useState<any>([]);
     const [dashboardJobs,setDashboardJobs] = useState<any>([]);
     const {getRecentJobs} = useAuth();
@@ -79,7 +77,7 @@ const Dashboard: React.FC = () => {
                                     location={` ${job.location}`}
                                     company_name={job.company_name}
                                     applicants={job.num_applicants} // Fixed value
-                                    daysLeft={Math.ceil((new Date(job.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
+                                    // daysLeft={Math.ceil((new Date(job.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
                                     appliedToday={""+job.applied_today} // Fixed value
                                 >
                                     <svg

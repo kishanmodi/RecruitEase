@@ -4,7 +4,6 @@ import DefaultLayout from '../../layout/DefaultLayout';
 import {BsBoxArrowUpRight} from 'react-icons/bs';
 import {useNavigate} from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
-import {toast} from 'react-toastify';
 import {useAuth} from '../../context/AppContext';
 
 interface Job {
@@ -142,9 +141,8 @@ const Jobs: React.FC = () => {
                                 key={index}
                                 jobTitle={data.title}
                                 location={`${data.city}, ${data.country}`}
-                                applicants={150} // Fixed value
-                                daysLeft={Math.ceil((new Date(data.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
-                                appliedToday={10} // Fixed value
+                                applicants={data.num_applications} // Fixed value
+                                appliedToday={data.appliedToday} // Fixed value
                             >
                                 <svg
                                     width='36'

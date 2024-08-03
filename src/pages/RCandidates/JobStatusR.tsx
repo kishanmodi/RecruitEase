@@ -1,5 +1,5 @@
 import DefaultLayout from '../../layout/DefaultLayout';
-import {ChangeEvent, useState} from 'react';
+import {ChangeEvent,useState} from 'react';
 import SingleOption from '../../components/Forms/SelectGroup/SingleOption';
 import {Editor} from '@tinymce/tinymce-react';
 import {BsEnvelope} from 'react-icons/bs';
@@ -116,10 +116,11 @@ const JobStatus = () => {
                 return;
             }
             setLoading(true);
-            const success = await updateApplicationStatus(id || "",status, offerLetter);
+            const success = await updateApplicationStatus(id || "",status,offerLetter);
             if(success) {
                 fetchApplications();
                 setOfferLetter(null);
+                setViewStatus(false);
             }
         } catch(error) {
             console.error('Error updating application status:',error);

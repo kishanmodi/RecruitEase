@@ -196,7 +196,7 @@ const Sidebar = ({sidebarOpen,setSidebarOpen}: SidebarProps) => {
                                                 fill='white'
                                             />
                                         </svg>
-                                        Job Posting
+                                        Create Job Posting
                                     </NavLink>
                                 </li>
                                 <li>

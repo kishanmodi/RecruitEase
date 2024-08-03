@@ -93,7 +93,7 @@ const CandidateProfile = () => {
             setEmail={setEmail}
           />
           <button className="flex justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
-            onClick={handleSubmit}>
+          onClick={handleSubmit}>
             Save
           </button>
         </div>
