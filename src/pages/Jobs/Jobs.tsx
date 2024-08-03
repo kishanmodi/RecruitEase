@@ -142,7 +142,7 @@ const Jobs: React.FC = () => {
                                 jobTitle={data.title}
                                 location={`${data.city}, ${data.country}`}
                                 applicants={data.num_applications} // Fixed value
-                                appliedToday={data.appliedToday} // Fixed value
+                                appliedToday={data.applied_today} // Fixed value
                             >
                                 <svg
                                     width='36'
