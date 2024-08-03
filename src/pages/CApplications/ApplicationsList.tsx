@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React,{useEffect,useState} from 'react';
 import ReactPaginate from 'react-paginate';
-import { useNavigate } from 'react-router-dom';
-import { ApplicationDetails } from '../../types/applicationdetails';
-import { useAuth } from '../../context/AppContext';
+import {useNavigate} from 'react-router-dom';
+import {ApplicationDetails} from '../../types/applicationdetails';
+import {useAuth} from '../../context/AppContext';
 import Loader from '../../common/Loader';
 
 const TableTwo = ({dashboard}: {dashboard: boolean}) => {
-    const { getJobApplicationC } = useAuth();
-    const [applications, setApplications] = useState<ApplicationDetails[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [searchTerm, setSearchTerm] = useState<string>('');
-    const [companyFilter, setCompanyFilter] = useState<string>('');
-    const [stageFilter, setStageFilter] = useState<string>('');
-    const [currentPage, setCurrentPage] = useState<number>(0); // Adjusted to zero-indexed for react-paginate
-    const [filteredApplications, setFilteredApplications] = useState<ApplicationDetails[]>([]);
+    const {getJobApplicationC} = useAuth();
+    const [applications,setApplications] = useState<ApplicationDetails[]>([]);
+    const [loading,setLoading] = useState<boolean>(true);
+    const [searchTerm,setSearchTerm] = useState<string>('');
+    const [companyFilter,setCompanyFilter] = useState<string>('');
+    const [stageFilter,setStageFilter] = useState<string>('');
+    const [currentPage,setCurrentPage] = useState<number>(0); // Adjusted to zero-indexed for react-paginate
+    const [filteredApplications,setFilteredApplications] = useState<ApplicationDetails[]>([]);
     const perPage: number = dashboard ? 1000000 : 5; // Number of items per page
 
     const navigate = useNavigate();
 
     const getStageClasses = (stage: string) => {
-        switch (stage) {
+        switch(stage) {
             case 'Application Submitted':
                 return 'bg-teal-200 text-gray-800'; // Default gray color
             case 'Under Review':
@@ -47,19 +47,19 @@ const TableTwo = ({dashboard}: {dashboard: boolean}) => {
             try {
                 setLoading(true);
                 const data = await getJobApplicationC();
-                if (data.success) {
+                if(data.success) {
                     setApplications(data.applications); // Set fetched applications data
                 } else {
                     setApplications([]);
                 }
                 setLoading(false);
-            } catch (error) {
-                console.error('Error fetching applications:', error);
+            } catch(error) {
+                console.error('Error fetching applications:',error);
                 setLoading(false);
             }
         };
         fetchApplications();
-    }, [getJobApplicationC]);
+    },[getJobApplicationC]);
 
     useEffect(() => {
         // Function to filter applications based on search term, company, and stage
@@ -70,7 +70,7 @@ const TableTwo = ({dashboard}: {dashboard: boolean}) => {
                 (stageFilter ? application.status === stageFilter : true)
         );
         setFilteredApplications(filtered);
-    }, [applications, searchTerm, companyFilter, stageFilter]);
+    },[applications,searchTerm,companyFilter,stageFilter]);
 
     // Pagination logic
     const offset: number = currentPage * perPage;
@@ -101,7 +101,7 @@ const TableTwo = ({dashboard}: {dashboard: boolean}) => {
     };
 
     // Handle page change
-    const handlePageChange = ({ selected }: { selected: number }) => {
+    const handlePageChange = ({selected}: {selected: number}) => {
         setCurrentPage(selected);
     };
 
@@ -131,7 +131,7 @@ const TableTwo = ({dashboard}: {dashboard: boolean}) => {
                         onChange={handleCompanyChangeFilter}>
                         <option value=''>Filter by Company</option>
                         {/* Add options dynamically based on available companies */}
-                        {Array.from(new Set(applications.map(a => a.company_name))).map((company, index) => (
+                        {Array.from(new Set(applications.map(a => a.company_name))).map((company,index) => (
                             <option key={index} value={company}>{company}</option>
                         ))}
                     </select>
@@ -143,7 +143,7 @@ const TableTwo = ({dashboard}: {dashboard: boolean}) => {
                         onChange={handleStageFilterChange}>
                         <option value=''>Filter by Stage</option>
                         {/* Add options dynamically based on available stages */}
-                        {Array.from(new Set(applications.map(a => a.status))).map((stage, index) => (
+                        {Array.from(new Set(applications.map(a => a.status))).map((stage,index) => (
                             <option key={index} value={stage}>{stage}</option>
                         ))}
                     </select>
@@ -186,8 +186,8 @@ const TableTwo = ({dashboard}: {dashboard: boolean}) => {
 
                         {filteredApplications.length > 0 ? (
                             filteredApplications
-                                .slice(offset, offset + perPage)
-                                .map((application, key) => (
+                                .slice(offset,offset + perPage)
+                                .map((application,key) => (
                                     <div
                                         className={`grid grid-cols-6 min-w-[850px] ${key === filteredApplications.length - 1
                                             ? ''
@@ -221,14 +221,14 @@ const TableTwo = ({dashboard}: {dashboard: boolean}) => {
                                                 {new Date(application.created_at).toLocaleDateString()}
                                             </p>
                                         </div>
-
                                         <div className='flex items-center justify-center p-2.5 xl:p-5'>
                                             <button
-                                                className={`inline-flex rounded-full py-1 px-3 text-xs font-medium ${getStageClasses(application.status)}`}
+                                                className={`inline-flex items-center justify-center rounded-full py-1.5 px-4 text-xs font-semibold ${getStageClasses(application.status)} shadow-md hover:shadow-lg transition-shadow duration-200`}
                                             >
                                                 {application.status}
                                             </button>
                                         </div>
+
 
                                         <div className='flex items-center justify-center p-2.5 xl:p-5'>
                                             <button
@@ -249,7 +249,7 @@ const TableTwo = ({dashboard}: {dashboard: boolean}) => {
                     </div>
                 </div>
 
-                {!dashboard && filteredApplications.length > perPage &&  (
+                {!dashboard && filteredApplications.length > perPage && (
                     <div className='flex justify-center items-center mt-10 mb-10'>
                         <ReactPaginate
                             previousLabel='Previous'

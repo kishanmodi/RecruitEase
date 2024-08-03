@@ -42,27 +42,26 @@ const CandidateList = ({dashboard}: {dashboard: boolean}) => {
                 return 'bg-gray-200 text-gray-800';
         }
     };
+    const fetchApplications = async () => {
+        try {
+            setLoading(true);
+            const response = await getAllCandidateApplications();
 
-    useEffect(() => {
-        const fetchApplications = async () => {
-            try {
-                setLoading(true);
-                const response = await getAllCandidateApplications();
-
-                if(response.success) {
-                    setApplications(response.applications);
-                    setError(null);
-                } else {
-                    setApplications([]);
-                    setError('Failed to fetch applications.');
-                }
-                setLoading(false);
-            } catch(error) {
-                console.error('Error fetching applications:',error);
-                setLoading(false);
-                setError('An unexpected error occurred.');
+            if(response.success) {
+                setApplications(response.applications);
+                setError(null);
+            } else {
+                setApplications([]);
+                setError('Failed to fetch applications.');
             }
-        };
+            setLoading(false);
+        } catch(error) {
+            console.error('Error fetching applications:',error);
+            setLoading(false);
+            setError('An unexpected error occurred.');
+        }
+    };
+    useEffect(() => {
         fetchApplications();
     },[]);
 

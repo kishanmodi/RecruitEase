@@ -3,11 +3,10 @@ import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-hot-toast';
 import {Job} from '../types/job';
 import {Application} from '../types/application';
-import {ApplicationDetails} from '../types/applicationdetails';
 
 // Regex pattern for password validation
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-const API_URL = 'http://localhost:8000';
+const API_URL = 'http://13.232.238.173:8000';
 
 // Auth context interface
 interface AuthContextState {
@@ -49,8 +48,13 @@ interface AuthContextState {
     applyJob: (filledDetails: Application) => Promise<boolean>;
     getJobApplicationC: (id?: string) => Promise<{applications: any,success: boolean}>;
     getAllCandidateApplications: (id?: string) => Promise<{applications: any,success: boolean}>;
-    updateApplicationStatus: (applicationId: string,status: string) => Promise<boolean>;
+    updateApplicationStatus: (applicationId: string,status: string,offer: any) => Promise<boolean>;
     sendEmailToCandidate: (id: string,subject: string,message: string) => Promise<boolean>;
+    getProfileData: () => Promise<{profile: any,success: boolean}>;
+    saveProfileData: (profile: any) => Promise<boolean>;
+    getProfileDataRecruiter: () => Promise<{profile: any,success: boolean}>;
+    saveProfileDataRecruiter: (profile: any) => Promise<boolean>;
+    getRecentJobs: () => Promise<{jobs: Job[],success: boolean}>;
 }
 
 // Create Auth context
@@ -475,7 +479,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 navigate('/');
                 return true;
             } else {
-                toast.error('There was an error applying to this job!');
+                toast.error(data.error || 'Failed to apply to this job!');
                 return false;
             }
         } catch(error) {
@@ -540,14 +544,42 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     }
 
     // Function to Update Status of a job application by ID for recruiter // ! Recruiter
-    const updateApplicationStatus = async (applicationId: string,status: string) => {
+    const updateApplicationStatus = async (applicationId: string,status: string,offer: File) => {
+
+        // Convert resume to Base64 string
+        const convertFileToBase64 = (file: File): Promise<string> => {
+            return new Promise((resolve,reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onloadend = () => {
+                    if(reader.result) {
+                        // Extract base64 part from data URL
+                        const dataUrl = reader.result.toString();
+                        const base64 = dataUrl.split(',')[1];
+                        resolve(base64);
+                    } else {
+                        reject('Error reading file');
+                    }
+                };
+                reader.onerror = () => {
+                    reject('Error reading file');
+                };
+            });
+        };
+
+        // Usage example
+        let offerLetter = "";
+        if(offer) {
+            offerLetter = await convertFileToBase64(offer);
+        }
+
         const response = await fetch(`${API_URL}/api/change_status/`,{
             method: 'PUT',
             headers: {
                 Authorization: refresh_token || '',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({id: applicationId,status})
+            body: JSON.stringify({id: applicationId,status,offer: offerLetter})
         });
 
         const data = await response.json();
@@ -581,6 +613,104 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         }
     }
 
+    // Function to get profile data for candidate // ! Candidate
+    const getProfileData = async () => {
+        const response = await fetch(`${API_URL}/api/candidate/get_profile/`,{
+            method: 'GET',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            return {profile: data.data,success: true};
+        } else {
+            toast.error('Failed to fetch profile data!');
+            return {profile: null,success: false};
+        }
+    }
+
+    // Function to Save profile data for candidate // ! Candidate
+    const saveProfileData = async (profile: any) => {
+        const response = await fetch(`${API_URL}/api/candidate/save_profile/`,{
+            method: 'POST',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(profile)
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            toast.success('Profile data saved successfully!');
+            return true;
+        } else {
+            toast.error('Failed to save profile data!');
+            return false;
+        }
+    }
+
+    // Function to get Profile data for recruiter // ! Recruiter
+    const getProfileDataRecruiter = async () => {
+        const response = await fetch(`${API_URL}/api/get_profile/`,{
+            method: 'GET',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            return {profile: data.data,success: true};
+        } else {
+            toast.error('Failed to fetch profile data!');
+            return {profile: null,success: false};
+        }
+    }
+
+    // Function to Save profile data for recruiter // ! Recruiter
+    const saveProfileDataRecruiter = async (profile: any) => {
+        const response = await fetch(`${API_URL}/api/save_profile/`,{
+            method: 'POST',
+            headers: {
+                Authorization: refresh_token || '',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(profile)
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            toast.success('Profile data saved successfully!');
+            return true;
+        } else {
+            toast.error('Failed to save profile data!');
+            return false;
+        }
+    }
+
+    // Function to get recent jobs for Job Seeker
+    const getRecentJobs = async () => {
+        const response = await fetch(`${API_URL}/api/candidate/recent_postings/`,{
+            method: 'GET',
+            headers: {
+                'Authorization': refresh_token || '',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        if(data.status === 200) {
+            return {jobs: data.data,success: true};
+        } else {
+            toast.error('Failed to fetch recent jobs!');
+            return {jobs: [],success: false};
+        }
+    };
 
     // Provide the context to children components
     return (
@@ -614,6 +744,11 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             getAllCandidateApplications,
             updateApplicationStatus,
             sendEmailToCandidate,
+            getProfileData,
+            saveProfileData,
+            getProfileDataRecruiter,
+            saveProfileDataRecruiter,
+            getRecentJobs,
         }}>
             {children}
         </AuthContext.Provider>

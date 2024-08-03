@@ -2,49 +2,32 @@ import React,{useState,useEffect} from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import DefaultLayout from '../../layout/DefaultLayout';
 import {BsBoxArrowUpRight} from 'react-icons/bs';
-import {useNavigate} from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import {useAuth} from '../../context/AppContext';
-
-interface Job {
-    id: string;
-    title: string;
-    department: string;
-    city: string;
-    country: string;
-    posting_date: Date;
-    deadline: Date; // Update the type to Date
-    soft_skills: any[];
-    technical_skills: any[];
-    questions: string[];
-    recruiter_name: string;
-    recruiter_email: string;
-    about_job: string;
-    about_company: string;
-    qualification: string;
-    key_requirements: string;
-    nice_to_have?: string;
-    other_remarks?: string;
-    is_active: boolean;
-}
-
-interface CardDataStatsProps {
-    jobTitle: string;
-    location: string;
-    applicants: number;
-    daysLeft: number;
-    appliedToday: number;
-    color?: string;
-}
+import Loader from '../../common/Loader';
+import {Link} from 'react-router-dom';
 
 const ITEMS_PER_PAGE = 10;
 
-const Jobs: React.FC = () => {
+const RecentJobs: React.FC = () => {
     const [searchTerm,setSearchTerm] = useState<string>('');
     const [locationFilter,setLocationFilter] = useState<string>('');
     const [currentPage,setCurrentPage] = useState<number>(0);
-    const navigate = useNavigate();
-    const {getJobs,jobs,setCurrentJobId} = useAuth();
+    const {getRecentJobs} = useAuth();
+    const [jobs,setJobs] = useState<any>([]);
+    const [loading,setLoading] = useState<boolean>(true);
+
+    const getJobs = async () => {
+        try {
+            setLoading(true);
+            const response = await getRecentJobs();
+            setJobs(response.jobs);
+        } catch(error) {
+            console.log('Error fetching jobs',error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         getJobs();
@@ -53,37 +36,27 @@ const Jobs: React.FC = () => {
     // Function to generate random color
     const getRandomColor = () => {
         const colors = [
-            '#FFB800',
-            '#FF4D4F',
-            '#40A9FF',
-            '#36CFC9',
-            '#9254DE',
-            '#F759AB',
-            '#FF7A45',
-            '#00C1DE',
-            '#4482FF',
-            '#F5317F',
+            '#FFB800','#FF4D4F','#40A9FF','#36CFC9','#9254DE',
+            '#F759AB','#FF7A45','#00C1DE','#4482FF','#F5317F'
         ];
         return colors[Math.floor(Math.random() * colors.length)];
     };
 
     // Function to filter jobs based on search term
     const filteredJobs = jobs.filter(
-        (job) =>
-            job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            job.city.toLowerCase().includes(searchTerm.toLowerCase())
+        (job: {job_title: string; location: string;}) =>
+            job.job_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            job.location.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     // Function to handle location filter change
-    const handleLocationFilterChange = (
-        event: React.ChangeEvent<HTMLSelectElement>
-    ) => {
+    const handleLocationFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setLocationFilter(event.target.value);
     };
 
     // Apply location filter
-    const locationFilteredJobs = locationFilter
-        ? filteredJobs.filter((job) => job.city === locationFilter)
+    const locationFilteredJobs: any[] = locationFilter
+        ? filteredJobs.filter((job: any) => job.location.includes(locationFilter))
         : filteredJobs;
 
     // Pagination logic
@@ -97,14 +70,16 @@ const Jobs: React.FC = () => {
         setCurrentPage(selected.selected);
     };
 
+    // Unique city options for the dropdown
+    const uniqueCities: string[] = Array.from(new Set(jobs.map((job: {location: string;}) => job.location.split(',')[0])));
+
     return (
         <DefaultLayout>
+            {loading && <Loader />}
             <div className='flex flex-row mb-5 justify-between items-center'>
-                <h2 className='text-2xl font-semibold dark:text-white'>
-                    Current Openings
-                </h2>
+                <h2 className='text-2xl font-semibold dark:text-white'>Current Openings</h2>
             </div>
-            {jobs.length !== 0 ?
+            {jobs.length > 0 ?
                 <>
                     <div className='mb-5 flex flex-col md:flex-row gap-4 md:gap-10 items-center justify-between'>
                         <div className='flex-grow md:flex-grow-0 max-md:w-full w-3/4'>
@@ -121,35 +96,36 @@ const Jobs: React.FC = () => {
                                 id='locationFilter'
                                 className='w-full rounded-lg border-[1.5px] border-stroke bg-white py-3.5 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
                                 value={locationFilter}
-                                onChange={handleLocationFilterChange}>
-                                <option value=''>Location
-                                </option>
-                                {jobs.map((job: Job,index: number) => {
-                                    return (
-                                        <option key={index} value={job.city}>
-                                            {job.city}
-                                        </option>
-                                    );
-                                })}
+                                onChange={handleLocationFilterChange}
+                            >
+                                <option value=''>Location</option>
+                                {uniqueCities.map((city,index) => (
+                                    <option key={index} value={city}>{city}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
 
                     <div className='grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5'>
-                        {currentJobs.map((data,index) => (
+                        {currentJobs.map((job: {
+                            company_name: string; job_title: string; location: any; num_applicants: number; deadline: string | number | Date; applied_today: any; posting_id: any;
+                        },index: React.Key | null | undefined) => (
                             <CardDataStats
                                 key={index}
-                                jobTitle={data.title}
-                                location={`${data.city}, ${data.country}`}
-                                applicants={data.num_applications} // Fixed value
-                                appliedToday={data.applied_today} // Fixed value
+                                jobTitle={job.job_title}
+                                location={`${job.location}`}
+                                applicants={job.num_applicants} // Fixed value
+                                // daysLeft={Math.ceil((new Date(job.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
+                                appliedToday={`${job.applied_today}`} // Fixed value
+                                company_name={job.company_name}
                             >
                                 <svg
                                     width='36'
                                     height='36'
                                     viewBox='0 0 36 36'
                                     fill='none'
-                                    xmlns='http://www.w3.org/2000/svg'>
+                                    xmlns='http://www.w3.org/2000/svg'
+                                >
                                     <rect
                                         width='36'
                                         height='36'
@@ -164,19 +140,17 @@ const Jobs: React.FC = () => {
                                     />
                                 </svg>
                                 <div className='cursor-pointer'>
-                                    <BsBoxArrowUpRight
-                                        onClick={() => {
-                                            setCurrentJobId(data.id);
-                                            navigate('/edit-job');
-                                        }}
-                                    />
-                                </div>
+                                        {/* Apply Icon */}
+                                        <Link to={`/apply/${job.posting_id}`}>
+                                            <BsBoxArrowUpRight className='text-primary text-2xl' />
+                                        </Link>
+                                    </div>
                             </CardDataStats>
                         ))}
                     </div>
 
                     {/* Pagination Controls */}
-                    {filteredJobs.length > ITEMS_PER_PAGE && filteredJobs.length > 0 && (
+                    {jobs.length > 10 && filteredJobs.length > 0 && (
                         <div className='flex justify-center items-center mt-10 mb-10'>
                             <ReactPaginate
                                 previousLabel='Previous'
@@ -201,21 +175,13 @@ const Jobs: React.FC = () => {
                             No Jobs Available
                         </h2>
                         <p className="text-gray-600 dark:text-gray-400 mb-6">
-                            It looks like there are currently no job postings available. Create a job posting to get started.
+                            It looks like there are currently no job postings available.
                         </p>
-                        <button
-                            className="bg-primary text-white px-4 py-2 rounded-md font-medium hover:bg-primary-dark transition-colors"
-                            onClick={() => navigate('/job')}
-                        >
-                            Create Job
-                        </button>
                     </div>
                 </div>
-
             }
-
         </DefaultLayout>
     );
 };
 
-export default Jobs;
+export default RecentJobs;

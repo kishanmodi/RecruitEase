@@ -7,15 +7,17 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AppContext';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import Loader from '../../common/Loader';
 
 const Test: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const [loading, setLoading] = useState(false);
     const { signin } = useAuth();
 
     const handleSignIn = async () => {
         // validate
+        setLoading(true);
         if (!email || !password) {
             toast.error('Please fill all fields');
             return;
@@ -27,9 +29,13 @@ const Test: React.FC = () => {
         } else {
             setPassword('');
         }
+        setLoading(false);
     };
 
     return (
+        <>{
+            loading && <Loader />
+        }
         <div className='flex h-screen overflow-hidden'>
             <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark w-full h-full'>
                 <div className='flex flex-wrap items-center h-full'>
@@ -197,6 +203,7 @@ const Test: React.FC = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 
