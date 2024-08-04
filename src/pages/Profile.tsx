@@ -25,11 +25,10 @@ const Profile = () => {
                 setTagline(profile.tagline || '');
                 setAbout(profile.about_us || '');
             }
-            setLoading(false);
+            setTimeout(() => {setLoading(false);},2000);
         };
 
         const convertDefaultImageToBlob = async () => {
-            setLoading(true);
             try {
                 const response = await fetch(userSix);
                 const blob = await response.blob();
@@ -37,7 +36,6 @@ const Profile = () => {
             } catch(error) {
                 console.error('Error converting default image to Blob',error);
             }
-            setLoading(false);
         };
 
         loadProfileData();
