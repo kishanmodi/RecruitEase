@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import DefaultLayout from '../layout/DefaultLayout';
 import CoverOne from '../images/logo/cover.gif';
-import userSix from '../images/logo/meta.png';
+import userSix from '../images/logo/Logo-6.jpg';
 import {useAuth} from '../context/AppContext';
 import Loader from '../common/Loader';
 
 const Profile = () => {
-    const { getProfileDataRecruiter, saveProfileDataRecruiter } = useAuth();
+    const { getProfileDataRecruiter, saveProfileDataRecruiter ,setProfile} = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState('Meta Inc.');
     const [tagline, setTagline] = useState('"Move Fast and Break Things"');
@@ -20,6 +20,7 @@ const Profile = () => {
             const { profile } = await getProfileDataRecruiter();
             if (profile) {
                 setProfileImage(profile.profile_pic || '');
+                setProfile(profile.profile_pic || '');
                 setName(profile.name || '');
                 setTagline(profile.tagline || '');
                 setAbout(profile.about_us || '');

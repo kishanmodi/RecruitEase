@@ -50,7 +50,7 @@ const Dashboard: React.FC = () => {
         ];
         return colors[Math.floor(Math.random() * colors.length)];
     };
-    if(loading || !dashboardJobs ) {
+    if(loading) {
         return <Loader />;
     }
     return (

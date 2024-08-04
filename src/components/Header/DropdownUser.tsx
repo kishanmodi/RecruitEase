@@ -6,7 +6,7 @@ import UserTwo from '../../images/user/user.png';
 import {useAuth} from '../../context/AppContext';
 
 const DropdownUser = () => {
-    const {logout,isRecruiter,user,company} = useAuth();
+    const {logout,isRecruiter,user,company,profile} = useAuth();
     const [dropdownOpen,setDropdownOpen] = useState(false);
 
     const trigger = useRef<any>(null);
@@ -57,7 +57,7 @@ const DropdownUser = () => {
                 <span className='relative h-12 w-12 rounded-full border overflow-hidden'>
                     {isRecruiter ?
                         <img
-                            src={UserOne}
+                            src={profile || UserOne}
                             alt='User'
                             className='object-contain w-full h-full'
                         />
