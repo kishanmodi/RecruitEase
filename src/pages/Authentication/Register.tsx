@@ -53,10 +53,10 @@ const Register: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className='w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2  h-full'>
-                        <div className='w-full p-4 sm:p-12.5 xl:p-17.5  h-full flex flex-col justify-center relative'>
+                    <div className='w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2 h-full overflow-y-auto'>
+                        <div className='w-full sm:p-12.5 xl:p-17.5 h-full flex flex-col justify-center max-md:px-10 max-md:mt-20 max-md:mb-50'>
                             <Link
-                                className='lg:hidden flex justify-center absolute top-10 left-0 w-full'
+                                className='lg:hidden flex justify-center  w-full mb-5'
                                 to='/'>
                                 <img
                                     className='hidden dark:block'

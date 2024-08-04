@@ -5,6 +5,7 @@ import LogoDark from '../../images/logo/Logo-3.png';
 import Logo from '../../images/logo/Logo-2.png';
 import {useAuth} from '../../context/AppContext';
 import Loader from '../../common/Loader';
+import toast from 'react-hot-toast';
 const Forgot: React.FC = () => {
     const [email, setEmail] = React.useState('');
     const {forgotPassword} = useAuth();
@@ -120,6 +121,10 @@ const Forgot: React.FC = () => {
                                         value='Forgot Password'
                                         onClick={async (e) => {
                                             e.preventDefault();
+                                            if(!email){
+                                                toast.error('Email is required');
+                                                return;
+                                            }
                                             setLoading(true);
                                             const success = await forgotPassword(email);
                                             if(success){
