@@ -5,6 +5,7 @@ import {BsBoxArrowUpRight} from 'react-icons/bs';
 import {useNavigate} from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import {useAuth} from '../../context/AppContext';
+import Loader from '../../common/Loader';
 
 interface Job {
     id: string;
@@ -45,9 +46,12 @@ const Jobs: React.FC = () => {
     const [currentPage,setCurrentPage] = useState<number>(0);
     const navigate = useNavigate();
     const {getJobs,jobs,setCurrentJobId} = useAuth();
+    const [loading,setLoading] = useState<boolean>(true);
 
     useEffect(() => {
+        setLoading(true);
         getJobs();
+        setLoading(false);
     },[]);
 
     // Function to generate random color
@@ -99,6 +103,7 @@ const Jobs: React.FC = () => {
 
     return (
         <DefaultLayout>
+            {loading && <Loader />}
             <div className='flex flex-row mb-5 justify-between items-center'>
                 <h2 className='text-2xl font-semibold dark:text-white'>
                     Current Openings

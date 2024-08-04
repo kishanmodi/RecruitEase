@@ -3,7 +3,7 @@ import CardDataStats from '../../components/CardDataStats';
 import DefaultLayout from '../../layout/DefaultLayout';
 import {Link} from 'react-router-dom';
 import {BsBoxArrowUpRight} from 'react-icons/bs';
-import TableTwo from '../CApplications/ApplicationsList';
+import ApplicationsList from '../CApplications/ApplicationsList';
 import {useAuth} from '../../context/AppContext';
 import Loader from '../../common/Loader';
 
@@ -12,6 +12,8 @@ const Dashboard: React.FC = () => {
     const [dashboardJobs,setDashboardJobs] = useState<any>([]);
     const {getRecentJobs} = useAuth();
     const [loading,setLoading] = useState(false);
+    const [loadingA,setLoadingA] = useState(false);
+
 
     const getJobs = async () => {
         try {
@@ -48,10 +50,11 @@ const Dashboard: React.FC = () => {
         ];
         return colors[Math.floor(Math.random() * colors.length)];
     };
-
+    if(loading || !dashboardJobs ) {
+        return <Loader />;
+    }
     return (
         <DefaultLayout>
-            {loading && <Loader />}
             <div className='flex flex-row mb-5 justify-between items-center px-4'>
                 <h2 className='text-2xl font-semibold dark:text-white'>
                     Current Openings ({dashboardJobs.length})
@@ -78,7 +81,7 @@ const Dashboard: React.FC = () => {
                                     company_name={job.company_name}
                                     applicants={job.num_applicants} // Fixed value
                                     // daysLeft={Math.ceil((new Date(job.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
-                                    appliedToday={""+job.applied_today} // Fixed value
+                                    appliedToday={"" + job.applied_today} // Fixed value
                                 >
                                     <svg
                                         width='36'
@@ -125,7 +128,10 @@ const Dashboard: React.FC = () => {
 
             <div className='mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5'>
                 <div className='col-span-12 xl:col-span-16'>
-                    <TableTwo dashboard={true} />
+                    <ApplicationsList dashboard={true}
+                        loading={loadingA}
+                        setLoading={setLoadingA}
+                    />
                 </div>
             </div>
         </DefaultLayout>
