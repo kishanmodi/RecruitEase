@@ -5,7 +5,7 @@ import {ApplicationDetails} from '../../types/applicationdetails';
 import {useAuth} from '../../context/AppContext';
 import Loader from '../../common/Loader';
 
-const TableTwo = ({loading,dashboard,setLoading}: {loading: boolean,dashboard: boolean,setLoading: React.Dispatch<React.SetStateAction<boolean>>}) => {
+const ApplicationsList = ({loading,dashboard,setLoading}: {loading: boolean,dashboard: boolean,setLoading: React.Dispatch<React.SetStateAction<boolean>>}) => {
     const {getJobApplicationC} = useAuth();
     const [applications,setApplications] = useState<ApplicationDetails[]>([]);
     const [searchTerm,setSearchTerm] = useState<string>('');
@@ -62,12 +62,12 @@ const TableTwo = ({loading,dashboard,setLoading}: {loading: boolean,dashboard: b
 
     useEffect(() => {
         // Function to filter applications based on search term, company, and stage
-        const filtered = applications.filter(
+        const filtered = applications.length > 0 ? applications.filter(
             (application) =>
                 application.job_title.toLowerCase().includes(searchTerm.toLowerCase()) &&
                 (companyFilter ? application.company_name === companyFilter : true) &&
                 (stageFilter ? application.status === stageFilter : true)
-        );
+        ): [];
         setFilteredApplications(filtered);
     },[applications,searchTerm,companyFilter,stageFilter]);
 
@@ -274,4 +274,4 @@ const TableTwo = ({loading,dashboard,setLoading}: {loading: boolean,dashboard: b
     );
 };
 
-export default TableTwo;
+export default ApplicationsList;

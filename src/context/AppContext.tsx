@@ -6,7 +6,9 @@ import {Application} from '../types/application';
 
 // Regex pattern for password validation
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-const API_URL = 'https://13.232.238.173.nip.io';
+// const API_URL = 'https://13.232.238.173.nip.io';
+const API_URL = 'https://3.109.58.204.nip.io';
+
 
 // Auth context interface
 interface AuthContextState {
@@ -21,6 +23,7 @@ interface AuthContextState {
     applyJobId: string;
     didEmailSend: boolean;
     globalLoading: boolean;
+    profile: any;
     setGlobalLoading: (loading: boolean) => void;
     setApplyJobId: (jobId: string) => void;
     signup: (
@@ -57,6 +60,7 @@ interface AuthContextState {
     getProfileDataRecruiter: () => Promise<{profile: any,success: boolean}>;
     saveProfileDataRecruiter: (profile: any) => Promise<boolean>;
     getRecentJobs: () => Promise<{jobs: Job[],success: boolean}>;
+    setProfile: (profile: any) => void;
 }
 
 // Create Auth context
@@ -83,6 +87,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
 
     // Recruiter specific states
     const [jobs,setJobs] = useState<Job[]>([]);
+    const [profile,setProfile] = useState<any>("");
     const [currentJobId,setCurrentJobId] = useState<string>("");
 
     // Job Seeker specific states
@@ -742,6 +747,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             applyJobId,
             didEmailSend,
             globalLoading,
+            profile,
             setApplyJobId,
             signup,
             signupJobSeeker,
@@ -766,7 +772,8 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             getProfileDataRecruiter,
             saveProfileDataRecruiter,
             getRecentJobs,
-            setGlobalLoading
+            setGlobalLoading,
+            setProfile
         }}>
             {children}
         </AuthContext.Provider>
