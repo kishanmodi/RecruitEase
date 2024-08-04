@@ -13,6 +13,7 @@ import {Option} from '../../types/option';
 import Swtich from '../../components/Switchers/Switch';
 import {toast} from 'react-hot-toast';
 import {useNavigate} from 'react-router-dom';
+import Loader from '../../common/Loader';
 
 interface JobPostingProps {
     edit: boolean;
@@ -52,6 +53,8 @@ const JobPosting = (props: JobPostingProps) => {
 
     const [showDeleteModal,setShowDeleteModal] = useState(false);
 
+    const [loading,setLoading] = useState(false);
+
     useEffect(() => {
         if(!edit) {
             emptyAllFields();
@@ -77,6 +80,7 @@ const JobPosting = (props: JobPostingProps) => {
     // Get Job details if we are editing an existing job
     useEffect(() => {
         if(jobId) {
+            setLoading(true);
             getJob(jobId)
                 .then((data) => {
                     if(data.success) {
@@ -89,6 +93,7 @@ const JobPosting = (props: JobPostingProps) => {
                     console.error('Failed to get job details:',error);
                 });
         }
+        setLoading(false);
     },[jobId]);
 
     const emptyAllFields = () => {
@@ -173,13 +178,14 @@ const JobPosting = (props: JobPostingProps) => {
 
 
     const handleSubmit = async () => {
+
         const job: Job = {
             id: jobId || '',
             title: jobTitle,
             department: jobDepartment,
             city,
             country,
-            posting_date: new Date(postingDate),// Convert ISO string to Date
+            posting_date: new Date(postingDate), // Convert ISO string to Date
             deadline: new Date(deadline), // Convert ISO string to Date
             soft_skills: softSkills.map((skill) => ({
                 value: skill.value,
@@ -201,6 +207,9 @@ const JobPosting = (props: JobPostingProps) => {
             nice_to_have: niceToHave,
             other_remarks: otherRemarks,
             is_active: isActive,
+            applied_today: '',
+            appliedToday: '',
+            num_applications: 0
         };
 
         // Verify if all required fields are filled
@@ -226,7 +235,7 @@ const JobPosting = (props: JobPostingProps) => {
             return;
         }
 
-
+        setLoading(true);
         if(!edit && !jobId) {
             const data = await createJobPosting({job: job,refresh_token});
 
@@ -249,12 +258,19 @@ const JobPosting = (props: JobPostingProps) => {
             toast.error('Job ID is missing.');
         }
 
+        setLoading(false);
 
     };
 
     // Delete Job Posting
     const handleDeletePosting = () => {
+        if(!jobId) {
+            toast.error('Job ID is missing.');
+            return;
+        }
+        setLoading(true);
         deleteJob(jobId)
+        setLoading(false);
     }
     const handleDeletePostingModal = () => {
         setShowDeleteModal(!showDeleteModal);
@@ -262,6 +278,7 @@ const JobPosting = (props: JobPostingProps) => {
 
     return (
         <DefaultLayout>
+            {loading && <Loader />}
             <h2 className='text-2xl font-semibold text-black dark:text-white mb-3'>
                 Job Posting
             </h2>

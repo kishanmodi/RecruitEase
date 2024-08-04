@@ -4,12 +4,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import LogoDark from '../../images/logo/Logo-3.png';
 import Logo from '../../images/logo/Logo-2.png';
 import {useAuth} from '../../context/AppContext';
+import Loader from '../../common/Loader';
+import toast from 'react-hot-toast';
 const Reset: React.FC = () => {
 
     const {email, resetPassword,didEmailSend } = useAuth();
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [otp, setOtp] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
     const navigate = useNavigate();
     useEffect(() => {
         if(email === '' || !didEmailSend){
@@ -18,6 +21,8 @@ const Reset: React.FC = () => {
     }, []);
 
     return (
+        <>
+        {loading && <Loader />}
         <div className='flex h-screen overflow-hidden'>
             <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark w-full h-full'>
                 <div className='flex flex-wrap items-center h-full'>
@@ -190,8 +195,18 @@ const Reset: React.FC = () => {
                                         type='submit'
                                         value='Reset Password'
                                         onClick={(e) => {
+                                            if(password !== confirmPassword){
+                                                toast.error('Passwords do not match');
+                                                return;
+                                            }
+                                            if(password.length < 8){
+                                                toast.error('Password must be at least 8 characters long');
+                                                return;
+                                            }
+                                            setLoading(true);
                                             e.preventDefault();
                                             resetPassword(email, Number(otp), password, confirmPassword);
+                                            setLoading(false);
                                         }}
                                         className='w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90'
                                     >
@@ -204,6 +219,7 @@ const Reset: React.FC = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

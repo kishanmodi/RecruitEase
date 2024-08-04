@@ -5,10 +5,9 @@ import {ApplicationDetails} from '../../types/applicationdetails';
 import {useAuth} from '../../context/AppContext';
 import Loader from '../../common/Loader';
 
-const TableTwo = ({dashboard}: {dashboard: boolean}) => {
+const TableTwo = ({loading,dashboard,setLoading}: {loading: boolean,dashboard: boolean,setLoading: React.Dispatch<React.SetStateAction<boolean>>}) => {
     const {getJobApplicationC} = useAuth();
     const [applications,setApplications] = useState<ApplicationDetails[]>([]);
-    const [loading,setLoading] = useState<boolean>(true);
     const [searchTerm,setSearchTerm] = useState<string>('');
     const [companyFilter,setCompanyFilter] = useState<string>('');
     const [stageFilter,setStageFilter] = useState<string>('');
@@ -106,169 +105,172 @@ const TableTwo = ({dashboard}: {dashboard: boolean}) => {
     };
 
     return (
-        <div className='rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1'>
-            <div className='flex flex-row mb-5 justify-between items-center'>
-                <h2 className='text-2xl font-semibold dark:text-white'>
-                    Applications
-                </h2>
-            </div>
-            {loading && <Loader />}
-            <>
-                {!dashboard && <div className='flex flex-col md:flex-row mb-5 justify-between items-center gap-6 md:gap-10'>
-                    {/* Search input */}
-                    <input
-                        type='text'
-                        placeholder='Search by role...'
-                        className='w-full md:w-1/3 rounded-lg border-[1.5px] border-stroke bg-white py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
-                        value={searchTerm}
-                        onChange={handleSearchTermChange}
-                    />
-
-                    {/* Company filter dropdown */}
-                    <select
-                        className='w-full md:w-1/3 rounded-lg border-[1.5px] border-stroke bg-white py-3.5 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
-                        value={companyFilter}
-                        onChange={handleCompanyChangeFilter}>
-                        <option value=''>Filter by Company</option>
-                        {/* Add options dynamically based on available companies */}
-                        {Array.from(new Set(applications.map(a => a.company_name))).map((company,index) => (
-                            <option key={index} value={company}>{company}</option>
-                        ))}
-                    </select>
-
-                    {/* Stage filter dropdown */}
-                    <select
-                        className='w-full md:w-1/3 rounded-lg border-[1.5px] border-stroke bg-white py-3.5 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
-                        value={stageFilter}
-                        onChange={handleStageFilterChange}>
-                        <option value=''>Filter by Stage</option>
-                        {/* Add options dynamically based on available stages */}
-                        {Array.from(new Set(applications.map(a => a.status))).map((stage,index) => (
-                            <option key={index} value={stage}>{stage}</option>
-                        ))}
-                    </select>
-                </div>}
-
-                <div className='overflow-x-auto'>
-                    <div className='min-w-[850px]'>
-                        <div className='grid grid-cols-6 min-w-[850px] rounded-sm bg-gray-2 dark:bg-meta-4'>
-                            <div className='p-2.5 xl:p-5 text-center'>
-                                <h5 className='text-sm font-medium uppercase xsm:text-base'>
-                                    Organization
-                                </h5>
-                            </div>
-                            <div className='p-2.5 text-center xl:p-5'>
-                                <h5 className='text-sm font-medium uppercase xsm:text-base'>
-                                    Applied Role
-                                </h5>
-                            </div>
-                            <div className='p-2.5 text-center xl:p-5'>
-                                <h5 className='text-sm font-medium uppercase xsm:text-base'>
-                                    Location
-                                </h5>
-                            </div>
-                            <div className=' p-2.5 text-center xl:p-5'>
-                                <h5 className='text-sm font-medium uppercase xsm:text-base'>
-                                    Date
-                                </h5>
-                            </div>
-                            <div className=' p-2.5 text-center xl:p-5'>
-                                <h5 className='text-sm font-medium uppercase xsm:text-base'>
-                                    Stage
-                                </h5>
-                            </div>
-                            <div className=' p-2.5 text-center xl:p-5'>
-                                <h5 className='text-sm font-medium uppercase xsm:text-base'>
-                                    Status
-                                </h5>
-                            </div>
-                        </div>
-
-                        {filteredApplications.length > 0 ? (
-                            filteredApplications
-                                .slice(offset,offset + perPage)
-                                .map((application,key) => (
-                                    <div
-                                        className={`grid grid-cols-6 min-w-[850px] ${key === filteredApplications.length - 1
-                                            ? ''
-                                            : 'border-b border-stroke dark:border-strokedark'
-                                            }`}
-                                        key={key}>
-                                        <div className='flex items-center gap-3 p-2.5 xl:p-5'>
-                                            <div className='flex flex-row text-center'>
-                                                <p className='text-primary dark:text-white text-sm'>
-                                                    {application.company_name}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className='flex items-center justify-center p-2.5 xl:p-5'>
-                                            <div className='flex flex-col text-center'>
-                                                <p className='text-primary dark:text-white text-sm'>
-                                                    {application.job_title}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className='flex items-center justify-center p-2.5 xl:p-5'>
-                                            <p className='text-meta-3 text-sm'>
-                                                {application.location}
-                                            </p>
-                                        </div>
-
-                                        <div className='flex items-center justify-center p-2.5 xl:p-5'>
-                                            <p className='text-black dark:text-white text-sm'>
-                                                {new Date(application.created_at).toLocaleDateString()}
-                                            </p>
-                                        </div>
-                                        <div className='flex items-center justify-center p-2.5 xl:p-5'>
-                                            <button
-                                                className={`inline-flex items-center justify-center rounded-full py-1.5 px-4 text-xs font-semibold ${getStageClasses(application.status)} shadow-md hover:shadow-lg transition-shadow duration-200`}
-                                            >
-                                                {application.status}
-                                            </button>
-                                        </div>
-
-
-                                        <div className='flex items-center justify-center p-2.5 xl:p-5'>
-                                            <button
-                                                onClick={() => navigate(`/application/${application.application_id}`)}
-                                                className='py-1 px-3 text-sm font-medium bg-blue-100 text-blue-800 rounded-full'>
-                                                View
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))
-                        ) : (
-                            <div className='p-2.5 xl:p-5 text-center'>
-                                <p className='text-gray-500 dark:text-gray-400'>
-                                    No candidates found.
-                                </p>
-                            </div>
-                        )}
-                    </div>
+        <>
+            {loading ? <Loader /> :
+            <div className='rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1'>
+                <div className='flex flex-row mb-5 justify-between items-center'>
+                    <h2 className='text-2xl font-semibold dark:text-white'>
+                        Applications
+                    </h2>
                 </div>
-
-                {!dashboard && filteredApplications.length > perPage && (
-                    <div className='flex justify-center items-center mt-10 mb-10'>
-                        <ReactPaginate
-                            previousLabel='Previous'
-                            nextLabel='Next'
-                            breakLabel='...'
-                            pageCount={pageCount}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={3}
-                            onPageChange={handlePageChange}
-                            containerClassName='pagination flex flex-row gap-3 md:gap-4 lg:gap-6 items-center justify-center w-full'
-                            activeClassName='bg-primary text-white rounded-md px-2 py-1.5 text-xs md:text-sm lg:text-base'
-                            previousClassName='border border-stroke dark:border-strokedark rounded-md px-2 py-1.5 text-xs md:text-sm lg:text-base text-primary dark:text-white hover:bg-primary hover:text-white'
-                            nextClassName='border border-stroke dark:border-strokedark rounded-md px-2 py-1.5 text-xs md:text-sm lg:text-base text-primary dark:text-white hover:bg-primary hover:text-white'
-                            disabledClassName='text-gray-400 cursor-not-allowed'
+                <>
+                    {!dashboard && <div className='flex flex-col md:flex-row mb-5 justify-between items-center gap-6 md:gap-10'>
+                        {/* Search input */}
+                        <input
+                            type='text'
+                            placeholder='Search by role...'
+                            className='w-full md:w-1/3 rounded-lg border-[1.5px] border-stroke bg-white py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
+                            value={searchTerm}
+                            onChange={handleSearchTermChange}
                         />
+
+                        {/* Company filter dropdown */}
+                        <select
+                            className='w-full md:w-1/3 rounded-lg border-[1.5px] border-stroke bg-white py-3.5 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
+                            value={companyFilter}
+                            onChange={handleCompanyChangeFilter}>
+                            <option value=''>Filter by Company</option>
+                            {/* Add options dynamically based on available companies */}
+                            {Array.from(new Set(applications.map(a => a.company_name))).map((company,index) => (
+                                <option key={index} value={company}>{company}</option>
+                            ))}
+                        </select>
+
+                        {/* Stage filter dropdown */}
+                        <select
+                            className='w-full md:w-1/3 rounded-lg border-[1.5px] border-stroke bg-white py-3.5 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary'
+                            value={stageFilter}
+                            onChange={handleStageFilterChange}>
+                            <option value=''>Filter by Stage</option>
+                            {/* Add options dynamically based on available stages */}
+                            {Array.from(new Set(applications.map(a => a.status))).map((stage,index) => (
+                                <option key={index} value={stage}>{stage}</option>
+                            ))}
+                        </select>
+                    </div>}
+
+                    <div className='overflow-x-auto'>
+                        <div className='min-w-[850px]'>
+                            <div className='grid grid-cols-6 min-w-[850px] rounded-sm bg-gray-2 dark:bg-meta-4'>
+                                <div className='p-2.5 xl:p-5 text-center'>
+                                    <h5 className='text-sm font-medium uppercase xsm:text-base'>
+                                        Organization
+                                    </h5>
+                                </div>
+                                <div className='p-2.5 text-center xl:p-5'>
+                                    <h5 className='text-sm font-medium uppercase xsm:text-base'>
+                                        Applied Role
+                                    </h5>
+                                </div>
+                                <div className='p-2.5 text-center xl:p-5'>
+                                    <h5 className='text-sm font-medium uppercase xsm:text-base'>
+                                        Location
+                                    </h5>
+                                </div>
+                                <div className=' p-2.5 text-center xl:p-5'>
+                                    <h5 className='text-sm font-medium uppercase xsm:text-base'>
+                                        Date
+                                    </h5>
+                                </div>
+                                <div className=' p-2.5 text-center xl:p-5'>
+                                    <h5 className='text-sm font-medium uppercase xsm:text-base'>
+                                        Stage
+                                    </h5>
+                                </div>
+                                <div className=' p-2.5 text-center xl:p-5'>
+                                    <h5 className='text-sm font-medium uppercase xsm:text-base'>
+                                        Status
+                                    </h5>
+                                </div>
+                            </div>
+
+                            {filteredApplications.length > 0 ? (
+                                filteredApplications
+                                    .slice(offset,offset + perPage)
+                                    .map((application,key) => (
+                                        <div
+                                            className={`grid grid-cols-6 min-w-[850px] ${key === filteredApplications.length - 1
+                                                ? ''
+                                                : 'border-b border-stroke dark:border-strokedark'
+                                                }`}
+                                            key={key}>
+                                            <div className='flex items-center gap-3 p-2.5 xl:p-5'>
+                                                <div className='flex flex-row text-center'>
+                                                    <p className='text-primary dark:text-white text-sm'>
+                                                        {application.company_name}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className='flex items-center justify-center p-2.5 xl:p-5'>
+                                                <div className='flex flex-col text-center'>
+                                                    <p className='text-primary dark:text-white text-sm'>
+                                                        {application.job_title}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className='flex items-center justify-center p-2.5 xl:p-5'>
+                                                <p className='text-meta-3 text-sm'>
+                                                    {application.location}
+                                                </p>
+                                            </div>
+
+                                            <div className='flex items-center justify-center p-2.5 xl:p-5'>
+                                                <p className='text-black dark:text-white text-sm'>
+                                                    {new Date(application.created_at).toLocaleDateString()}
+                                                </p>
+                                            </div>
+                                            <div className='flex items-center justify-center p-2.5 xl:p-5'>
+                                                <button
+                                                    className={`inline-flex items-center justify-center rounded-full py-1.5 px-4 text-xs font-semibold ${getStageClasses(application.status)} shadow-md hover:shadow-lg transition-shadow duration-200`}
+                                                >
+                                                    {application.status}
+                                                </button>
+                                            </div>
+
+
+                                            <div className='flex items-center justify-center p-2.5 xl:p-5'>
+                                                <button
+                                                    onClick={() => navigate(`/application/${application.application_id}`)}
+                                                    className='py-1 px-3 text-sm font-medium bg-blue-100 text-blue-800 rounded-full'>
+                                                    View
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))
+                            ) : (
+                                <div className='p-2.5 xl:p-5 text-center'>
+                                    <p className='text-gray-500 dark:text-gray-400'>
+                                        No candidates found.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                )}
-            </>
-        </div>
+
+                    {!dashboard && filteredApplications.length > perPage && (
+                        <div className='flex justify-center items-center mt-10 mb-10'>
+                            <ReactPaginate
+                                previousLabel='Previous'
+                                nextLabel='Next'
+                                breakLabel='...'
+                                pageCount={pageCount}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={3}
+                                onPageChange={handlePageChange}
+                                containerClassName='pagination flex flex-row gap-3 md:gap-4 lg:gap-6 items-center justify-center w-full'
+                                activeClassName='bg-primary text-white rounded-md px-2 py-1.5 text-xs md:text-sm lg:text-base'
+                                previousClassName='border border-stroke dark:border-strokedark rounded-md px-2 py-1.5 text-xs md:text-sm lg:text-base text-primary dark:text-white hover:bg-primary hover:text-white'
+                                nextClassName='border border-stroke dark:border-strokedark rounded-md px-2 py-1.5 text-xs md:text-sm lg:text-base text-primary dark:text-white hover:bg-primary hover:text-white'
+                                disabledClassName='text-gray-400 cursor-not-allowed'
+                            />
+                        </div>
+                    )}
+                </>
+            </div>
+        }
+        </>
     );
 };
 

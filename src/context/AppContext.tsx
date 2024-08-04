@@ -20,6 +20,8 @@ interface AuthContextState {
     company: string;
     applyJobId: string;
     didEmailSend: boolean;
+    globalLoading: boolean;
+    setGlobalLoading: (loading: boolean) => void;
     setApplyJobId: (jobId: string) => void;
     signup: (
         email: string,
@@ -77,6 +79,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     const [email,setEmail] = useState<string>(localStorage.getItem('email') || "");
     const [didEmailSend,setDidEmailSend] = useState<boolean>(localStorage.getItem('didEmailSend') !== null);
     const [isRecruiter,setIsRecruiter] = useState<boolean>(localStorage.getItem('isRecruiter') === 'true');
+    const [globalLoading,setGlobalLoading] = useState<boolean>(false);
 
     // Recruiter specific states
     const [jobs,setJobs] = useState<Job[]>([]);
@@ -213,6 +216,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
 
     // Function to handle logout for both Recruiter and Job Seeker
     const logout = async () => {
+        setGlobalLoading(true);
         const logoutApi = isRecruiter ? '/api/logout/' : '/api/candidate/logout/';
         const response = await fetch(`${API_URL}${logoutApi}`,{
             method: 'POST',
@@ -223,9 +227,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         });
 
         const data = await response.json();
-        if(data.status !== 200) {
-            toast.error('Logout failed');
-        } else {
+        if(data) {
             // Clear session storage and state
             localStorage.removeItem('refresh_token');
             localStorage.removeItem('isRecruiter');
@@ -238,7 +240,21 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             setCompany("");
             toast.success('Logout successful');
             navigate('/login');
+        }else{
+             // Clear session storage and state
+             localStorage.removeItem('refresh_token');
+             localStorage.removeItem('isRecruiter');
+             localStorage.removeItem('user');
+             localStorage.removeItem('company');
+             setRefreshToken(null);
+             setIsAuthenticated(false);
+             setIsRecruiter(false);
+             setUser("");
+             setCompany("");
+             toast.success('Logout successful');
+             navigate('/login');
         }
+        setGlobalLoading(false);
     };
 
     // Function to Forgot Password for both Recruiter and Job Seeker
@@ -725,6 +741,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             company,
             applyJobId,
             didEmailSend,
+            globalLoading,
             setApplyJobId,
             signup,
             signupJobSeeker,
@@ -749,6 +766,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             getProfileDataRecruiter,
             saveProfileDataRecruiter,
             getRecentJobs,
+            setGlobalLoading
         }}>
             {children}
         </AuthContext.Provider>

@@ -4,6 +4,8 @@ import LogoDark from '../../images/logo/Logo-3.png';
 import Logo from '../../images/logo/Logo-2.png';
 import BrandLogo from '../../images/brand/job.jpg';
 import { useAuth } from '../../context/AppContext';
+import Loader from '../../common/Loader';
+import toast from 'react-hot-toast';
 
 const RegisterC: React.FC = () => {
     const { signupJobSeeker } = useAuth();
@@ -11,7 +13,10 @@ const RegisterC: React.FC = () => {
     const [password, setPassword] = React.useState('');
     const [retypePassword, setRetypePassword] = React.useState('');
     const [name, setName] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
     return (
+        <>
+        {loading && <Loader />}
         <div className='flex h-screen overflow-hidden'>
             <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark w-full h-full'>
                 <div className='flex flex-wrap items-center h-full'>
@@ -224,6 +229,15 @@ const RegisterC: React.FC = () => {
                                     <button
                                         className='w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90'
                                         onClick={() => {
+                                            if(password !== retypePassword) {
+                                                toast.error('Password does not match');
+                                                return;
+                                            }
+                                            if(password.length < 6) {
+                                                toast.error('Password must be at least 6 characters');
+                                                return;
+                                            }
+                                            setLoading(true);
                                             const res = signupJobSeeker(
                                                 email,
                                                 password,
@@ -234,6 +248,7 @@ const RegisterC: React.FC = () => {
                                                 setPassword('');
                                                 setRetypePassword('');
                                             }
+                                            setLoading(false);
                                         }}>
                                         Create an Account
                                     </button>
@@ -295,6 +310,7 @@ const RegisterC: React.FC = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 
