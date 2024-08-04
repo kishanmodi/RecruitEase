@@ -5,6 +5,7 @@ import Logo from '../../images/logo/Logo-2.png';
 import BrandLogo from '../../images/brand/job.jpg';
 import { useAuth } from '../../context/AppContext';
 import toast from 'react-hot-toast';
+import Loader from '../../common/Loader';
 
 const Register: React.FC = () => {
     const { signup } = useAuth();
@@ -13,7 +14,10 @@ const Register: React.FC = () => {
     const [retypePassword, setRetypePassword] = React.useState('');
     const [name, setName] = React.useState('');
     const [address, setAddress] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
     return (
+        <>
+        {loading && <Loader />}
         <div className='flex h-screen overflow-hidden'>
             <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark w-full h-full'>
                 <div className='flex flex-wrap items-center h-full'>
@@ -263,12 +267,17 @@ const Register: React.FC = () => {
                                     <button
                                         className='w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90'
                                         onClick={() => {
-
                                             // Validate the form
                                             if (!email || !password || !retypePassword || !name || !address) {
                                                 toast.error('Please fill all the fields');
                                                 return;
                                             }
+                                            if (password !== retypePassword) {
+                                                toast.error('Passwords do not match');
+                                                return;
+                                            }
+
+                                            setLoading(true);
                                             const res = signup(
                                                 email,
                                                 password,
@@ -280,6 +289,7 @@ const Register: React.FC = () => {
                                                 setPassword('');
                                                 setRetypePassword('');
                                             }
+                                            setLoading(false);
                                         }}>
                                         Create an Account
                                     </button>
@@ -341,6 +351,7 @@ const Register: React.FC = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

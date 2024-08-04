@@ -7,14 +7,18 @@ import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../../context/AppContext';
 import {Job} from '../../types/job';
 import CandidateList from '../RCandidates/CandidateList';
+import Loader from '../../common/Loader';
 
 const Dashboard: React.FC = () => {
     const navigate = useNavigate();
     const {getJobs,jobs,setCurrentJobId} = useAuth();
     const [dashboardJobs,setDashboardJobs] = useState<Job[]>([]);
+    const [loading,setLoading] = useState(false);
 
     useEffect(() => {
+        setLoading(true);
         getJobs();
+        setLoading(false);
     },[]);
 
     useEffect(() => {
@@ -39,6 +43,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <DefaultLayout>
+            {loading && <Loader />}
             <div className='flex flex-row mb-5 justify-between items-center px-4'>
                 <h2 className='text-2xl font-semibold dark:text-white'>
                     Current Openings ({dashboardJobs.length})

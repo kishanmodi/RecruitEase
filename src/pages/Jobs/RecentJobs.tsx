@@ -75,7 +75,8 @@ const RecentJobs: React.FC = () => {
 
     return (
         <DefaultLayout>
-            {loading && <Loader />}
+            {loading ? <Loader /> :
+            <>
             <div className='flex flex-row mb-5 justify-between items-center'>
                 <h2 className='text-2xl font-semibold dark:text-white'>Current Openings</h2>
             </div>
@@ -180,6 +181,7 @@ const RecentJobs: React.FC = () => {
                     </div>
                 </div>
             }
+            </>}
         </DefaultLayout>
     );
 };

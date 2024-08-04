@@ -40,7 +40,7 @@ import Profile from './pages/Profile';
 import RecentJobs from './pages/Jobs/RecentJobs';
 
 function App() {
-    const [loading,setLoading] = useState<boolean>(true);
+    const {globalLoading, setGlobalLoading} = useAuth();
     const {pathname} = useLocation();
     const {isRecruiter} = useAuth();
 
@@ -49,10 +49,10 @@ function App() {
     },[pathname]);
 
     useEffect(() => {
-        setTimeout(() => setLoading(false),1000);
+        setTimeout(() => setGlobalLoading(false),1000);
     },[]);
 
-    return loading ? (
+    return globalLoading ? (
         <Loader />
     ) : (
         <>
