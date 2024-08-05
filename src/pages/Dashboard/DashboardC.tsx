@@ -57,7 +57,7 @@ const Dashboard: React.FC = () => {
         <DefaultLayout>
             <div className='flex flex-row mb-5 justify-between items-center px-4'>
                 <h2 className='text-2xl font-semibold dark:text-white'>
-                    Current Openings ({dashboardJobs.length})
+                    Current Openings ({jobs.length})
                 </h2>
                 <div className='text-primary font-bold'>
                     <Link to='/recent-jobs'>

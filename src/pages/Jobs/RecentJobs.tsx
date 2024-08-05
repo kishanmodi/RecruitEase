@@ -7,7 +7,7 @@ import {useAuth} from '../../context/AppContext';
 import Loader from '../../common/Loader';
 import {Link} from 'react-router-dom';
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 12;
 
 const RecentJobs: React.FC = () => {
     const [searchTerm,setSearchTerm] = useState<string>('');
