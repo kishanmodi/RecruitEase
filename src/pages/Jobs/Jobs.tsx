@@ -38,7 +38,7 @@ interface CardDataStatsProps {
     color?: string;
 }
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 12;
 
 const Jobs: React.FC = () => {
     const [searchTerm,setSearchTerm] = useState<string>('');
