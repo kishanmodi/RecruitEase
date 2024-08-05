@@ -274,7 +274,7 @@ const CandidateList = ({dashboard}: {dashboard: boolean}) => {
                                     <div className='flex justify-between'>
                                         <div
                                             className={`inline-flex rounded-full py-1 px-3 text-xs text-center font-medium ${getStageClasses(application.status)} align-middle`}>
-                                            <p className='align-middle'>{application.status}</p>
+                                            <p className='leading-5'>{application.status}</p>
                                         </div>
                                         <button
                                             onClick={() => navigate(`/candidate/${application.application_id}`)}
