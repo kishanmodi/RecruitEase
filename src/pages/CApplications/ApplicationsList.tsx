@@ -4,6 +4,10 @@ import {useNavigate} from 'react-router-dom';
 import {ApplicationDetails} from '../../types/applicationdetails';
 import {useAuth} from '../../context/AppContext';
 import Loader from '../../common/Loader';
+import {FaPhone,FaCalendarAlt,FaSuitcase,FaEye } from 'react-icons/fa'
+import { FaMapLocationDot } from "react-icons/fa6";
+import { GrOrganization } from "react-icons/gr";
+
 
 const ApplicationsList = ({loading,dashboard,setLoading}: {loading: boolean,dashboard: boolean,setLoading: React.Dispatch<React.SetStateAction<boolean>>}) => {
     const {getJobApplicationC} = useAuth();
@@ -149,7 +153,7 @@ const ApplicationsList = ({loading,dashboard,setLoading}: {loading: boolean,dash
                         </select>
                     </div>}
 
-                    <div className='overflow-x-auto'>
+                    <div className='overflow-x-auto hidden lg:block'>
                         <div className='min-w-[850px]'>
                             <div className='grid grid-cols-6 min-w-[850px] rounded-sm bg-gray-2 dark:bg-meta-4'>
                                 <div className='p-2.5 xl:p-5 text-center'>
@@ -248,6 +252,63 @@ const ApplicationsList = ({loading,dashboard,setLoading}: {loading: boolean,dash
                             )}
                         </div>
                     </div>
+
+                    <div className='lg:hidden'>
+                    {filteredApplications.length === 0 ? (
+                        <div className='py-5 text-center'>No data available</div>
+                    ) : (
+                        filteredApplications.slice(offset,offset + perPage).map((application) => (
+                            <div
+                                key={application.application_id}
+                                className='border-b border-stroke dark:border-strokedark py-4'>
+                                <div className='flex flex-col space-y-4 p-4 rounded-lg shadow-lg bg-white dark:bg-meta-4'>
+                                    <div className='flex flex-col gap-2'>
+                                        <div className='flex items-center gap-2'>
+                                            <FaSuitcase className='text-primary dark:text-white' />
+                                            <h5 className='text-lg font-semibold text-primary dark:text-white'>
+                                                {application.job_title}
+                                            </h5>
+                                        </div>
+                                        <div className='flex items-center gap-2'>
+                                            <GrOrganization className='text-black dark:text-white' />
+                                            <p className='text-sm text-black dark:text-white'>
+                                                {application.company_name}
+                                            </p>
+                                        </div>
+                                        <div className='flex items-center gap-2'>
+                                            <FaMapLocationDot className='text-black dark:text-white' />
+                                            <p className='text-sm text-black dark:text-white'>
+                                                {application.location}
+                                            </p>
+                                        </div>
+                                        <div className='flex items-center gap-2'>
+                                            <FaPhone className='text-meta-3' />
+                                            <p className='text-sm text-meta-3'>{application.phone}</p>
+                                        </div>
+                                        <div className='flex items-center gap-2'>
+                                            <FaCalendarAlt className='text-black dark:text-white' />
+                                            <p className='text-sm text-black dark:text-white'>
+                                                {new Date(application.created_at).toLocaleDateString('en-GB')}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className='flex justify-between'>
+                                        <div
+                                            className={`inline-flex rounded-full py-1 px-3 text-xs text-center font-medium ${getStageClasses(application.status)} align-middle`}>
+                                            <p className='align-middle'>{application.status}</p>
+                                        </div>
+                                        <button
+                                            onClick={() => navigate(`/candidate/${application.application_id}`)}
+                                            className='py-1 px-3 text-sm font-medium bg-blue-100 text-blue-800 rounded-full flex items-center gap-1'>
+                                            <FaEye />
+                                            View
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
 
                     {!dashboard && filteredApplications.length > perPage && (
                         <div className='flex justify-center items-center mt-10 mb-10'>

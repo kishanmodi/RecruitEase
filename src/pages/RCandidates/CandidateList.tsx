@@ -4,6 +4,7 @@ import {useNavigate} from 'react-router-dom';
 import {ApplicationDetails} from '../../types/applicationdetails';
 import {useAuth} from '../../context/AppContext';
 import Loader from '../../common/Loader';
+import {FaUser,FaEnvelope,FaPhone,FaCalendarAlt,FaSuitcase,FaEye} from 'react-icons/fa'
 
 const CandidateList = ({dashboard}: {dashboard: boolean}) => {
 
@@ -140,8 +141,8 @@ const CandidateList = ({dashboard}: {dashboard: boolean}) => {
                     />
                 </div>}
 
-
-                <div className='overflow-x-auto'>
+                {/* Table for larger screens */}
+                <div className='overflow-x-auto hidden lg:block'>
                     <div className='min-w-[850px]'>
                         <div className='grid grid-cols-6 min-w-[850px] rounded-sm bg-gray-2 dark:bg-meta-4'>
                             <div className='p-2.5 xl:p-5 text-center'>
@@ -210,25 +211,83 @@ const CandidateList = ({dashboard}: {dashboard: boolean}) => {
                                         </p>
                                     </div>
                                     <div className='flex items-center justify-center p-2.5 xl:p-5'>
-                                            <div
-                                                className={`inline-flex rounded-full py-1 px-3 text-xs text-center font-medium ${getStageClasses(application.status)}`}
+                                        <div
+                                            className={`inline-flex rounded-full py-1 px-3 text-xs text-center font-medium ${getStageClasses(application.status)}`}
                                             >
-                                                {application.status}
-                                            </div>
+                                            {application.status}
                                         </div>
-                                        <div className='flex items-center justify-center p-2.5 xl:p-5'>
-                                            <button
-                                                onClick={() => navigate(`/candidate/${application.application_id}`)}
-                                                className='py-1 px-3 text-sm font-medium bg-blue-100 text-blue-800 rounded-full'>
-                                                View
-                                            </button>
-                                        </div>
+                                    </div>
+                                    <div className='flex items-center justify-center p-2.5 xl:p-5'>
+                                        <button
+                                            onClick={() => navigate(`/candidate/${application.application_id}`)}
+                                            className='py-1 px-3 text-sm font-medium bg-blue-100 text-blue-800 rounded-full'>
+                                            View
+                                        </button>
+                                    </div>
                                 </div>
                             ))
                         )}
                     </div>
                 </div>
 
+                {/* Cards for smaller screens */}
+
+                <div className='lg:hidden'>
+                    {filteredApplications.length === 0 ? (
+                        <div className='py-5 text-center'>No data available</div>
+                    ) : (
+                        filteredApplications.slice(offset,offset + perPage).map((application) => (
+                            <div
+                                key={application.application_id}
+                                className='border-b border-stroke dark:border-strokedark py-4'>
+                                <div className='flex flex-col space-y-4 p-4 rounded-lg shadow-lg bg-white dark:bg-meta-4'>
+                                    <div className='flex flex-col gap-2'>
+                                        <div className='flex items-center gap-2'>
+                                            <FaSuitcase className='text-primary dark:text-white' />
+                                            <h5 className='text-lg font-semibold text-primary dark:text-white'>
+                                                {application.job_title}
+                                            </h5>
+                                        </div>
+                                        <div className='flex items-center gap-2'>
+                                            <FaUser className='text-black dark:text-white' />
+                                            <p className='text-sm text-black dark:text-white'>
+                                                {application.first_name} {application.last_name}
+                                            </p>
+                                        </div>
+                                        <div className='flex items-center gap-2'>
+                                            <FaEnvelope className='text-black dark:text-white' />
+                                            <p className='text-sm text-black dark:text-white'>
+                                                {application.email}
+                                            </p>
+                                        </div>
+                                        <div className='flex items-center gap-2'>
+                                            <FaPhone className='text-meta-3' />
+                                            <p className='text-sm text-meta-3'>{application.phone}</p>
+                                        </div>
+                                        <div className='flex items-center gap-2'>
+                                            <FaCalendarAlt className='text-black dark:text-white' />
+                                            <p className='text-sm text-black dark:text-white'>
+                                                {new Date(application.created_at).toLocaleDateString('en-GB')}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className='flex justify-between'>
+                                        <div
+                                            className={`inline-flex rounded-full py-1 px-3 text-xs text-center font-medium ${getStageClasses(application.status)} align-middle`}>
+                                            <p className='align-middle'>{application.status}</p>
+                                        </div>
+                                        <button
+                                            onClick={() => navigate(`/candidate/${application.application_id}`)}
+                                            className='py-1 px-3 text-sm font-medium bg-blue-100 text-blue-800 rounded-full flex items-center gap-1'>
+                                            <FaEye />
+                                            View
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
                 {!dashboard && filteredApplications.length > perPage && (
                     <ReactPaginate
                         previousLabel={'previous'}
