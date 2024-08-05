@@ -99,6 +99,9 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         if(!refresh_token) {
             setIsAuthenticated(false);
         }
+        if(refresh_token){
+            getProfileData();
+        }
     },[refresh_token]);
 
     // Function to handle signup for Recruiter

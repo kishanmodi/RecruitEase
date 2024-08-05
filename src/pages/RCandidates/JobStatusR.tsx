@@ -151,7 +151,7 @@ const JobStatus = () => {
                         <h2 className='text-2xl font-semibold dark:text-white mb-2 sm:mb-0 max-md:text-lg max-sm:text-center px-4'>
                             Candidate Information / Status Update
                         </h2>
-                        <div className="flex space-x-2 px-4 py-2 max-sm:flex-col max-sm:gap-4 max-sm:w-full ">
+                        <div className="flex px-6 py-2 max-sm:flex-col max-sm:gap-4 max-sm:w-full gap-4">
                             <div
                                 className={`inline-flex items-center px-4 py-2 text-center rounded max-sm:text-md font-semibold justify-center ${getStageClasses(applicationDetails?.status || "")}`}
                             >
@@ -167,7 +167,7 @@ const JobStatus = () => {
                             </button>
                             <button
                                 type="button"
-                                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 m-0"
                                 onClick={() => {
                                     setViewStatus(!viewStatus)
                                     setSendEmail(false)
