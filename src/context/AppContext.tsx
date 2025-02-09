@@ -7,7 +7,7 @@ import {Application} from '../types/application';
 // Regex pattern for password validation
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
 // const API_URL = 'https://13.232.238.173.nip.io';
-const API_URL = 'https://3.109.58.204.nip.io';
+const API_URL = 'https://3.111.38.253.nip.io';
 
 
 // Auth context interface
